@@ -1,0 +1,13 @@
+AC_INIT([cyvmath],[0.1],[mail@jonasplatte.de])
+AC_CONFIG_AUX_DIR([.])
+AC_CONFIG_MACRO_DIR([m4])
+AM_INIT_AUTOMAKE([1.11 foreign])
+AM_SILENT_RULES([yes])
+AC_PROG_CXX
+AC_PROG_RANLIB
+AM_PROG_AR
+
+AC_CONFIG_FILES([
+	Makefile
+])
+AC_OUTPUT
