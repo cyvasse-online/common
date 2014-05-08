@@ -17,21 +17,25 @@
 #ifndef _CYVMATH_HEXAGON_HPP_
 #define _CYVMATH_HEXAGON_HPP_
 
+#include <set>
 #include <string>
 #include <stdexcept>
+#include <cmath>
 
 namespace cyvmath
 {
-	// This should rather be a namespace, but namespaces cannot have template parameters
-	// but hexagon<6>::Coordinate is way better understandable than hexagon::Coordinate<6>
-	// so this is implemented as a template class with a deleted constructor.
-	// The template parameter l stands for the edge length of the hexagon.
+	/* This should rather be a namespace, but namespaces cannot have template parameters.
+	   hexagon<6>::Coordinate is way better understandable than hexagon::Coordinate<6>
+	   so this is implemented as a template class with a deleted constructor.
+	   The template parameter l stands for the edge length of the hexagon.
+	 */
 	template <int l>
 	class hexagon
 	{
-		// The smallest possible hexagon has 7 tiles and an edge lenth of 2
-		// The largest possible hexagon in which the highest x and y can be represented
-		// using a signed 8 bit integer has an edge length of 64 (=> width and height 127)
+		/* The smallest possible hexagon has 7 tiles and an edge lenth of 2
+		   The largest possible hexagon in which the highest x and y can be represented
+		   using a signed 8 bit integer has an edge length of 64 (=> width and height 127)
+		 */
 		static_assert(l >= 2,  "The minimum size of the hexagon edge length is 2.");
 		static_assert(l <= 64, "The maximum size of the hexagon edge length is 64.");
 
@@ -46,17 +50,31 @@ namespace cyvmath
 					int8_t _x;
 					int8_t _y;
 
+					int8_t z()
+					{
+						return 0 - _x - _y;
+					}
+
+					void throwInvalid()
+					{
+						throw std::invalid_argument("Coordinate not valid: "
+						                            "{" + std::to_string(_x) +
+						                            ", " + std::to_string(_y) + "}");
+					}
+
 				public:
 					Coordinate(int8_t x, int8_t y)
 						: _x(x)
 						, _y(y)
 					{
 						if(!isValid())
-							throw std::invalid_argument("Coordinate not valid");
+							throwInvalid();
 					}
 
 					bool isValid()
 					{
+						return (_x + _y) >= (l - 1) &&
+						       (_x + _y) <= (l - 1) * 3;
 					}
 
 					operator bool()
@@ -64,49 +82,61 @@ namespace cyvmath
 						return isValid();
 					}
 
-					/// Check if the given coordinate is a direct neighbor
-					bool isAdjacent()
-					{
-					}
-
 					/** Get the distance to another coordinate in form of the amount
-						of single moves to adjacent tiles required to move there
+					    of single moves to adjacent tiles required to move there
 					 */
 					int8_t getDistance(Coordinate other)
 					{
+						// I have no idea how or why this works, but it does.
+						// Taken from http://keekerdc.com/2011/03/hexagon-grids-coordinate-systems-and-distance-calculations/
+						return *(std::set<int>({abs(_x - other._x), abs(_y - other._y), abs(z() - other.z())}).crbegin());
 					}
 
 					/** Like getDistance(), but return -1 if the given coordinate
-						is not reachable in one orthogonal move
+					    is not reachable in one orthogonal move
 
-						An orthogonal move is a straight move in one of the six
-						directions of the neighboring hex-tiles.
+					    An orthogonal move is a straight move in one of the six
+					    directions of the neighboring hex-tiles.
 					 */
 					int8_t getDistanceOrthogonal(Coordinate other)
 					{
+						// Test if other is reachable in one orthogonal move
+						if(!(_x == other._x || _y == other._y || z() == other.z()))
+							return -1;
+
+						return getDistance(other);
 					}
 
 					/** Get the diagonal distance to a coordinate, or -1 if
-						the coordinate isn't reahcable in one diagonal move
+					    the coordinate isn't reachable in one diagonal move
 
-						A diagonal move is a straight move in one of the six
-						directions of the lines between the neighboring hex-tiles.
+					    A diagonal move is a straight move in one of the six
+					    directions of the lines between the neighboring hex-tiles.
 					 */
 					int8_t getDistanceDiagonal(Coordinate other)
 					{
+						// TODO
 					}
 
-					/** Get the distance to another coordinate with the same distance
-						to the center Coordinate along the line of these coordinates.
+					/** Get the distance to another coordinate with the same distance to
+					    the center Coordinate along the line of these coordinates, or -1
+					    if the coordinate isn't reachable while only moving on that line.
 
-						All possible movement targets here are along a hexagonal line.
-						The direct distance from this coordinate to another one on that
-						line may be different than the distance along the line.
+					    All possible movement targets here are along a hexagonal line.
+					    The direct distance from this coordinate to another one on that
+					    line may be different than the distance along the line.
 					 */
 					// There certainly is no other ruleset than MikeL's that uses this
 					// but there probably is no better place to put this code either.
 					int8_t getDistanceHexagonalLine(Coordinate other, Coordinate center)
 					{
+						// TODO
+					}
+
+					/// Check if the given coordinate is a direct neighbor
+					bool isAdjacent(Coordinate other)
+					{
+						return getDistance() == 1;
 					}
 
 					void set(int8_t x, int8_t y)
@@ -115,7 +145,7 @@ namespace cyvmath
 						_y = y;
 
 						if(!isValid())
-							throw std::invalid_argument("Coordinate not valid");
+							throwInvalid();
 					}
 
 					void set(Coordinate other)
@@ -140,11 +170,12 @@ namespace cyvmath
 						if(str.length() < 2)
 							throw std::invalid_argument("Coordinate not valid");
 
-						// x: When using char's for calculations, their ASCII values are used,
-						//    and as the uppercase letters are consecutive in the ASCII table,
-						//    this will result in 0 for 'A', 1 for 'B' and so on.
-						//    We don't accept lowercase letters.
-						// y: Public coordinate notation starts with 1, we start with 0
+						/* x: When using char's for calculations, their ASCII values are used,
+						      and as the uppercase letters are consecutive in the ASCII table,
+						      this will result in 0 for 'A', 1 for 'B' and so on.
+						      We don't accept lowercase letters.
+						   y: Public coordinate notation starts with 1, we start with 0
+						 */
 						return {str.at(0) - 'A', std::stoi(str.substr(1)) - 1};
 					}
 			};
