@@ -231,6 +231,12 @@ namespace cyvmath
 					}
 			};
 
+			/// Get the edge length of the hexagon (template parameter)
+			static constexpr int getEdgeLength()
+			{
+				return l;
+			}
+
 			/// Get a container with all possible coordinates in this hexagon
 			static std::vector<Coordinate> getAllCoordinates()
 			{
