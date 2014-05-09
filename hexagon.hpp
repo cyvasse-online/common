@@ -99,6 +99,16 @@ namespace cyvmath
 						return isValid();
 					}
 
+					operator int() const
+					{
+						return dump();
+					}
+
+					bool operator==(Coordinate other) const
+					{
+						return _x == other._x && _y == other._y;
+					}
+
 					bool operator<(Coordinate other) const
 					{
 						return dump() < other.dump();
