@@ -17,6 +17,7 @@
 #ifndef _CYVMATH_HEXAGON_HPP_
 #define _CYVMATH_HEXAGON_HPP_
 
+#include <functional>
 #include <set>
 #include <string>
 #include <stdexcept>
@@ -69,6 +70,16 @@ namespace cyvmath
 					{
 						if(!isValid())
 							throwInvalid();
+					}
+
+					int8_t x()
+					{
+						return _x;
+					}
+
+					int8_t y()
+					{
+						return _y;
 					}
 
 					bool isValid()
@@ -132,7 +143,7 @@ namespace cyvmath
 					 */
 					int8_t getDistanceDiagonal(Coordinate other)
 					{
-						is(!isDiagonal(other))
+						if(!isDiagonal(other))
 							return -1;
 
 						return getDistance(other) / 2;
@@ -197,6 +208,14 @@ namespace cyvmath
 						 */
 						return {str.at(0) - 'A', std::stoi(str.substr(1)) - 1};
 					}
+			};
+
+			struct CoordinateHash
+			{
+				size_t operator()(const Coordinate& c) const
+				{
+					return std::hash<int>() ((c.x() << 8) | c.y());
+				}
 			};
 	};
 }
