@@ -89,7 +89,13 @@ namespace cyvmath
 					{
 						// I have no idea how or why this works, but it does.
 						// Taken from http://keekerdc.com/2011/03/hexagon-grids-coordinate-systems-and-distance-calculations/
-						return *(std::set<int>({abs(_x - other._x), abs(_y - other._y), abs(z() - other.z())}).crbegin());
+						return *(std::set<int>({abs(_x - other._x), abs(_y - other._y), abs(z() - other.z())}).rbegin());
+					}
+
+					/// Check if the given coordinate is reachable in one orthogonal move
+					bool isOrthogonal(Coordinate other)
+					{
+						return _x == other._x || _y == other._y || z() == other.z();
 					}
 
 					/** Like getDistance(), but return -1 if the given coordinate
@@ -100,11 +106,22 @@ namespace cyvmath
 					 */
 					int8_t getDistanceOrthogonal(Coordinate other)
 					{
-						// Test if other is reachable in one orthogonal move
-						if(!(_x == other._x || _y == other._y || z() == other.z()))
+						if(!isOrthogonal(other))
 							return -1;
 
 						return getDistance(other);
+					}
+
+					/// Check if the given coordinate is reachable in one diagonal move
+					bool isDiagonal(Coordinate other)
+					{
+						int8_t dX = abs(_x - other._x);
+						int8_t dY = abs(_y - other._y);
+						int8_t dZ = abs(z() - other.z());
+
+						return (dX == dY && dX == dZ / 2) ||
+						       (dX == dZ && dX == dY / 2) ||
+						       (dY == dZ && dY == dX / 2);
 					}
 
 					/** Get the diagonal distance to a coordinate, or -1 if
@@ -115,13 +132,7 @@ namespace cyvmath
 					 */
 					int8_t getDistanceDiagonal(Coordinate other)
 					{
-						int8_t dX = abs(_x - other._x);
-						int8_t dY = abs(_y - other._y);
-						int8_t dZ = abs(z() - other.z());
-
-						if(!((dX == dY && dX == dZ / 2) ||
-						     (dX == dZ && dX == dY / 2) ||
-						     (dY == dZ && dY == dX / 2)))
+						is(!isDiagonal(other))
 							return -1;
 
 						return getDistance(other) / 2;
@@ -139,6 +150,10 @@ namespace cyvmath
 					// but there probably is no better place to put this code either.
 					int8_t getDistanceHexagonalLine(Coordinate other, Coordinate center)
 					{
+						// Check if the given coordinate has the same distance to center as this
+						if(getDistance(center) != other.getDistance(center))
+							return -1;
+
 						// TODO
 					}
 
@@ -155,11 +170,6 @@ namespace cyvmath
 
 						if(!isValid())
 							throwInvalid();
-					}
-
-					void set(Coordinate other)
-					{
-						set(other._x, other._y);
 					}
 
 					Coordinate& operator=(Coordinate other)
