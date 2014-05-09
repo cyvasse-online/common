@@ -52,7 +52,7 @@ namespace cyvmath
 
 					int8_t z()
 					{
-						return 0 - _x - _y;
+						return -(_x + _y);
 					}
 
 					void throwInvalid()
@@ -115,7 +115,16 @@ namespace cyvmath
 					 */
 					int8_t getDistanceDiagonal(Coordinate other)
 					{
-						// TODO
+						int8_t dX = abs(_x - other._x);
+						int8_t dY = abs(_y - other._y);
+						int8_t dZ = abs(z() - other.z());
+
+						if(!((dX == dY && dX == dZ / 2) ||
+						     (dX == dZ && dX == dY / 2) ||
+						     (dY == dZ && dY == dX / 2)))
+							return -1;
+
+						return getDistance(other) / 2;
 					}
 
 					/** Get the distance to another coordinate with the same distance to
