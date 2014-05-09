@@ -57,6 +57,11 @@ namespace cyvmath
 						return -(_x + _y);
 					}
 
+					int16_t dump() const
+					{
+						return (_x << 8) | _y;
+					}
+
 					void throwInvalid()
 					{
 						throw std::invalid_argument("Coordinate not valid: "
@@ -92,6 +97,11 @@ namespace cyvmath
 					operator bool() const
 					{
 						return isValid();
+					}
+
+					bool operator<(Coordinate other) const
+					{
+						return dump() < other.dump();
 					}
 
 					/** Get the distance to another coordinate in form of the amount
@@ -235,14 +245,6 @@ namespace cyvmath
 
 				return vec;
 			}
-
-			struct CoordinateHash
-			{
-				size_t operator()(const Coordinate& c) const
-				{
-					return std::hash<int>() ((c.x() << 8) | c.y());
-				}
-			};
 	};
 }
 
