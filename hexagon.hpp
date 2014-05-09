@@ -244,17 +244,17 @@ namespace cyvmath
 
 				if(vec.empty())
 				{
-					// TODO: Should we instead iterate x and y over the full range
-					// of coordinates (0 to [excl] l - 1) and catch errors thrown
-					// by the Coordinate constructor? (isValid() is called anyway)
-					for(int x = 0; x < 2 * l - 1; x++)
+					for(int x = 0; x < (2 * l) - 1; x++)
 					{
-						int y = l - 1 - x;
-						if(y < 0) y = 0;
-
-						for(; y < 2 * l - 1 && x + y < (l - 1) * 3; y++)
+						for(int y = 0; y < (2 * l) - 1; y++)
 						{
-							vec.emplace_back(x, y);
+							try
+							{
+								vec.emplace_back(x, y);
+							}
+							catch(std::invalid_argument&)
+							{
+							}
 						}
 					}
 				}
