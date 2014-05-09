@@ -21,6 +21,7 @@
 #include <set>
 #include <string>
 #include <stdexcept>
+#include <vector>
 #include <cmath>
 
 namespace cyvmath
@@ -72,23 +73,23 @@ namespace cyvmath
 							throwInvalid();
 					}
 
-					int8_t x()
+					int8_t x() const
 					{
 						return _x;
 					}
 
-					int8_t y()
+					int8_t y() const
 					{
 						return _y;
 					}
 
-					bool isValid()
+					bool isValid() const
 					{
 						return (_x + _y) >= (l - 1) &&
 						       (_x + _y) <= (l - 1) * 3;
 					}
 
-					operator bool()
+					operator bool() const
 					{
 						return isValid();
 					}
@@ -96,7 +97,7 @@ namespace cyvmath
 					/** Get the distance to another coordinate in form of the amount
 					    of single moves to adjacent tiles required to move there
 					 */
-					int8_t getDistance(Coordinate other)
+					int8_t getDistance(Coordinate other) const
 					{
 						// I have no idea how or why this works, but it does.
 						// Taken from http://keekerdc.com/2011/03/hexagon-grids-coordinate-systems-and-distance-calculations/
@@ -104,7 +105,7 @@ namespace cyvmath
 					}
 
 					/// Check if the given coordinate is reachable in one orthogonal move
-					bool isOrthogonal(Coordinate other)
+					bool isOrthogonal(Coordinate other) const
 					{
 						return _x == other._x || _y == other._y || z() == other.z();
 					}
@@ -115,7 +116,7 @@ namespace cyvmath
 					    An orthogonal move is a straight move in one of the six
 					    directions of the neighboring hex-tiles.
 					 */
-					int8_t getDistanceOrthogonal(Coordinate other)
+					int8_t getDistanceOrthogonal(Coordinate other) const
 					{
 						if(!isOrthogonal(other))
 							return -1;
@@ -124,7 +125,7 @@ namespace cyvmath
 					}
 
 					/// Check if the given coordinate is reachable in one diagonal move
-					bool isDiagonal(Coordinate other)
+					bool isDiagonal(Coordinate other) const
 					{
 						int8_t dX = abs(_x - other._x);
 						int8_t dY = abs(_y - other._y);
@@ -141,7 +142,7 @@ namespace cyvmath
 					    A diagonal move is a straight move in one of the six
 					    directions of the lines between the neighboring hex-tiles.
 					 */
-					int8_t getDistanceDiagonal(Coordinate other)
+					int8_t getDistanceDiagonal(Coordinate other) const
 					{
 						if(!isDiagonal(other))
 							return -1;
@@ -159,7 +160,7 @@ namespace cyvmath
 					 */
 					// There certainly is no other ruleset than MikeL's that uses this
 					// but there probably is no better place to put this code either.
-					int8_t getDistanceHexagonalLine(Coordinate other, Coordinate center)
+					int8_t getDistanceHexagonalLine(Coordinate other, Coordinate center) const
 					{
 						// Check if the given coordinate has the same distance to center as this
 						if(getDistance(center) != other.getDistance(center))
@@ -169,7 +170,7 @@ namespace cyvmath
 					}
 
 					/// Check if the given coordinate is a direct neighbor
-					bool isAdjacent(Coordinate other)
+					bool isAdjacent(Coordinate other) const
 					{
 						return getDistance() == 1;
 					}
@@ -209,6 +210,31 @@ namespace cyvmath
 						return {str.at(0) - 'A', std::stoi(str.substr(1)) - 1};
 					}
 			};
+
+			/// Get a container with all possible coordinates in this hexagon
+			static std::vector<Coordinate> getAllCoordinates()
+			{
+				static std::vector<Coordinate> vec;
+
+				if(vec.empty())
+				{
+					// TODO: Should we instead iterate x and y over the full range
+					// of coordinates (0 to [excl] l - 1) and catch errors thrown
+					// by the Coordinate constructor? (isValid() is called anyway)
+					for(int x = 0; x < 2 * l - 1; x++)
+					{
+						int y = l - 1 - x;
+						if(y < 0) y = 0;
+
+						for(; y < 2 * l - 1 && x + y < (l - 1) * 3; y++)
+						{
+							vec.emplace_back(x, y);
+						}
+					}
+				}
+
+				return vec;
+			}
 
 			struct CoordinateHash
 			{
