@@ -177,7 +177,7 @@ namespace cyvmath
 					    The direct distance from this coordinate to another one on that
 					    line may be different than the distance along the line.
 					 */
-					// There certainly is no other ruleset than MikeL's that uses this
+					// There certainly is no other rule set than MikeL's that uses this
 					// but there probably is no better place to put this code either.
 					int8_t getDistanceHexagonalLine(Coordinate other, Coordinate center) const
 					{
