@@ -62,21 +62,15 @@ namespace cyvmath
 						return (_x << 8) | _y;
 					}
 
-					void throwInvalid()
-					{
-						throw std::invalid_argument("Coordinate not valid: "
-						                            "{" + std::to_string(_x) +
-						                            ", " + std::to_string(_y) + "}");
-					}
-
-				public:
 					Coordinate(int8_t x, int8_t y)
 						: _x(x)
 						, _y(y)
 					{
-						if(!isValid())
-							throwInvalid();
 					}
+
+				public:
+					Coordinate(const Coordinate&) = default;
+					Coordinate& operator=(const Coordinate& other) = default;
 
 					int8_t x() const
 					{
@@ -88,10 +82,15 @@ namespace cyvmath
 						return _y;
 					}
 
+					static bool isValid(int8_t x, int8_t y)
+					{
+						return (x + y) >= (l - 1) &&
+						       (x + y) <= (l - 1) * 3;
+					}
+
 					bool isValid() const
 					{
-						return (_x + _y) >= (l - 1) &&
-						       (_x + _y) <= (l - 1) * 3;
+						return isValid(_x, _y);
 					}
 
 					operator bool() const
@@ -195,31 +194,39 @@ namespace cyvmath
 						return getDistance() == 1;
 					}
 
-					void set(int8_t x, int8_t y)
+					bool set(int8_t x, int8_t y)
 					{
-						_x = x;
-						_y = y;
+						if(isValid(x, y))
+						{
+							_x = x;
+							_y = y;
 
-						if(!isValid())
-							throwInvalid();
+							return true;
+						}
+
+						return false;
 					}
 
-					Coordinate& operator=(Coordinate other)
+					/// Create a Coordinate object from an x and an y
+					/// If the coordinte is invalid, return nullptr
+					static Coordinate* create(int8_t x, int8_t y)
 					{
-						set(other._x, other._y);
-						return *this;
+						if(isValid(x, y))
+							return new Coordinate(x, y);
+
+						return nullptr;
 					}
 
 					/// Create a Coordinate object from a coordinate in the public notation
 					/// (see mockup/hexboard-coordinates-public.svg)
-					static Coordinate fromStr(const std::string& str)
+					static Coordinate* createFromStr(const std::string& str)
 					{
 						// This function will currently fail on hexagons with l > 13 because there
 						// would be multiple letters for the y coordinate in the public notation.
 						// TODO: Decide on whether to set a maximum l of 13 or to alter this function
 
 						if(str.length() < 2)
-							throw std::invalid_argument("Coordinate not valid");
+							return nullptr;
 
 						/* x: When using char's for calculations, their ASCII values are used,
 						      and as the uppercase letters are consecutive in the ASCII table,
@@ -248,13 +255,12 @@ namespace cyvmath
 					{
 						for(int y = 0; y < (2 * l) - 1; y++)
 						{
-							try
-							{
-								vec.emplace_back(x, y);
-							}
-							catch(std::invalid_argument&)
-							{
-							}
+							Coordinate* c = Coordinate::create(x, y);
+
+							if(c != nullptr)
+								vec.push_back(*c); // create a copy
+
+							delete c; // delete the original
 						}
 					}
 				}
