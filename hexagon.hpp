@@ -118,8 +118,9 @@ namespace cyvmath
 					 */
 					int8_t getDistance(Coordinate other) const
 					{
-						// I have no idea how or why this works, but it does.
-						// Taken from http://keekerdc.com/2011/03/hexagon-grids-coordinate-systems-and-distance-calculations/
+						// Concept from http://keekerdc.com/2011/03/hexagon-grids-coordinate-systems-and-distance-calculations/
+						// I have no idea why the maximum of x-, y- and z-difference
+						// of the coordinates equals the distance between them...
 						return *(std::set<int>({abs(_x - other._x), abs(_y - other._y), abs(z() - other.z())}).rbegin());
 					}
 
