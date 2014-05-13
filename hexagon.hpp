@@ -21,7 +21,7 @@
 #include <set>
 #include <string>
 #include <stdexcept>
-#include <vector>
+#include <set>
 #include <cmath>
 
 namespace cyvmath
@@ -52,16 +52,6 @@ namespace cyvmath
 					int8_t _x;
 					int8_t _y;
 
-					int8_t z()
-					{
-						return -(_x + _y);
-					}
-
-					int16_t dump() const
-					{
-						return (_x << 8) | _y;
-					}
-
 					Coordinate(int8_t x, int8_t y)
 						: _x(x)
 						, _y(y)
@@ -82,9 +72,21 @@ namespace cyvmath
 						return _y;
 					}
 
+					int8_t z()
+					{
+						return -(_x + _y);
+					}
+
+					int16_t dump() const
+					{
+						return (_x << 8) | _y;
+					}
+
 					static bool isValid(int8_t x, int8_t y)
 					{
-						return (x + y) >= (l - 1) &&
+						return x >= 0 && x < (l * 2 - 1) &&
+						       y >= 0 && y < (l * 2 - 1) &&
+						       (x + y) >= (l - 1) &&
 						       (x + y) <= (l - 1) * 3;
 					}
 
@@ -243,11 +245,11 @@ namespace cyvmath
 			static const int edgeLength = l;
 
 			/// Get a container with all possible coordinates in this hexagon
-			static std::vector<Coordinate> getAllCoordinates()
+			static std::set<Coordinate> getAllCoordinates()
 			{
-				static std::vector<Coordinate> vec;
+				static std::set<Coordinate> cSet;
 
-				if(vec.empty())
+				if(cSet.empty())
 				{
 					for(int x = 0; x < (2 * l) - 1; x++)
 					{
@@ -256,14 +258,14 @@ namespace cyvmath
 							Coordinate* c = Coordinate::create(x, y);
 
 							if(c != nullptr)
-								vec.push_back(*c); // create a copy
+								cSet.insert(*c); // create a copy
 
 							delete c; // delete the original
 						}
 					}
 				}
 
-				return vec;
+				return cSet;
 			}
 	};
 }
