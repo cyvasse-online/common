@@ -21,7 +21,7 @@
 #include <set>
 #include <string>
 #include <stdexcept>
-#include <set>
+#include <vector>
 #include <cmath>
 
 namespace cyvmath
@@ -245,11 +245,11 @@ namespace cyvmath
 			static const int edgeLength = l;
 
 			/// Get a container with all possible coordinates in this hexagon
-			static std::set<Coordinate> getAllCoordinates()
+			static std::vector<Coordinate> getAllCoordinates()
 			{
-				static std::set<Coordinate> cSet;
+				static std::vector<Coordinate> vec;
 
-				if(cSet.empty())
+				if(vec.empty())
 				{
 					for(int x = 0; x < (2 * l) - 1; x++)
 					{
@@ -258,14 +258,14 @@ namespace cyvmath
 							Coordinate* c = Coordinate::create(x, y);
 
 							if(c != nullptr)
-								cSet.insert(*c); // create a copy
+								vec.push_back(*c); // create a copy
 
 							delete c; // delete the original
 						}
 					}
 				}
 
-				return cSet;
+				return vec;
 			}
 	};
 }
