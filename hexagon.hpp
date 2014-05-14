@@ -21,6 +21,7 @@
 #include <set>
 #include <string>
 #include <stdexcept>
+#include <utility>
 #include <vector>
 #include <cmath>
 
@@ -45,6 +46,9 @@ namespace cyvmath
 			hexagon() = delete;
 
 		public:
+			class Coordinate;
+			typedef std::vector<Coordinate> CoordinateVec;
+
 			/// A coordinate on the hexboard (see mockup/hexboard-coordinates-internal.svg)
 			class Coordinate
 			{
@@ -82,6 +86,7 @@ namespace cyvmath
 						return (_x << 8) | _y;
 					}
 
+				private:
 					static bool isValid(int8_t x, int8_t y)
 					{
 						return x >= 0 && x < (l * 2 - 1) &&
@@ -100,6 +105,7 @@ namespace cyvmath
 						return isValid();
 					}
 
+				public:
 					operator int() const
 					{
 						return dump();
@@ -144,6 +150,40 @@ namespace cyvmath
 							return -1;
 
 						return getDistance(other);
+					}
+
+					CoordinateVec getCoordinatesOrthogonal(int8_t distance) const
+					{
+						CoordinateVec vec;
+
+						for(int direction = 0; direction < 6; direction++)
+						{
+							std::pair<int, int> op;
+							switch(direction)
+							{
+								case 0: op = {-1,  1}; break; // top left
+								case 1: op = { 0,  1}; break; // top right
+								case 2: op = { 1,  0}; break; // right
+								case 3: op = { 1, -1}; break; // bottom right
+								case 4: op = { 0, -1}; break; // bottom left
+								case 5: op = {-1,  0}; break; // left
+							}
+
+							Coordinate tmpCoord(*this);
+							for(int i = 0; i < distance; i++)
+							{
+								tmpCoord = {tmpCoord->_x + op.first, tmpCoord->_y + op.second};
+
+								// if one step into this direction results in a
+								// invalid coordinate, all further ones do too
+								if(!tmpCoord)
+									break;
+
+								vec.push_back(tmpCoord);
+							}
+						}
+
+						return vec;
 					}
 
 					/// Check if the given coordinate is reachable in one diagonal move
@@ -197,6 +237,11 @@ namespace cyvmath
 						return getDistance() == 1;
 					}
 
+					CoordinateVec getCoordinatesAdjacent()
+					{
+						return getCoordinatesOrthogonal(1);
+					}
+
 					bool set(int8_t x, int8_t y)
 					{
 						if(isValid(x, y))
@@ -212,17 +257,17 @@ namespace cyvmath
 
 					/// Create a Coordinate object from an x and an y
 					/// If the coordinte is invalid, return nullptr
-					static Coordinate* create(int8_t x, int8_t y)
+					static std::unique_ptr<Coordinate> create(int8_t x, int8_t y)
 					{
 						if(isValid(x, y))
-							return new Coordinate(x, y);
+							return std::unique_ptr<Coordinate>(new Coordinate(x, y));
 
 						return nullptr;
 					}
 
 					/// Create a Coordinate object from a coordinate in the public notation
 					/// (see mockup/hexboard-coordinates-public.svg)
-					static Coordinate* createFromStr(const std::string& str)
+					static std::unique_ptr<Coordinate> createFromStr(const std::string& str)
 					{
 						// This function will currently fail on hexagons with l > 13 because there
 						// would be multiple letters for the y coordinate in the public notation.
@@ -245,9 +290,9 @@ namespace cyvmath
 			static const int edgeLength = l;
 
 			/// Get a container with all possible coordinates in this hexagon
-			static std::vector<Coordinate> getAllCoordinates()
+			static CoordinateVec getAllCoordinates()
 			{
-				static std::vector<Coordinate> vec;
+				static CoordinateVec vec;
 
 				if(vec.empty())
 				{
@@ -255,12 +300,9 @@ namespace cyvmath
 					{
 						for(int y = 0; y < (2 * l) - 1; y++)
 						{
-							Coordinate* c = Coordinate::create(x, y);
+							std::unique_ptr<Coordinate> c = Coordinate::create(x, y);
 
-							if(c != nullptr)
-								vec.push_back(*c); // create a copy
-
-							delete c; // delete the original
+							if(c) vec.push_back(*c);
 						}
 					}
 				}
