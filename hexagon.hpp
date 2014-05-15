@@ -255,6 +255,7 @@ namespace cyvmath
 						return false;
 					}
 
+					/// @{
 					/// Create a Coordinate object from an x and an y
 					/// If the coordinte is invalid, return nullptr
 					static std::unique_ptr<Coordinate> create(int8_t x, int8_t y)
@@ -264,6 +265,15 @@ namespace cyvmath
 
 						return nullptr;
 					}
+
+					static std::unique_ptr<Coordinate> create(std::pair<int8_t, int8_t> c)
+					{
+						if(isValid(c.first, c.second))
+							return std::unique_ptr<Coordinate>(new Coordinate(c.first, c.second));
+
+						return nullptr;
+					}
+					/// @}
 
 					/// Create a Coordinate object from a coordinate in the public notation
 					/// (see mockup/hexboard-coordinates-public.svg)
