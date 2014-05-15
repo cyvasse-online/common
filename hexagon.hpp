@@ -76,7 +76,7 @@ namespace cyvmath
 						return _y;
 					}
 
-					int8_t z()
+					int8_t z() const
 					{
 						return -(_x + _y);
 					}
@@ -152,7 +152,13 @@ namespace cyvmath
 						return getDistance(other);
 					}
 
-					CoordinateVec getCoordinatesOrthogonal(int8_t distance) const
+					/** Get all coordinates reachable in one orthogonal move of
+					    maximally the provided distance of tiles
+
+					    The default value is the maximal distance possible on
+					    this hexagon (no distance limit).
+					 */
+					CoordinateVec getCoordinatesOrthogonal(int8_t distance = (l * 2 - 2)) const
 					{
 						CoordinateVec vec;
 
@@ -237,6 +243,7 @@ namespace cyvmath
 						return getDistance() == 1;
 					}
 
+					/// Get all adjacent coordinates
 					CoordinateVec getCoordinatesAdjacent()
 					{
 						return getCoordinatesOrthogonal(1);
