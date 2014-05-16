@@ -27,6 +27,264 @@
 
 namespace cyvmath
 {
+	/// A coordinate on the hexboard (see mockup/hexboard-coordinates-internal.svg)
+	template <int l>
+	class _Coordinate
+	{
+		public:
+			typedef std::vector<_Coordinate> CoordinateVec;
+
+		private:
+			int8_t _x;
+			int8_t _y;
+
+			_Coordinate(int8_t x, int8_t y)
+				: _x(x)
+				, _y(y)
+			{
+			}
+
+		public:
+			_Coordinate(const _Coordinate&) = default;
+			_Coordinate& operator=(const _Coordinate& other) = default;
+
+			int8_t x() const
+			{
+				return _x;
+			}
+
+			int8_t y() const
+			{
+				return _y;
+			}
+
+			int8_t z() const
+			{
+				return -(_x + _y);
+			}
+
+			int16_t dump() const
+			{
+				return (_x << 8) | _y;
+			}
+
+		private:
+			static bool isValid(int8_t x, int8_t y)
+			{
+				return x >= 0 && x < (l * 2 - 1) &&
+				       y >= 0 && y < (l * 2 - 1) &&
+				       (x + y) >= (l - 1) &&
+				       (x + y) <= (l - 1) * 3;
+			}
+
+			bool isValid() const
+			{
+				return isValid(_x, _y);
+			}
+
+			operator bool() const
+			{
+				return isValid();
+			}
+
+		public:
+			bool operator==(_Coordinate other) const
+			{
+				return _x == other._x && _y == other._y;
+			}
+
+			bool operator!=(_Coordinate other) const
+			{
+				return _x != other._x || _y != other._y;
+			}
+
+			bool operator<(_Coordinate other) const
+			{
+				return dump() < other.dump();
+			}
+
+			/** Get the distance to another coordinate in form of the amount
+			    of single moves to adjacent tiles required to move there
+			 */
+			int8_t getDistance(_Coordinate other) const
+			{
+				// Concept from http://keekerdc.com/2011/03/hexagon-grids-coordinate-systems-and-distance-calculations/
+				// I have no idea why the maximum of x-, y- and z-difference
+				// of the coordinates equals the distance between them...
+				return *(std::set<int>({abs(_x - other._x), abs(_y - other._y), abs(z() - other.z())}).rbegin());
+			}
+
+			/// Check if the given coordinate is reachable in one orthogonal move
+			bool isOrthogonal(_Coordinate other) const
+			{
+				return _x == other._x || _y == other._y || z() == other.z();
+			}
+
+			/** Like getDistance(), but return -1 if the given coordinate
+			    is not reachable in one orthogonal move
+
+			    An orthogonal move is a straight move in one of the six
+			    directions of the neighboring hex-tiles.
+			 */
+			int8_t getDistanceOrthogonal(_Coordinate other) const
+			{
+				if(!isOrthogonal(other))
+					return -1;
+
+				return getDistance(other);
+			}
+
+			/** Get all coordinates reachable in one orthogonal move of
+			    maximally the provided distance of tiles
+
+			    The default value is the maximal distance possible on
+			    this hexagon (no distance limit).
+			 */
+			CoordinateVec getCoordinatesOrthogonal(int8_t distance = (l * 2 - 2)) const
+			{
+				CoordinateVec vec;
+
+				for(int direction = 0; direction < 6; direction++)
+				{
+					std::pair<int, int> op;
+					switch(direction)
+					{
+						case 0: op = {-1,  1}; break; // top left
+						case 1: op = { 0,  1}; break; // top right
+						case 2: op = { 1,  0}; break; // right
+						case 3: op = { 1, -1}; break; // bottom right
+						case 4: op = { 0, -1}; break; // bottom left
+						case 5: op = {-1,  0}; break; // left
+					}
+
+					_Coordinate tmpCoord(*this);
+					for(int i = 0; i < distance; i++)
+					{
+						tmpCoord = {tmpCoord->_x + op.first, tmpCoord->_y + op.second};
+
+						// if one step into this direction results in a
+						// invalid coordinate, all further ones do too
+						if(!tmpCoord)
+							break;
+
+						vec.push_back(tmpCoord);
+					}
+				}
+
+				return vec;
+			}
+
+			/// Check if the given coordinate is reachable in one diagonal move
+			bool isDiagonal(_Coordinate other) const
+			{
+				int8_t dX = abs(_x - other._x);
+				int8_t dY = abs(_y - other._y);
+				int8_t dZ = abs(z() - other.z());
+
+				return (dX == dY && dX == dZ / 2) ||
+				       (dX == dZ && dX == dY / 2) ||
+				       (dY == dZ && dY == dX / 2);
+			}
+
+			/** Get the diagonal distance to a coordinate, or -1 if
+			    the coordinate isn't reachable in one diagonal move
+
+			    A diagonal move is a straight move in one of the six
+			    directions of the lines between the neighboring hex-tiles.
+			 */
+			int8_t getDistanceDiagonal(_Coordinate other) const
+			{
+				if(!isDiagonal(other))
+					return -1;
+
+				return getDistance(other) / 2;
+			}
+
+			/** Get the distance to another coordinate with the same distance to
+			    the center Coordinate along the line of these coordinates, or -1
+			    if the coordinate isn't reachable while only moving on that line.
+
+			    All possible movement targets here are along a hexagonal line.
+			    The direct distance from this coordinate to another one on that
+			    line may be different than the distance along the line.
+			 */
+			// There certainly is no other rule set than MikeL's that uses this
+			// but there probably is no better place to put this code either.
+			int8_t getDistanceHexagonalLine(_Coordinate other, _Coordinate center) const
+			{
+				// Check if the given coordinate has the same distance to center as this
+				if(getDistance(center) != other.getDistance(center))
+					return -1;
+
+				// TODO
+			}
+
+			/// Check if the given coordinate is a direct neighbor
+			bool isAdjacent(_Coordinate other) const
+			{
+				return getDistance() == 1;
+			}
+
+			/// Get all adjacent coordinates
+			CoordinateVec getCoordinatesAdjacent()
+			{
+				return getCoordinatesOrthogonal(1);
+			}
+
+			bool set(int8_t x, int8_t y)
+			{
+				if(isValid(x, y))
+				{
+					_x = x;
+					_y = y;
+
+					return true;
+				}
+
+				return false;
+			}
+
+			/// @{
+			/// Create a Coordinate object from an x and an y
+			/// If the coordinte is invalid, return nullptr
+			static std::unique_ptr<_Coordinate> create(int8_t x, int8_t y)
+			{
+				if(isValid(x, y))
+					return std::unique_ptr<_Coordinate>(new _Coordinate(x, y));
+
+				return nullptr;
+			}
+
+			static std::unique_ptr<_Coordinate> create(std::pair<int8_t, int8_t> c)
+			{
+				if(isValid(c.first, c.second))
+					return std::unique_ptr<_Coordinate>(new _Coordinate(c.first, c.second));
+
+				return nullptr;
+			}
+			/// @}
+
+			/// Create a Coordinate object from a coordinate in the public notation
+			/// (see mockup/hexboard-coordinates-public.svg)
+			static std::unique_ptr<_Coordinate> createFromStr(const std::string& str)
+			{
+				// This function will currently fail on hexagons with l > 13 because there
+				// would be multiple letters for the y coordinate in the public notation.
+				// TODO: Decide on whether to set a maximum l of 13 or to alter this function
+
+				if(str.length() < 2)
+					return nullptr;
+
+				/* x: When using char's for calculations, their ASCII values are used,
+				      and as the uppercase letters are consecutive in the ASCII table,
+				      this will result in 0 for 'A', 1 for 'B' and so on.
+				      We don't accept lowercase letters.
+				   y: Public coordinate notation starts with 1, we start with 0
+				 */
+				return {str.at(0) - 'A', std::stoi(str.substr(1)) - 1};
+			}
+	};
+
 	/* This should rather be a namespace, but namespaces cannot have template parameters.
 	   hexagon<6>::Coordinate is way better understandable than hexagon::Coordinate<6>
 	   so this is implemented as a template class with a deleted constructor.
@@ -46,262 +304,8 @@ namespace cyvmath
 			hexagon() = delete;
 
 		public:
-			class Coordinate;
-			typedef std::vector<Coordinate> CoordinateVec;
-
-			/// A coordinate on the hexboard (see mockup/hexboard-coordinates-internal.svg)
-			class Coordinate
-			{
-				private:
-					int8_t _x;
-					int8_t _y;
-
-					Coordinate(int8_t x, int8_t y)
-						: _x(x)
-						, _y(y)
-					{
-					}
-
-				public:
-					Coordinate(const Coordinate&) = default;
-					Coordinate& operator=(const Coordinate& other) = default;
-
-					int8_t x() const
-					{
-						return _x;
-					}
-
-					int8_t y() const
-					{
-						return _y;
-					}
-
-					int8_t z() const
-					{
-						return -(_x + _y);
-					}
-
-					int16_t dump() const
-					{
-						return (_x << 8) | _y;
-					}
-
-				private:
-					static bool isValid(int8_t x, int8_t y)
-					{
-						return x >= 0 && x < (l * 2 - 1) &&
-						       y >= 0 && y < (l * 2 - 1) &&
-						       (x + y) >= (l - 1) &&
-						       (x + y) <= (l - 1) * 3;
-					}
-
-					bool isValid() const
-					{
-						return isValid(_x, _y);
-					}
-
-					operator bool() const
-					{
-						return isValid();
-					}
-
-				public:
-					operator int() const
-					{
-						return dump();
-					}
-
-					bool operator==(Coordinate other) const
-					{
-						return _x == other._x && _y == other._y;
-					}
-
-					bool operator<(Coordinate other) const
-					{
-						return dump() < other.dump();
-					}
-
-					/** Get the distance to another coordinate in form of the amount
-					    of single moves to adjacent tiles required to move there
-					 */
-					int8_t getDistance(Coordinate other) const
-					{
-						// Concept from http://keekerdc.com/2011/03/hexagon-grids-coordinate-systems-and-distance-calculations/
-						// I have no idea why the maximum of x-, y- and z-difference
-						// of the coordinates equals the distance between them...
-						return *(std::set<int>({abs(_x - other._x), abs(_y - other._y), abs(z() - other.z())}).rbegin());
-					}
-
-					/// Check if the given coordinate is reachable in one orthogonal move
-					bool isOrthogonal(Coordinate other) const
-					{
-						return _x == other._x || _y == other._y || z() == other.z();
-					}
-
-					/** Like getDistance(), but return -1 if the given coordinate
-					    is not reachable in one orthogonal move
-
-					    An orthogonal move is a straight move in one of the six
-					    directions of the neighboring hex-tiles.
-					 */
-					int8_t getDistanceOrthogonal(Coordinate other) const
-					{
-						if(!isOrthogonal(other))
-							return -1;
-
-						return getDistance(other);
-					}
-
-					/** Get all coordinates reachable in one orthogonal move of
-					    maximally the provided distance of tiles
-
-					    The default value is the maximal distance possible on
-					    this hexagon (no distance limit).
-					 */
-					CoordinateVec getCoordinatesOrthogonal(int8_t distance = (l * 2 - 2)) const
-					{
-						CoordinateVec vec;
-
-						for(int direction = 0; direction < 6; direction++)
-						{
-							std::pair<int, int> op;
-							switch(direction)
-							{
-								case 0: op = {-1,  1}; break; // top left
-								case 1: op = { 0,  1}; break; // top right
-								case 2: op = { 1,  0}; break; // right
-								case 3: op = { 1, -1}; break; // bottom right
-								case 4: op = { 0, -1}; break; // bottom left
-								case 5: op = {-1,  0}; break; // left
-							}
-
-							Coordinate tmpCoord(*this);
-							for(int i = 0; i < distance; i++)
-							{
-								tmpCoord = {tmpCoord->_x + op.first, tmpCoord->_y + op.second};
-
-								// if one step into this direction results in a
-								// invalid coordinate, all further ones do too
-								if(!tmpCoord)
-									break;
-
-								vec.push_back(tmpCoord);
-							}
-						}
-
-						return vec;
-					}
-
-					/// Check if the given coordinate is reachable in one diagonal move
-					bool isDiagonal(Coordinate other) const
-					{
-						int8_t dX = abs(_x - other._x);
-						int8_t dY = abs(_y - other._y);
-						int8_t dZ = abs(z() - other.z());
-
-						return (dX == dY && dX == dZ / 2) ||
-						       (dX == dZ && dX == dY / 2) ||
-						       (dY == dZ && dY == dX / 2);
-					}
-
-					/** Get the diagonal distance to a coordinate, or -1 if
-					    the coordinate isn't reachable in one diagonal move
-
-					    A diagonal move is a straight move in one of the six
-					    directions of the lines between the neighboring hex-tiles.
-					 */
-					int8_t getDistanceDiagonal(Coordinate other) const
-					{
-						if(!isDiagonal(other))
-							return -1;
-
-						return getDistance(other) / 2;
-					}
-
-					/** Get the distance to another coordinate with the same distance to
-					    the center Coordinate along the line of these coordinates, or -1
-					    if the coordinate isn't reachable while only moving on that line.
-
-					    All possible movement targets here are along a hexagonal line.
-					    The direct distance from this coordinate to another one on that
-					    line may be different than the distance along the line.
-					 */
-					// There certainly is no other rule set than MikeL's that uses this
-					// but there probably is no better place to put this code either.
-					int8_t getDistanceHexagonalLine(Coordinate other, Coordinate center) const
-					{
-						// Check if the given coordinate has the same distance to center as this
-						if(getDistance(center) != other.getDistance(center))
-							return -1;
-
-						// TODO
-					}
-
-					/// Check if the given coordinate is a direct neighbor
-					bool isAdjacent(Coordinate other) const
-					{
-						return getDistance() == 1;
-					}
-
-					/// Get all adjacent coordinates
-					CoordinateVec getCoordinatesAdjacent()
-					{
-						return getCoordinatesOrthogonal(1);
-					}
-
-					bool set(int8_t x, int8_t y)
-					{
-						if(isValid(x, y))
-						{
-							_x = x;
-							_y = y;
-
-							return true;
-						}
-
-						return false;
-					}
-
-					/// @{
-					/// Create a Coordinate object from an x and an y
-					/// If the coordinte is invalid, return nullptr
-					static std::unique_ptr<Coordinate> create(int8_t x, int8_t y)
-					{
-						if(isValid(x, y))
-							return std::unique_ptr<Coordinate>(new Coordinate(x, y));
-
-						return nullptr;
-					}
-
-					static std::unique_ptr<Coordinate> create(std::pair<int8_t, int8_t> c)
-					{
-						if(isValid(c.first, c.second))
-							return std::unique_ptr<Coordinate>(new Coordinate(c.first, c.second));
-
-						return nullptr;
-					}
-					/// @}
-
-					/// Create a Coordinate object from a coordinate in the public notation
-					/// (see mockup/hexboard-coordinates-public.svg)
-					static std::unique_ptr<Coordinate> createFromStr(const std::string& str)
-					{
-						// This function will currently fail on hexagons with l > 13 because there
-						// would be multiple letters for the y coordinate in the public notation.
-						// TODO: Decide on whether to set a maximum l of 13 or to alter this function
-
-						if(str.length() < 2)
-							return nullptr;
-
-						/* x: When using char's for calculations, their ASCII values are used,
-						      and as the uppercase letters are consecutive in the ASCII table,
-						      this will result in 0 for 'A', 1 for 'B' and so on.
-						      We don't accept lowercase letters.
-						   y: Public coordinate notation starts with 1, we start with 0
-						 */
-						return {str.at(0) - 'A', std::stoi(str.substr(1)) - 1};
-					}
-			};
+			typedef _Coordinate<l> Coordinate;
+			typedef typename _Coordinate<l>::CoordinateVec CoordinateVec;
 
 			/// Get the edge length of the hexagon (template parameter)
 			static const int edgeLength = l;
@@ -326,6 +330,18 @@ namespace cyvmath
 
 				return vec;
 			}
+	};
+}
+
+namespace std
+{
+	template <int l>
+	struct hash<cyvmath::_Coordinate<l>>
+	{
+		size_t operator()(const cyvmath::_Coordinate<l>& coord) const
+		{
+			return hash<int16_t>()(coord.dump());
+		}
 	};
 }
 
