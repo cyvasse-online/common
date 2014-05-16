@@ -245,18 +245,6 @@ namespace cyvmath
 				// TODO
 			}
 
-			/// Check if the given coordinate is a direct neighbor
-			bool isAdjacent(_Coordinate other) const
-			{
-				return getDistance() == 1;
-			}
-
-			/// Get all adjacent coordinates
-			CoordinateVec getCoordinatesAdjacent()
-			{
-				return getCoordinatesOrthogonal(1);
-			}
-
 			bool set(int8_t x, int8_t y)
 			{
 				if(isValid(x, y))
