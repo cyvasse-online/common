@@ -19,10 +19,19 @@
 
 #include "hexagon.hpp"
 
+#include <unordered_map>
+#include <utility>
+
 namespace cyvmath
 {
 	namespace mikelepage
 	{
+		enum PlayersColor
+		{
+			PLAYER_WHITE,
+			PLAYER_BLACK
+		};
+
 		enum PieceType
 		{
 			PIECE_MOUNTAIN,
@@ -61,5 +70,41 @@ namespace std
 		}
 	};
 }
-		
+
+namespace cyvmath
+{
+	namespace mikelepage
+	{
+		class Piece
+		{
+			private:
+				PieceType _type;
+
+			public:
+				Piece(PieceType type)
+					: _type(type)
+				{
+				}
+
+				const std::pair<MovementType, int8_t>& getMovementData() const
+				{
+					static const std::unordered_map<PieceType, std::pair<MovementType, int8_t>> data = {
+							{PIECE_MOUNTAIN,    std::make_pair(MOVEMENT_NONE,       0)},
+							{PIECE_RABBLE,      std::make_pair(MOVEMENT_ORTHOGONAL, 1)},
+							{PIECE_CROSSBOWS,   std::make_pair(MOVEMENT_ORTHOGONAL, 3)},
+							{PIECE_SPEARS,      std::make_pair(MOVEMENT_DIAGONAL,   2)},
+							{PIECE_LIGHT_HORSE, std::make_pair(MOVEMENT_HEXAGONAL,  3)},
+							{PIECE_TREBUCHET,   std::make_pair(MOVEMENT_ORTHOGONAL, 0)},
+							{PIECE_ELEPHANT,    std::make_pair(MOVEMENT_DIAGONAL,   0)},
+							{PIECE_HEAVY_HORSE, std::make_pair(MOVEMENT_HEXAGONAL,  0)},
+							{PIECE_DRAGON,      std::make_pair(MOVEMENT_RANGE,      4)},
+							{PIECE_KING,        std::make_pair(MOVEMENT_ORTHOGONAL, 1)},
+						};
+
+					return data.at(_type);
+				}
+		};
+	}
+}
+
 #endif // _CYVMATH_MIKELEPAGE_PIECE_HPP_
