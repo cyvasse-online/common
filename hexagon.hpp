@@ -17,6 +17,7 @@
 #ifndef _CYVMATH_HEXAGON_HPP_
 #define _CYVMATH_HEXAGON_HPP_
 
+#include <array>
 #include <functional>
 #include <set>
 #include <string>
@@ -87,6 +88,31 @@ namespace cyvmath
 				return isValid();
 			}
 
+			CoordinateVec getCoordinates(const std::array<std::pair<int8_t, int8_t>, 6>& steps, int8_t distance) const
+			{
+				CoordinateVec vec;
+
+				for(int direction = 0; direction < 6; direction++)
+				{
+					std::pair<int, int> op = steps.at(direction);
+
+					_Coordinate tmpCoord(*this);
+					for(int i = 0; i < distance; i++)
+					{
+						tmpCoord = {tmpCoord->_x + op.first, tmpCoord->_y + op.second};
+
+						// if one step into this direction results in a
+						// invalid coordinate, all further ones do too
+						if(!tmpCoord)
+							break;
+
+						vec.push_back(tmpCoord);
+					}
+				}
+
+				return vec;
+			}
+
 		public:
 			bool operator==(_Coordinate other) const
 			{
@@ -142,36 +168,16 @@ namespace cyvmath
 			 */
 			CoordinateVec getCoordinatesOrthogonal(int8_t distance = (l * 2 - 2)) const
 			{
-				CoordinateVec vec;
+				static const std::array<std::pair<int8_t, int8_t>, 6> steps = {
+						std::make_pair(-1,  1), // top left
+						std::make_pair( 0,  1), // top right
+						std::make_pair( 1,  0), // right
+						std::make_pair( 1, -1), // bottom right
+						std::make_pair( 0, -1), // bottom left
+						std::make_pair(-1,  0)  // left
+					};
 
-				for(int direction = 0; direction < 6; direction++)
-				{
-					std::pair<int, int> op;
-					switch(direction)
-					{
-						case 0: op = {-1,  1}; break; // top left
-						case 1: op = { 0,  1}; break; // top right
-						case 2: op = { 1,  0}; break; // right
-						case 3: op = { 1, -1}; break; // bottom right
-						case 4: op = { 0, -1}; break; // bottom left
-						case 5: op = {-1,  0}; break; // left
-					}
-
-					_Coordinate tmpCoord(*this);
-					for(int i = 0; i < distance; i++)
-					{
-						tmpCoord = {tmpCoord->_x + op.first, tmpCoord->_y + op.second};
-
-						// if one step into this direction results in a
-						// invalid coordinate, all further ones do too
-						if(!tmpCoord)
-							break;
-
-						vec.push_back(tmpCoord);
-					}
-				}
-
-				return vec;
+				return getCoordinates(steps, distance);
 			}
 
 			/// Check if the given coordinate is reachable in one diagonal move
@@ -198,6 +204,26 @@ namespace cyvmath
 					return -1;
 
 				return getDistance(other) / 2;
+			}
+
+			/** Get all coordinates reachable in one diagonal move of
+			    maximally the provided distance of tiles
+
+			    The default value is the maximal distance possible on
+			    this hexagon (no distance limit).
+			 */
+			CoordinateVec getCoordinatesDiagonal(int8_t distance = (l * 1)) const
+			{
+				static const std::array<std::pair<int8_t, int8_t>, 6> steps = {
+						std::make_pair(-1,  2), // top
+						std::make_pair( 1,  1), // top right
+						std::make_pair( 2, -1), // bottom right
+						std::make_pair( 1, -2), // bottom
+						std::make_pair(-1, -1), // bottom left
+						std::make_pair(-2,  1)  // top left
+					};
+
+				return getCoordinates(steps, distance);
 			}
 
 			/** Get the distance to another coordinate with the same distance to
