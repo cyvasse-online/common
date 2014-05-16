@@ -321,7 +321,7 @@ namespace cyvmath
 			typedef _Coordinate<l> Coordinate;
 			typedef typename _Coordinate<l>::CoordinateVec CoordinateVec;
 
-			/// Get the edge length of the hexagon (template parameter)
+			/// The edge length of the hexagon (template parameter)
 			static const int edgeLength = l;
 
 			/// Get a container with all possible coordinates in this hexagon
