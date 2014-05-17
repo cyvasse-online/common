@@ -24,6 +24,7 @@
 #include <stdexcept>
 #include <utility>
 #include <vector>
+#include <cassert>
 #include <cmath>
 
 namespace cyvmath
@@ -324,6 +325,9 @@ namespace cyvmath
 			/// The edge length of the hexagon (template parameter)
 			static const int edgeLength = l;
 
+			/// The amount of tiles that make up the hexagon
+			static const int tileCount = (edgeLength * (edgeLength - 1)) / 2 * 6 + 1;
+
 			/// Get a container with all possible coordinates in this hexagon
 			static CoordinateVec getAllCoordinates()
 			{
@@ -331,13 +335,19 @@ namespace cyvmath
 
 				if(vec.empty())
 				{
+					vec.reserve(tileCount);
+
 					for(int x = 0; x < (2 * l) - 1; x++)
 					{
-						for(int y = 0; y < (2 * l) - 1; y++)
+						int yBegin = (x < (l - 1)) ? (l - 1 - x) : 0;
+						int yEnd   = (x < (l - 1)) ? (2 * l - 1) : (2 * l - 1) + (l - 1 - x);
+
+						for(int y = yBegin; y < yEnd; y++)
 						{
 							std::unique_ptr<Coordinate> c = Coordinate::create(x, y);
+							assert(c);
 
-							if(c) vec.push_back(*c);
+							vec.push_back(*c);
 						}
 					}
 				}
