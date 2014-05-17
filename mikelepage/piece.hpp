@@ -19,6 +19,7 @@
 
 #include "hexagon.hpp"
 
+#include <memory>
 #include <unordered_map>
 #include <utility>
 
@@ -26,6 +27,8 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
+		typedef hexagon<6>::Coordinate Coordinate;
+
 		enum PlayersColor
 		{
 			PLAYER_WHITE,
@@ -79,6 +82,10 @@ namespace cyvmath
 		{
 			private:
 				PieceType _type;
+
+			protected:
+				// position as hexagon coordinate
+				std::unique_ptr<Coordinate> _cPos;
 
 			public:
 				Piece(PieceType type)
