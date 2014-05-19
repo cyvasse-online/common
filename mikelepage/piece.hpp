@@ -85,11 +85,12 @@ namespace cyvmath
 
 			protected:
 				// position as hexagon coordinate
-				std::unique_ptr<Coordinate> _cPos;
+				std::unique_ptr<Coordinate> _coord;
 
 			public:
-				Piece(PieceType type)
+				Piece(PieceType type, Coordinate* coord)
 					: _type(type)
+					, _coord(coord)
 				{
 				}
 
