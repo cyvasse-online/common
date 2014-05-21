@@ -23,6 +23,12 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
+		enum PlayersColor
+		{
+			PLAYER_WHITE,
+			PLAYER_BLACK
+		};
+
 		class Match
 		{
 			protected:
@@ -49,7 +55,18 @@ namespace cyvmath
 
 				bool setupComplete()
 				{
-					return true; // TODO
+					for(std::pair<Coordinate, Piece*>& it : _activePieces[_playersColor])
+					{
+						// hexagon<6> isn't typedef'ed in cyvmath. If that changes,
+						// 5 should be replaced by (Hexagon::edgeLength - 1)
+						if((_playersColor == PLAYER_WHITE && it.first.y() >= 5) ||
+						   (_playersColor == PLAYER_BLACK && it.first.y() <= 5))
+						{
+							return false;
+						}
+					}
+
+					return true;
 				}
 		};
 	}

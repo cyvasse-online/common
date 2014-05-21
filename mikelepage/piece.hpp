@@ -29,12 +29,6 @@ namespace cyvmath
 	{
 		typedef hexagon<6>::Coordinate Coordinate;
 
-		enum PlayersColor
-		{
-			PLAYER_WHITE,
-			PLAYER_BLACK
-		};
-
 		enum PieceType
 		{
 			PIECE_MOUNTAIN,
