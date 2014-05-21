@@ -94,6 +94,10 @@ namespace cyvmath
 				{
 				}
 
+				virtual ~Piece()
+				{
+				}
+
 				const std::pair<MovementType, int8_t>& getMovementData() const
 				{
 					static const std::unordered_map<PieceType, std::pair<MovementType, int8_t>> data = {
@@ -112,6 +116,9 @@ namespace cyvmath
 					return data.at(_type);
 				}
 		};
+
+		typedef std::vector<Piece*> PieceVec;
+		typedef std::unordered_map<Coordinate, Piece*> PieceMap;
 	}
 }
 
