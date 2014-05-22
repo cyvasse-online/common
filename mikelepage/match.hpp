@@ -55,7 +55,7 @@ namespace cyvmath
 
 				bool setupComplete()
 				{
-					for(std::pair<Coordinate, Piece*>& it : _activePieces[_playersColor])
+					for(auto it : _activePieces[_playersColor])
 					{
 						// hexagon<6> isn't typedef'ed in cyvmath. If that changes,
 						// 5 should be replaced by (Hexagon::edgeLength - 1)
