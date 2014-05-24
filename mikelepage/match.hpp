@@ -34,6 +34,8 @@ namespace cyvmath
 			protected:
 				bool _setup;
 
+				bool _setupComplete;
+
 				const PlayersColor _playersColor;
 
 				PieceMap _activePieces[2];
@@ -44,6 +46,7 @@ namespace cyvmath
 			public:
 				Match(PlayersColor color)
 					: _setup(true)
+					, _setupComplete(false)
 					, _playersColor(color)
 					, _dragonAlive{true, true}
 				{
@@ -53,7 +56,7 @@ namespace cyvmath
 				{
 				}
 
-				bool setupComplete()
+				void checkSetupComplete()
 				{
 					for(auto it : _activePieces[_playersColor])
 					{
@@ -62,11 +65,12 @@ namespace cyvmath
 						if((_playersColor == PLAYER_WHITE && it.first.y() >= 5) ||
 						   (_playersColor == PLAYER_BLACK && it.first.y() <= 5))
 						{
-							return false;
+							_setupComplete = false;
+							return;
 						}
 					}
 
-					return true;
+					_setupComplete = true;
 				}
 		};
 	}
