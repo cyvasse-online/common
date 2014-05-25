@@ -17,9 +17,10 @@
 #ifndef _CYVMATH_HEXAGON_HPP_
 #define _CYVMATH_HEXAGON_HPP_
 
+#include <algorithm>
 #include <array>
 #include <functional>
-#include <set>
+#include <ostream>
 #include <string>
 #include <stdexcept>
 #include <utility>
@@ -130,6 +131,13 @@ namespace cyvmath
 				return dump() < other.dump();
 			}
 
+			// for debugging
+			friend std::ostream& operator<<(std::ostream& os, _Coordinate c)
+			{
+				os << "(" << (int) c._x << ", " << (int) c._y << ", " << (int) c.z() << ")";
+				return os;
+			}
+
 			/** Get the distance to another coordinate in form of the amount
 			    of single moves to adjacent tiles required to move there
 			 */
@@ -138,7 +146,7 @@ namespace cyvmath
 				// Concept from http://keekerdc.com/2011/03/hexagon-grids-coordinate-systems-and-distance-calculations/
 				// I have no idea why the maximum of x-, y- and z-difference
 				// of the coordinates equals the distance between them...
-				return *(std::set<int>({abs(_x - other._x), abs(_y - other._y), abs(z() - other.z())}).rbegin());
+				return std::max(abs(_x - other._x), std::max(abs(_y - other._y), abs(z() - other.z())));
 			}
 
 			/// Check if the given coordinate is reachable in one orthogonal move
