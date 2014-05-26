@@ -192,13 +192,13 @@ namespace cyvmath
 			/// Check if the given coordinate is reachable in one diagonal move
 			bool isDiagonal(_Coordinate other) const
 			{
-				int8_t dX = abs(_x - other._x);
-				int8_t dY = abs(_y - other._y);
-				int8_t dZ = abs(z() - other.z());
+				int8_t dX = _x - other._x;
+				int8_t dY = _y - other._y;
+				int8_t dZ = z() - other.z();
 
-				return (dX == dY && dX == dZ / 2) ||
-				       (dX == dZ && dX == dY / 2) ||
-				       (dY == dZ && dY == dX / 2);
+				return dX == dY ||
+				       dX == dZ ||
+				       dY == dZ;
 			}
 
 			/** Get the diagonal distance to a coordinate, or -1 if
