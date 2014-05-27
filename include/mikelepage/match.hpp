@@ -23,12 +23,6 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
-		enum PlayersColor
-		{
-			PLAYER_WHITE,
-			PLAYER_BLACK
-		};
-
 		class Match
 		{
 			protected:
@@ -38,7 +32,7 @@ namespace cyvmath
 
 				const PlayersColor _playersColor;
 
-				PieceMap _activePieces[2];
+				PieceMap _activePieces;
 				PieceVec _inactivePieces[2];
 
 				bool _dragonAlive[2];
@@ -58,12 +52,12 @@ namespace cyvmath
 
 				void checkSetupComplete()
 				{
-					for(auto it : _activePieces[_playersColor])
+					auto outsideOwnSide = _playersColor ? [](int8_t y) { return y <= Hexagon::edgeLength; }
+					                                    : [](int8_t y) { return y >= Hexagon::edgeLength; };
+
+					for(auto it : _activePieces)
 					{
-						// hexagon<6> isn't typedef'ed in cyvmath. If that changes,
-						// 5 should be replaced by (Hexagon::edgeLength - 1)
-						if((_playersColor == PLAYER_WHITE && it.first.y() >= 5) ||
-						   (_playersColor == PLAYER_BLACK && it.first.y() <= 5))
+						if(_playersColor == it.second->getPlayersColor() && outsideOwnSide(it.first.y()))
 						{
 							_setupComplete = false;
 							return;

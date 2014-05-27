@@ -27,7 +27,14 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
-		typedef hexagon<6>::Coordinate Coordinate;
+		typedef hexagon<6> Hexagon;
+		typedef Hexagon::Coordinate Coordinate;
+
+		enum PlayersColor
+		{
+			PLAYER_WHITE,
+			PLAYER_BLACK
+		};
 
 		enum PieceType
 		{
@@ -74,22 +81,41 @@ namespace cyvmath
 	{
 		class Piece
 		{
+			public:
+				typedef std::unordered_map<Coordinate, Piece*> PieceMap;
+
 			private:
+				PlayersColor _color;
 				PieceType _type;
 
 			protected:
 				// position as hexagon coordinate
 				std::unique_ptr<Coordinate> _coord;
 
+				// piece map with all pieces on the board
+				PieceMap& _map;
+
 			public:
-				Piece(PieceType type, Coordinate* coord)
-					: _type(type)
+				Piece(PlayersColor color, PieceType type, Coordinate* coord, PieceMap& map)
+					: _color(color)
+					, _type(type)
 					, _coord(coord)
+					, _map(map)
 				{
 				}
 
 				virtual ~Piece()
 				{
+				}
+
+				PlayersColor getPlayersColor() const
+				{
+					return _color;
+				}
+
+				PieceType getPieceType() const
+				{
+					return _type;
 				}
 
 				const std::pair<MovementType, int8_t>& getMovementData() const
@@ -112,7 +138,7 @@ namespace cyvmath
 		};
 
 		typedef std::vector<Piece*> PieceVec;
-		typedef std::unordered_map<Coordinate, Piece*> PieceMap;
+		typedef Piece::PieceMap PieceMap;
 	}
 }
 
