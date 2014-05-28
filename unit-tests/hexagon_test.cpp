@@ -28,6 +28,7 @@ void HexagonTest::setUp()
 	h6Coord5 = hexagon<6>::Coordinate::create(1,  6);
 	h6Coord6 = hexagon<6>::Coordinate::create(1,  9);
 	h6Coord7 = hexagon<6>::Coordinate::create(9,  2);
+	h6Coord8 = hexagon<6>::Coordinate::create(2,  5);
 }
 
 void HexagonTest::tearDown()
@@ -101,6 +102,8 @@ void HexagonTest::testDistanceOrthogonal()
 	CPPUNIT_ASSERT(h6Coord3->getDistanceOrthogonal(*h6Coord2) == -1);
 	CPPUNIT_ASSERT(h6Coord1->getDistanceOrthogonal(*h6Coord5) == -1);
 	CPPUNIT_ASSERT(h6Coord5->getDistanceOrthogonal(*h6Coord1) == -1);
+
+	CPPUNIT_ASSERT(h6Coord1->getDistanceOrthogonal(*h6Coord1) == 0);
 }
 
 void HexagonTest::testDistanceDiagonal()
@@ -116,4 +119,15 @@ void HexagonTest::testDistanceDiagonal()
 	CPPUNIT_ASSERT(h6Coord2->getDistanceDiagonal(*h6Coord1) == -1);
 	CPPUNIT_ASSERT(h6Coord2->getDistanceDiagonal(*h6Coord3) == -1);
 	CPPUNIT_ASSERT(h6Coord3->getDistanceDiagonal(*h6Coord2) == -1);
+
+	CPPUNIT_ASSERT(h6Coord1->getDistanceDiagonal(*h6Coord1) == 0);
+}
+
+void HexagonTest::testDistanceHexagonalLine()
+{
+	CPPUNIT_ASSERT(h6Coord1->getDistanceHexagonalLine(*h6Coord4, *h6Coord6) == -1);
+	CPPUNIT_ASSERT(h6Coord1->getDistanceHexagonalLine(*h6Coord6, *h6Coord4) == -1);
+	CPPUNIT_ASSERT(h6Coord4->getDistanceHexagonalLine(*h6Coord1, *h6Coord6) == -1);
+
+	CPPUNIT_ASSERT(h6Coord1->getDistanceHexagonalLine(*h6Coord1, *h6Coord1) == 0);
 }

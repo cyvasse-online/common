@@ -252,6 +252,7 @@ namespace cyvmath
 					return -1;
 
 				// TODO
+				return 0;
 			}
 
 			bool set(int8_t x, int8_t y)
