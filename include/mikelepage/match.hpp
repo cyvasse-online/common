@@ -26,16 +26,17 @@ namespace cyvmath
 		class Match
 		{
 			protected:
-				bool _setup;
+				const PlayersColor _playersColor;
 
+				bool _setup;
 				bool _setupComplete;
 
-				const PlayersColor _playersColor;
+				bool _dragonAlive[2];
 
 				PieceMap _activePieces;
 				PieceVec _inactivePieces[2];
 
-				bool _dragonAlive[2];
+				PlayersColor _activePlayer;
 
 			public:
 				Match(PlayersColor color)
@@ -43,6 +44,7 @@ namespace cyvmath
 					, _setupComplete(false)
 					, _playersColor(color)
 					, _dragonAlive{true, true}
+					, _activePlayer(PLAYER_WHITE)
 				{
 				}
 
