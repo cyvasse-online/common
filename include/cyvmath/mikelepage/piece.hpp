@@ -17,11 +17,11 @@
 #ifndef _CYVMATH_MIKELEPAGE_PIECE_HPP_
 #define _CYVMATH_MIKELEPAGE_PIECE_HPP_
 
-#include "hexagon.hpp"
-
 #include <memory>
 #include <unordered_map>
 #include <utility>
+#include "../common.hpp"
+#include "../hexagon.hpp"
 
 namespace cyvmath
 {
@@ -29,12 +29,6 @@ namespace cyvmath
 	{
 		typedef hexagon<6> Hexagon;
 		typedef Hexagon::Coordinate Coordinate;
-
-		enum PlayersColor
-		{
-			PLAYER_WHITE,
-			PLAYER_BLACK
-		};
 
 		enum PieceType
 		{

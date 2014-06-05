@@ -20,7 +20,7 @@
 #include <cppunit/TestFixture.h>
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "hexagon.hpp"
+#include <cyvmath/hexagon.hpp>
 
 using namespace cyvmath;
 
