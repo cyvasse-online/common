@@ -17,6 +17,8 @@
 #ifndef _CYVMATH_COMMON_HPP_
 #define _CYVMATH_COMMON_HPP_
 
+#include "enum_str.hpp"
+
 namespace cyvmath
 {
 	enum PlayersColor
@@ -24,6 +26,11 @@ namespace cyvmath
 		PLAYER_WHITE,
 		PLAYER_BLACK
 	};
+
+	ENUM_STR(PlayersColor, (initMap<PlayersColor, const char*> {
+		{PLAYER_WHITE, "white"},
+		{PLAYER_BLACK, "black"}
+	}))
 }
 
 #endif // _CYVMATH_COMMON_HPP_
