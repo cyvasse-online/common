@@ -17,8 +17,8 @@
 #ifndef _CYVMATH_MIKELEPAGE_PIECE_HPP_
 #define _CYVMATH_MIKELEPAGE_PIECE_HPP_
 
+#include <map>
 #include <memory>
-#include <unordered_map>
 #include <utility>
 #include "../common.hpp"
 #include "../hexagon.hpp"
@@ -52,31 +52,12 @@ namespace cyvmath
 			MOVEMENT_HEXAGONAL,
 			MOVEMENT_RANGE
 		};
-	}
-}
 
-// leaving mikelepage and cyvmath namespaces here because we can't specialize
-// std::hash else; this will hopefully be resolved with the next C++ standard
-namespace std
-{
-	template <>
-	struct hash<cyvmath::mikelepage::PieceType>
-	{
-		size_t operator()(const cyvmath::mikelepage::PieceType& x) const
-		{
-			return hash<int8_t>()(x);
-		}
-	};
-}
-
-namespace cyvmath
-{
-	namespace mikelepage
-	{
 		class Piece
 		{
 			public:
-				typedef std::unordered_map<Coordinate, Piece*> PieceMap;
+				typedef std::map<Coordinate, Piece*> PieceMap;
+				typedef std::pair<MovementType, int8_t> Movement;
 
 			private:
 				PlayersColor _color;
@@ -112,19 +93,24 @@ namespace cyvmath
 					return _type;
 				}
 
-				const std::pair<MovementType, int8_t>& getMovementData() const
+				Coordinate getCoord() const
 				{
-					static const std::unordered_map<PieceType, std::pair<MovementType, int8_t>> data = {
-							{PIECE_MOUNTAIN,    std::make_pair(MOVEMENT_NONE,       0)},
-							{PIECE_RABBLE,      std::make_pair(MOVEMENT_ORTHOGONAL, 1)},
-							{PIECE_CROSSBOWS,   std::make_pair(MOVEMENT_ORTHOGONAL, 3)},
-							{PIECE_SPEARS,      std::make_pair(MOVEMENT_DIAGONAL,   2)},
-							{PIECE_LIGHT_HORSE, std::make_pair(MOVEMENT_HEXAGONAL,  3)},
-							{PIECE_TREBUCHET,   std::make_pair(MOVEMENT_ORTHOGONAL, 0)},
-							{PIECE_ELEPHANT,    std::make_pair(MOVEMENT_DIAGONAL,   0)},
-							{PIECE_HEAVY_HORSE, std::make_pair(MOVEMENT_HEXAGONAL,  0)},
-							{PIECE_DRAGON,      std::make_pair(MOVEMENT_RANGE,      4)},
-							{PIECE_KING,        std::make_pair(MOVEMENT_ORTHOGONAL, 1)},
+					return *_coord; // creates a copy
+				}
+
+				const Movement& getMovementData() const
+				{
+					static const std::map<PieceType, Movement> data {
+							{PIECE_MOUNTAIN,    Movement(MOVEMENT_NONE,       0)},
+							{PIECE_RABBLE,      Movement(MOVEMENT_ORTHOGONAL, 1)},
+							{PIECE_CROSSBOWS,   Movement(MOVEMENT_ORTHOGONAL, 3)},
+							{PIECE_SPEARS,      Movement(MOVEMENT_DIAGONAL,   2)},
+							{PIECE_LIGHT_HORSE, Movement(MOVEMENT_HEXAGONAL,  3)},
+							{PIECE_TREBUCHET,   Movement(MOVEMENT_ORTHOGONAL, 0)},
+							{PIECE_ELEPHANT,    Movement(MOVEMENT_DIAGONAL,   0)},
+							{PIECE_HEAVY_HORSE, Movement(MOVEMENT_HEXAGONAL,  0)},
+							{PIECE_DRAGON,      Movement(MOVEMENT_RANGE,      4)},
+							{PIECE_KING,        Movement(MOVEMENT_ORTHOGONAL, 1)},
 						};
 
 					return data.at(_type);
