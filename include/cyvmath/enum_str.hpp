@@ -27,46 +27,40 @@ namespace cyvmath
 	using initMap = std::initializer_list<std::pair<const T1, T2>>;
 
 	template <typename EnumT>
-	std::map<const char*, const EnumT> swapFirstSecond(initMap<EnumT, const char*> orig)
+	std::map<std::string, const EnumT> swapFirstSecond(initMap<EnumT, std::string> orig)
 	{
-		std::map<const char*, const EnumT> ret;
-		for(const std::pair<const EnumT, const char*>& it : orig)
+		std::map<std::string, const EnumT> ret;
+		for(const std::pair<const EnumT, std::string>& it : orig)
 			ret.emplace(it.second, it.first);
 
 		return ret;
 	}
 
 	#define ENUM_STR_PROT(type) \
-		const char* type ## ToStr(type e); \
-		type StrTo ## type(const char* s); \
+		std::string type ## ToStr(type e); \
 		type StrTo ## type(const std::string& s);
 
 	#define ENUM_STR(type, init) \
-		inline const char* type ## ToStr(type e) \
+		inline std::string type ## ToStr(type e) \
 		{ \
-			static std::map< type , const char*> data(init); \
+			static std::map< type , std::string> data(init); \
 			\
 			auto it = data.find(e); \
 			if(it == data.end()) \
-				return ""; \
+				return std::string(); \
 			\
 			return it->second; \
 		}\
 		\
-		inline type StrTo ## type(const char* s) \
+		inline type StrTo ## type(const std::string& s) \
 		{ \
-			static std::map<const char*, const type > data(swapFirstSecond(init)); \
+			static std::map<std::string, const type > data(swapFirstSecond(init)); \
 			\
 			auto it = data.find(s); \
 			if(it == data.end()) \
 				return static_cast<type>(0); \
 			\
 			return it->second; \
-		} \
-		\
-		inline type StrTo ## type(const std::string& s) \
-		{ \
-			return StrTo ## type(s.c_str()); \
 		}
 }
 
