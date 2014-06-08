@@ -23,11 +23,13 @@ namespace cyvmath
 {
 	enum PlayersColor
 	{
+		PLAYER_UNDEFINED,
 		PLAYER_WHITE,
 		PLAYER_BLACK
 	};
 
 	ENUM_STR(PlayersColor, (initMap<PlayersColor, const char*> {
+		{PLAYER_UNDEFINED, "undefined"},
 		{PLAYER_WHITE, "white"},
 		{PLAYER_BLACK, "black"}
 	}))

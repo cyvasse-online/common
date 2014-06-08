@@ -17,6 +17,7 @@
 #ifndef _CYVMATH_MIKELEPAGE_MATCH_HPP_
 #define _CYVMATH_MIKELEPAGE_MATCH_HPP_
 
+#include <map>
 #include "piece.hpp"
 
 namespace cyvmath
@@ -31,10 +32,10 @@ namespace cyvmath
 				bool _setup;
 				bool _setupComplete;
 
-				bool _dragonAlive[2];
+				std::map<PlayersColor, bool> _dragonAlive;
 
 				PieceMap _activePieces;
-				PieceVec _inactivePieces[2];
+				std::map<PlayersColor, PieceVec> _inactivePieces;
 
 				PlayersColor _activePlayer;
 
@@ -43,7 +44,10 @@ namespace cyvmath
 					: _setup(true)
 					, _setupComplete(false)
 					, _playersColor(color)
-					, _dragonAlive{true, true}
+					, _dragonAlive{
+							{PLAYER_WHITE, true},
+							{PLAYER_BLACK, true}
+						}
 					, _activePlayer(PLAYER_WHITE)
 				{
 				}
