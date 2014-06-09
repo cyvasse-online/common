@@ -20,16 +20,12 @@
 #include <map>
 #include <memory>
 #include <utility>
-#include "../common.hpp"
-#include "../hexagon.hpp"
+#include "common.hpp"
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
-		typedef hexagon<6> Hexagon;
-		typedef Hexagon::Coordinate Coordinate;
-
 		enum PieceType
 		{
 			PIECE_MOUNTAIN,
@@ -56,7 +52,7 @@ namespace cyvmath
 		class Piece
 		{
 			public:
-				typedef std::map<Coordinate, Piece*> PieceMap;
+				typedef std::map<Coordinate, std::shared_ptr<Piece>> PieceMap;
 				typedef std::pair<MovementType, int8_t> Movement;
 
 			private:
@@ -117,7 +113,7 @@ namespace cyvmath
 				}
 		};
 
-		typedef std::vector<Piece*> PieceVec;
+		typedef std::vector<std::shared_ptr<Piece>> PieceVec;
 		typedef Piece::PieceMap PieceMap;
 	}
 }

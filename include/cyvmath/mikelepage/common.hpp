@@ -14,35 +14,19 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_MIKELEPAGE_MATCH_HPP_
-#define _CYVMATH_MIKELEPAGE_MATCH_HPP_
+#ifndef _CYVMATH_MIKELEPAGE_COMMON_HPP_
+#define _CYVMATH_MIKELEPAGE_COMMON_HPP_
 
-#include <map>
-#include "piece.hpp"
-#include "player.hpp"
+#include "../common.hpp"
+#include "../hexagon.hpp"
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
-		class Match
-		{
-			protected:
-				std::map<PlayersColor, std::shared_ptr<Player>> _players;
-				PlayersColor _activePlayer;
-
-				bool _setup;
-
-			public:
-				Match(PlayersColor color)
-					: _setup(true)
-					, _activePlayer(PLAYER_WHITE)
-				{
-				}
-
-				virtual ~Match() = default;
-		};
+		typedef hexagon<6> Hexagon;
+		typedef Hexagon::Coordinate Coordinate;
 	}
 }
 
-#endif // _CYVMATH_MIKELEPAGE_MATCH_HPP_
+#endif // _CYVMATH_MIKELEPAGE_COMMON_HPP_

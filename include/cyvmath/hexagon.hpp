@@ -366,7 +366,7 @@ namespace cyvmath
 	};
 }
 
-namespace std
+/*namespace std
 {
 	template <int l>
 	struct hash<cyvmath::_Coordinate<l>>
@@ -376,6 +376,6 @@ namespace std
 			return hash<int16_t>()(coord.dump());
 		}
 	};
-}
+}*/
 
 #endif // _CYVMATH_HEXAGON_HPP_
