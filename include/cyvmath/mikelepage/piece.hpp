@@ -111,6 +111,33 @@ namespace cyvmath
 
 					return data.at(_type);
 				}
+
+				/// @return true if the move was valid, false otherwise
+				virtual bool moveTo(Coordinate coord, bool checkMoveValidity)
+				{
+					if(checkMoveValidity)
+					{
+						// TODO: Check if the movement is legal, return if the check fails
+					}
+
+					PieceMap::iterator it = _map.find(*_coord);
+					assert(it != _map.end());
+
+					_coord = std::unique_ptr<Coordinate>(new Coordinate(coord));
+
+					assert(&*it->second == this);
+					// add to new position in map before removing old
+					// entry to ensure shared_ptr doesn't free the data
+					std::pair<PieceMap::iterator, bool> res = _map.emplace(*_coord, it->second);
+					_map.erase(it);
+
+					// assert there was no other piece already on coord.
+					// the check for that is probably better to do outside this
+					// functions, but this assertion may be removed in the future.
+					assert(res.second);
+
+					return true;
+				}
 		};
 
 		typedef std::vector<std::shared_ptr<Piece>> PieceVec;
