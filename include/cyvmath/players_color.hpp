@@ -14,32 +14,25 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_MIKELEPAGE_PLAYER_HPP_
-#define _CYVMATH_MIKELEPAGE_PLAYER_HPP_
+#ifndef _CYVMATH_PLAYERS_COLOR_HPP_
+#define _CYVMATH_PLAYERS_COLOR_HPP_
 
-#include <cyvmath/player.hpp>
-
-#include "piece.hpp"
+#include "enum_str.hpp"
 
 namespace cyvmath
 {
-	namespace mikelepage
+	enum PlayersColor
 	{
-		class Player : public cyvmath::Player
-		{
-			protected:
-				bool _dragonAlive;
+		PLAYER_UNDEFINED,
+		PLAYER_WHITE,
+		PLAYER_BLACK
+	};
 
-			public:
-				Player(PlayersColor color)
-					: cyvmath::Player(color)
-					, _dragonAlive(true)
-				{
-				}
-
-				virtual ~Player() = default;
-		};
-	}
+	ENUM_STR(PlayersColor, (initMap<PlayersColor, std::string> {
+		{PLAYER_UNDEFINED, "undefined"},
+		{PLAYER_WHITE, "white"},
+		{PLAYER_BLACK, "black"}
+	}))
 }
 
-#endif // _CYVMATH_MIKELEPAGE_PLAYER_HPP_
+#endif // _CYVMATH_PLAYERS_COLOR_HPP_

@@ -17,26 +17,20 @@
 #ifndef _CYVMATH_MIKELEPAGE_MATCH_HPP_
 #define _CYVMATH_MIKELEPAGE_MATCH_HPP_
 
+#include <cyvmath/match.hpp>
+
 #include <map>
-#include "piece.hpp"
 #include "player.hpp"
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
-		class Match
+		class Match : public cyvmath::Match
 		{
-			protected:
-				std::map<PlayersColor, std::shared_ptr<Player>> _players;
-				PlayersColor _activePlayer;
-
-				bool _setup;
-
 			public:
-				Match(PlayersColor color)
-					: _setup(true)
-					, _activePlayer(PLAYER_WHITE)
+				Match(PlayersColor firstPlayer)
+					: cyvmath::Match(firstPlayer)
 				{
 				}
 

@@ -14,25 +14,37 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_COMMON_HPP_
-#define _CYVMATH_COMMON_HPP_
+#ifndef _CYVMATH_PLAYER_HPP_
+#define _CYVMATH_PLAYER_HPP_
 
-#include "enum_str.hpp"
+#include "piece.hpp"
 
 namespace cyvmath
 {
-	enum PlayersColor
+	class Player
 	{
-		PLAYER_UNDEFINED,
-		PLAYER_WHITE,
-		PLAYER_BLACK
-	};
+		protected:
+			const PlayersColor _color;
 
-	ENUM_STR(PlayersColor, (initMap<PlayersColor, std::string> {
-		{PLAYER_UNDEFINED, "undefined"},
-		{PLAYER_WHITE, "white"},
-		{PLAYER_BLACK, "black"}
-	}))
+			PieceMap _activePieces;
+			PieceVec _inactivePieces;
+			PieceVec _allPieces;
+
+			Player(PlayersColor color)
+				: _color(color)
+			{
+			}
+
+			virtual ~Player() = default;
+
+		public:
+			const PieceMap& getActivePieces()
+			{
+				return _activePieces;
+			}
+
+			virtual bool setupComplete() = 0;
+	};
 }
 
-#endif // _CYVMATH_COMMON_HPP_
+#endif // _CYVMATH_PLAYER_HPP_

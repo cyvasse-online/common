@@ -17,14 +17,32 @@
 #ifndef _CYVMATH_MIKELEPAGE_COMMON_HPP_
 #define _CYVMATH_MIKELEPAGE_COMMON_HPP_
 
-#include "../common.hpp"
-#include "../hexagon.hpp"
+#include <cyvmath/hexagon.hpp>
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
-		typedef hexagon<6> Hexagon;
+		// cyvmath::PlayersColor -> cyvmath::mikelepage::PlayersColor
+		typedef PlayersColor PlayersColor;
+		using PlayersColor::PLAYER_UNDEFINED;
+		using PlayersColor::PLAYER_WHITE;
+		using PlayersColor::PLAYER_BLACK;
+
+		// cyvmath::PieceType -> cyvmath::mikelepage::PieceType
+		typedef PieceType PieceType;
+		using PieceType::PIECE_MOUNTAIN;
+		using PieceType::PIECE_RABBLE;
+		using PieceType::PIECE_CROSSBOWS;
+		using PieceType::PIECE_SPEARS;
+		using PieceType::PIECE_LIGHT_HORSE;
+		using PieceType::PIECE_TREBUCHET;
+		using PieceType::PIECE_ELEPHANT;
+		using PieceType::PIECE_HEAVY_HORSE;
+		using PieceType::PIECE_DRAGON;
+		using PieceType::PIECE_KING;
+
+		typedef Hexagon<6> Hexagon;
 		typedef Hexagon::Coordinate Coordinate;
 	}
 }

@@ -17,6 +17,8 @@
 #ifndef _CYVMATH_MIKELEPAGE_PIECE_HPP_
 #define _CYVMATH_MIKELEPAGE_PIECE_HPP_
 
+#include <cyvmath/piece.hpp>
+
 #include <map>
 #include <memory>
 #include <utility>
@@ -26,75 +28,17 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
-		enum PieceType
-		{
-			PIECE_MOUNTAIN,
-			PIECE_RABBLE,
-			PIECE_CROSSBOWS,
-			PIECE_SPEARS,
-			PIECE_LIGHT_HORSE,
-			PIECE_TREBUCHET,
-			PIECE_ELEPHANT,
-			PIECE_HEAVY_HORSE,
-			PIECE_DRAGON,
-			PIECE_KING
-		};
-
-		enum MovementType
-		{
-			MOVEMENT_NONE,
-			MOVEMENT_ORTHOGONAL,
-			MOVEMENT_DIAGONAL,
-			MOVEMENT_HEXAGONAL,
-			MOVEMENT_RANGE
-		};
-
-		class Piece
+		class Piece : public cyvmath::Piece
 		{
 			public:
-				typedef std::map<Coordinate, std::shared_ptr<Piece>> PieceMap;
-				typedef std::pair<MovementType, int8_t> Movement;
-
-			private:
-				PlayersColor _color;
-				PieceType _type;
-
-			protected:
-				// position as hexagon coordinate
-				std::unique_ptr<Coordinate> _coord;
-
-				// piece map with all pieces on the board
-				PieceMap& _map;
-
-			public:
-				Piece(PlayersColor color, PieceType type, Coordinate* coord, PieceMap& map)
-					: _color(color)
-					, _type(type)
-					, _coord(coord)
-					, _map(map)
+				Piece(PlayersColor color, PieceType type, dc::unique_ptr<cyvmath::Coordinate>&& coord, PieceMap& map)
+					: cyvmath::Piece(color, type, std::move(coord), map)
 				{
 				}
 
-				virtual ~Piece()
-				{
-				}
+				virtual ~Piece() = default;
 
-				PlayersColor getPlayersColor() const
-				{
-					return _color;
-				}
-
-				PieceType getPieceType() const
-				{
-					return _type;
-				}
-
-				Coordinate getCoord() const
-				{
-					return *_coord; // creates a copy
-				}
-
-				const Movement& getMovementData() const
+				const Movement& getMovementData() const override
 				{
 					static const std::map<PieceType, Movement> data {
 							{PIECE_MOUNTAIN,    Movement(MOVEMENT_NONE,       0)},
@@ -112,23 +56,22 @@ namespace cyvmath
 					return data.at(_type);
 				}
 
-				/// @return true if the move was valid, false otherwise
-				virtual bool moveTo(Coordinate coord, bool checkMoveValidity)
+				virtual bool moveTo(const CoordinateDcUqP& coord, bool checkMoveValidity) override
 				{
 					if(checkMoveValidity)
 					{
 						// TODO: Check if the movement is legal, return if the check fails
 					}
 
-					PieceMap::iterator it = _map.find(*_coord);
+					PieceMap::iterator it = _map.find(_coord);
 					assert(it != _map.end());
 
-					_coord = std::unique_ptr<Coordinate>(new Coordinate(coord));
+					_coord = coord.clone();
 
-					assert(&*it->second == this);
+					assert(it->second.get() == this);
 					// add to new position in map before removing old
 					// entry to ensure shared_ptr doesn't free the data
-					std::pair<PieceMap::iterator, bool> res = _map.emplace(*_coord, it->second);
+					std::pair<PieceMap::iterator, bool> res = _map.emplace(coord.clone(), it->second);
 					_map.erase(it);
 
 					// assert there was no other piece already on coord.
@@ -140,8 +83,9 @@ namespace cyvmath
 				}
 		};
 
-		typedef std::vector<std::shared_ptr<Piece>> PieceVec;
-		typedef Piece::PieceMap PieceMap;
+		// cyvmath -> cyvmath::mikelepage
+		typedef PieceVec PieceVec;
+		typedef PieceMap PieceMap;
 	}
 }
 
