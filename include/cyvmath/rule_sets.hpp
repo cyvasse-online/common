@@ -17,6 +17,8 @@
 #ifndef _CYVMATH_RULESETS_HPP_
 #define _CYVMATH_RULESETS_HPP_
 
+#include "enum_str.hpp"
+
 namespace cyvmath
 {
 	enum RuleSet

@@ -70,8 +70,7 @@ namespace cyvmath
 				, _type(type)
 				, _coord(std::move(coord))
 				, _map(map)
-			{
-			}
+			{ }
 
 			virtual ~Piece() = default;
 

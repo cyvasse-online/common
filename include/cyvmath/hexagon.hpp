@@ -62,8 +62,7 @@ namespace cyvmath
 					Coordinate(int8_t x, int8_t y)
 						: _x(x)
 						, _y(y)
-					{
-					}
+					{ }
 
 					DEEPCOPYABLE_DERIVED(Coordinate)
 

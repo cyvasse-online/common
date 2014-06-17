@@ -34,8 +34,7 @@ namespace cyvmath
 				Player(PlayersColor color)
 					: cyvmath::Player(color)
 					, _dragonAlive(true)
-				{
-				}
+				{ }
 
 				virtual ~Player() = default;
 		};

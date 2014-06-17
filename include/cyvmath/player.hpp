@@ -32,8 +32,7 @@ namespace cyvmath
 
 			Player(PlayersColor color)
 				: _color(color)
-			{
-			}
+			{ }
 
 			virtual ~Player() = default;
 

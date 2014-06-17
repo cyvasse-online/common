@@ -33,8 +33,7 @@ namespace cyvmath
 			Match(PlayersColor firstPlayer)
 				: _setup(true)
 				, _activePlayer(firstPlayer)
-			{
-			}
+			{ }
 
 			virtual ~Match() = default;
 	};

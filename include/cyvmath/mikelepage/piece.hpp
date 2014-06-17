@@ -33,8 +33,7 @@ namespace cyvmath
 			public:
 				Piece(PlayersColor color, PieceType type, dc::unique_ptr<cyvmath::Coordinate>&& coord, PieceMap& map)
 					: cyvmath::Piece(color, type, std::move(coord), map)
-				{
-				}
+				{ }
 
 				virtual ~Piece() = default;
 
