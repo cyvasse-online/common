@@ -107,12 +107,12 @@ namespace cyvmath
 				public:
 					virtual ~Coordinate() = default;
 
-					int8_t x() const override
+					int8_t x() const final override
 					{
 						return _x;
 					}
 
-					int8_t y() const override
+					int8_t y() const final override
 					{
 						return _y;
 					}
@@ -122,7 +122,7 @@ namespace cyvmath
 						return -(_x + _y);
 					}
 
-					int16_t dump() const
+					int16_t dump() const final override
 					{
 						return (_x << 8) | _y;
 					}

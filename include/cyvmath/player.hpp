@@ -37,7 +37,7 @@ namespace cyvmath
 			virtual ~Player() = default;
 
 		public:
-			const PieceMap& getActivePieces()
+			const PieceMap& getActivePieces() const
 			{
 				return _activePieces;
 			}

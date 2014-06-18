@@ -37,7 +37,7 @@ namespace cyvmath
 
 				virtual ~Piece() = default;
 
-				const Movement& getMovementData() const override
+				const Movement& getMovementData() const final override
 				{
 					static const std::map<PieceType, Movement> data {
 							{PIECE_MOUNTAIN,    Movement(MOVEMENT_NONE,       0)},
