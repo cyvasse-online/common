@@ -17,10 +17,7 @@
 #ifndef _CYVMATH_MIKELEPAGE_PLAYER_HPP_
 #define _CYVMATH_MIKELEPAGE_PLAYER_HPP_
 
-#include <cyvmath/hexagon.hpp>
 #include <cyvmath/player.hpp>
-
-#include "piece.hpp"
 
 namespace cyvmath
 {
@@ -39,19 +36,7 @@ namespace cyvmath
 
 				virtual ~Player() = default;
 
-				bool setupComplete() override
-				{
-					auto outsideOwnSide = (_color == PLAYER_WHITE) ? [](int8_t y) { return y >= (Hexagon::edgeLength - 1); }
-								                                   : [](int8_t y) { return y <= (Hexagon::edgeLength - 1); };
-
-					for(auto& it : _activePieces)
-					{
-						if(outsideOwnSide(it.first->y()))
-							return false;
-					}
-
-					return true;
-				}
+				virtual bool setupComplete() override;
 		};
 	}
 }

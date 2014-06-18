@@ -14,37 +14,26 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_MIKELEPAGE_PIECE_HPP_
-#define _CYVMATH_MIKELEPAGE_PIECE_HPP_
+#include <cyvmath/mikelepage/player.hpp>
 
-#include <cyvmath/piece.hpp>
-
-#include <map>
-#include <memory>
-#include <utility>
-#include "common.hpp"
+#include <cyvmath/mikelepage/common.hpp>
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
-		class Piece : public cyvmath::Piece
+		bool Player::setupComplete()
 		{
-			public:
-				Piece(PlayersColor color, PieceType type, dc::unique_ptr<Coordinate>&& coord, PieceMap& map)
-					: cyvmath::Piece(color, type, std::move(coord), map)
-				{ }
+			auto outsideOwnSide = (_color == PLAYER_WHITE) ? [](int8_t y) { return y >= (Hexagon::edgeLength - 1); }
+						                                   : [](int8_t y) { return y <= (Hexagon::edgeLength - 1); };
 
-				virtual ~Piece() = default;
+			for(auto& it : _activePieces)
+			{
+				if(outsideOwnSide(it.first->y()))
+					return false;
+			}
 
-				virtual const Movement& getMovementData() const final override;
-				virtual bool moveTo(const CoordinateDcUqP& coord, bool checkMoveValidity) override;
-		};
-
-		using cyvmath::PieceVec;
-		using cyvmath::PieceMap;
-		using cyvmath::Movement;
+			return true;
+		}
 	}
 }
-
-#endif // _CYVMATH_MIKELEPAGE_PIECE_HPP_

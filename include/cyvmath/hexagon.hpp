@@ -17,6 +17,8 @@
 #ifndef _CYVMATH_HEXAGON_HPP_
 #define _CYVMATH_HEXAGON_HPP_
 
+#include "coordinate.hpp"
+
 #include <algorithm>
 #include <array>
 #include <functional>
@@ -53,7 +55,7 @@ namespace cyvmath
 			class Coordinate : public cyvmath::Coordinate
 			{
 				public:
-					typedef std::vector<Coordinate> CoordinateVec;
+					typedef std::vector<Coordinate> HexCoordinateVec;
 
 				private:
 					int8_t _x;
@@ -79,9 +81,9 @@ namespace cyvmath
 						return isValid(_x, _y);
 					}
 
-					CoordinateVec getCoordinates(const std::array<std::pair<int8_t, int8_t>, 6>& steps, int8_t distance) const
+					HexCoordinateVec getCoordinates(const std::array<std::pair<int8_t, int8_t>, 6>& steps, int8_t distance) const
 					{
-						CoordinateVec vec;
+						HexCoordinateVec vec;
 
 						for(int direction = 0; direction < 6; direction++)
 						{
@@ -164,7 +166,7 @@ namespace cyvmath
 						The default value is the maximal distance possible on
 						this hexagon (no distance limit).
 					 */
-					CoordinateVec getCoordinatesOrthogonal(int8_t distance = (l * 2 - 2)) const
+					HexCoordinateVec getCoordinatesOrthogonal(int8_t distance = (l * 2 - 2)) const
 					{
 						static const std::array<std::pair<int8_t, int8_t>, 6> steps = {
 								std::make_pair(-1,  1), // top left
@@ -210,7 +212,7 @@ namespace cyvmath
 						The default value is the maximal distance possible on
 						this hexagon (no distance limit).
 					 */
-					CoordinateVec getCoordinatesDiagonal(int8_t distance = (l * 1)) const
+					HexCoordinateVec getCoordinatesDiagonal(int8_t distance = (l * 1)) const
 					{
 						static const std::array<std::pair<int8_t, int8_t>, 6> steps = {
 								std::make_pair(-1,  2), // top
@@ -305,7 +307,7 @@ namespace cyvmath
 					}
 			};
 
-			typedef typename Coordinate::CoordinateVec CoordinateVec;
+			typedef typename Coordinate::HexCoordinateVec HexCoordinateVec;
 
 			/// The edge length of the hexagon (template parameter)
 			static const int edgeLength = l;
@@ -314,9 +316,9 @@ namespace cyvmath
 			static const int tileCount = (edgeLength * (edgeLength - 1)) / 2 * 6 + 1;
 
 			/// Get a container with all possible coordinates in this hexagon
-			static CoordinateVec getAllCoordinates()
+			static HexCoordinateVec getAllCoordinates()
 			{
-				static CoordinateVec vec;
+				static HexCoordinateVec vec;
 
 				if(vec.empty())
 				{

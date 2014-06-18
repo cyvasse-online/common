@@ -48,11 +48,12 @@ namespace cyvmath
 		MOVEMENT_RANGE
 	};
 
+	typedef std::pair<MovementType, int8_t> Movement;
+
 	class Piece
 	{
 		public:
 			typedef std::map<CoordinateDcUqP, std::shared_ptr<Piece>, dc::managed_less<CoordinateDcUqP>> PieceMap;
-			typedef std::pair<MovementType, int8_t> Movement;
 
 		protected:
 			const PlayersColor _color;
@@ -94,6 +95,7 @@ namespace cyvmath
 			/// @return true if the move was valid, false otherwise
 			virtual bool moveTo(const CoordinateDcUqP&, bool checkMoveValidity) = 0;
 	};
+
 	typedef std::vector<std::shared_ptr<Piece>> PieceVec;
 	typedef Piece::PieceMap PieceMap;
 }

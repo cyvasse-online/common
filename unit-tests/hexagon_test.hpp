@@ -27,14 +27,14 @@ using namespace cyvmath;
 class HexagonTest : public CppUnit::TestFixture
 {
 	private:
-		std::unique_ptr<hexagon<6>::Coordinate> h6Coord1;
-		std::unique_ptr<hexagon<6>::Coordinate> h6Coord2;
-		std::unique_ptr<hexagon<6>::Coordinate> h6Coord3;
-		std::unique_ptr<hexagon<6>::Coordinate> h6Coord4;
-		std::unique_ptr<hexagon<6>::Coordinate> h6Coord5;
-		std::unique_ptr<hexagon<6>::Coordinate> h6Coord6;
-		std::unique_ptr<hexagon<6>::Coordinate> h6Coord7;
-		std::unique_ptr<hexagon<6>::Coordinate> h6Coord8;
+		std::unique_ptr<Hexagon<6>::Coordinate> h6Coord1;
+		std::unique_ptr<Hexagon<6>::Coordinate> h6Coord2;
+		std::unique_ptr<Hexagon<6>::Coordinate> h6Coord3;
+		std::unique_ptr<Hexagon<6>::Coordinate> h6Coord4;
+		std::unique_ptr<Hexagon<6>::Coordinate> h6Coord5;
+		std::unique_ptr<Hexagon<6>::Coordinate> h6Coord6;
+		std::unique_ptr<Hexagon<6>::Coordinate> h6Coord7;
+		std::unique_ptr<Hexagon<6>::Coordinate> h6Coord8;
 
 	public:
 		void setUp() override;

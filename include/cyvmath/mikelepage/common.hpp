@@ -18,29 +18,29 @@
 #define _CYVMATH_MIKELEPAGE_COMMON_HPP_
 
 #include <cyvmath/hexagon.hpp>
+#include <cyvmath/players_color.hpp>
+#include <cyvmath/piece.hpp>
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
-		// cyvmath::PlayersColor -> cyvmath::mikelepage::PlayersColor
-		typedef PlayersColor PlayersColor;
-		using PlayersColor::PLAYER_UNDEFINED;
-		using PlayersColor::PLAYER_WHITE;
-		using PlayersColor::PLAYER_BLACK;
+		using cyvmath::PlayersColor;
+		using cyvmath::PLAYER_UNDEFINED;
+		using cyvmath::PLAYER_WHITE;
+		using cyvmath::PLAYER_BLACK;
 
-		// cyvmath::PieceType -> cyvmath::mikelepage::PieceType
-		typedef PieceType PieceType;
-		using PieceType::PIECE_MOUNTAIN;
-		using PieceType::PIECE_RABBLE;
-		using PieceType::PIECE_CROSSBOWS;
-		using PieceType::PIECE_SPEARS;
-		using PieceType::PIECE_LIGHT_HORSE;
-		using PieceType::PIECE_TREBUCHET;
-		using PieceType::PIECE_ELEPHANT;
-		using PieceType::PIECE_HEAVY_HORSE;
-		using PieceType::PIECE_DRAGON;
-		using PieceType::PIECE_KING;
+		using cyvmath::PieceType;
+		using cyvmath::PIECE_MOUNTAIN;
+		using cyvmath::PIECE_RABBLE;
+		using cyvmath::PIECE_CROSSBOWS;
+		using cyvmath::PIECE_SPEARS;
+		using cyvmath::PIECE_LIGHT_HORSE;
+		using cyvmath::PIECE_TREBUCHET;
+		using cyvmath::PIECE_ELEPHANT;
+		using cyvmath::PIECE_HEAVY_HORSE;
+		using cyvmath::PIECE_DRAGON;
+		using cyvmath::PIECE_KING;
 
 		typedef Hexagon<6> Hexagon;
 		typedef Hexagon::Coordinate Coordinate;

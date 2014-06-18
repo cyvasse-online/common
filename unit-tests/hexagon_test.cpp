@@ -21,14 +21,14 @@
 
 void HexagonTest::setUp()
 {
-	h6Coord1 = hexagon<6>::Coordinate::create(3,  5);
-	h6Coord2 = hexagon<6>::Coordinate::create(1,  5);
-	h6Coord3 = hexagon<6>::Coordinate::create(3, 10);
-	h6Coord4 = hexagon<6>::Coordinate::create(6,  2);
-	h6Coord5 = hexagon<6>::Coordinate::create(1,  6);
-	h6Coord6 = hexagon<6>::Coordinate::create(1,  9);
-	h6Coord7 = hexagon<6>::Coordinate::create(9,  2);
-	h6Coord8 = hexagon<6>::Coordinate::create(2,  5);
+	h6Coord1 = Hexagon<6>::Coordinate::create(3,  5);
+	h6Coord2 = Hexagon<6>::Coordinate::create(1,  5);
+	h6Coord3 = Hexagon<6>::Coordinate::create(3, 10);
+	h6Coord4 = Hexagon<6>::Coordinate::create(6,  2);
+	h6Coord5 = Hexagon<6>::Coordinate::create(1,  6);
+	h6Coord6 = Hexagon<6>::Coordinate::create(1,  9);
+	h6Coord7 = Hexagon<6>::Coordinate::create(9,  2);
+	h6Coord8 = Hexagon<6>::Coordinate::create(2,  5);
 }
 
 void HexagonTest::tearDown()
@@ -52,12 +52,12 @@ void HexagonTest::testCoordValidity()
 	CPPUNIT_ASSERT(h6Coord6);
 	CPPUNIT_ASSERT(h6Coord7);
 
-	CPPUNIT_ASSERT(hexagon<6>::Coordinate::create( 0, 11) == nullptr); // outside – top
-	CPPUNIT_ASSERT(hexagon<6>::Coordinate::create( 8,  9) == nullptr); // outside – top right
-	CPPUNIT_ASSERT(hexagon<6>::Coordinate::create(11,  2) == nullptr); // outside – bottom right
-	CPPUNIT_ASSERT(hexagon<6>::Coordinate::create(10, -2) == nullptr); // outside – bottom
-	CPPUNIT_ASSERT(hexagon<6>::Coordinate::create( 1,  3) == nullptr); // outside – bottom left
-	CPPUNIT_ASSERT(hexagon<6>::Coordinate::create(-2,  7) == nullptr); // outside – top left
+	CPPUNIT_ASSERT(Hexagon<6>::Coordinate::create( 0, 11) == nullptr); // outside – top
+	CPPUNIT_ASSERT(Hexagon<6>::Coordinate::create( 8,  9) == nullptr); // outside – top right
+	CPPUNIT_ASSERT(Hexagon<6>::Coordinate::create(11,  2) == nullptr); // outside – bottom right
+	CPPUNIT_ASSERT(Hexagon<6>::Coordinate::create(10, -2) == nullptr); // outside – bottom
+	CPPUNIT_ASSERT(Hexagon<6>::Coordinate::create( 1,  3) == nullptr); // outside – bottom left
+	CPPUNIT_ASSERT(Hexagon<6>::Coordinate::create(-2,  7) == nullptr); // outside – top left
 }
 
 void HexagonTest::testCoordEquality()
@@ -73,20 +73,20 @@ void HexagonTest::testCoordEquality()
 
 void HexagonTest::testCoordCompleteness()
 {
-	CPPUNIT_ASSERT(hexagon<2>::getAllCoordinates().size() == 7);
-	CPPUNIT_ASSERT(hexagon<3>::getAllCoordinates().size() == 19);
-	CPPUNIT_ASSERT(hexagon<4>::getAllCoordinates().size() == 37);
+	CPPUNIT_ASSERT(Hexagon<2>::getAllCoordinates().size() == 7);
+	CPPUNIT_ASSERT(Hexagon<3>::getAllCoordinates().size() == 19);
+	CPPUNIT_ASSERT(Hexagon<4>::getAllCoordinates().size() == 37);
 
-	std::vector<hexagon<2>::Coordinate> coords = hexagon<2>::getAllCoordinates();
+	std::vector<Hexagon<2>::Coordinate> coords = Hexagon<2>::getAllCoordinates();
 	std::sort(coords.begin(), coords.end());
 
-	CPPUNIT_ASSERT(coords.at(0) == *hexagon<2>::Coordinate::create(0, 1));
-	CPPUNIT_ASSERT(coords.at(1) == *hexagon<2>::Coordinate::create(0, 2));
-	CPPUNIT_ASSERT(coords.at(2) == *hexagon<2>::Coordinate::create(1, 0));
-	CPPUNIT_ASSERT(coords.at(3) == *hexagon<2>::Coordinate::create(1, 1));
-	CPPUNIT_ASSERT(coords.at(4) == *hexagon<2>::Coordinate::create(1, 2));
-	CPPUNIT_ASSERT(coords.at(5) == *hexagon<2>::Coordinate::create(2, 0));
-	CPPUNIT_ASSERT(coords.at(6) == *hexagon<2>::Coordinate::create(2, 1));
+	CPPUNIT_ASSERT(coords.at(0) == *Hexagon<2>::Coordinate::create(0, 1));
+	CPPUNIT_ASSERT(coords.at(1) == *Hexagon<2>::Coordinate::create(0, 2));
+	CPPUNIT_ASSERT(coords.at(2) == *Hexagon<2>::Coordinate::create(1, 0));
+	CPPUNIT_ASSERT(coords.at(3) == *Hexagon<2>::Coordinate::create(1, 1));
+	CPPUNIT_ASSERT(coords.at(4) == *Hexagon<2>::Coordinate::create(1, 2));
+	CPPUNIT_ASSERT(coords.at(5) == *Hexagon<2>::Coordinate::create(2, 0));
+	CPPUNIT_ASSERT(coords.at(6) == *Hexagon<2>::Coordinate::create(2, 1));
 }
 
 void HexagonTest::testDistanceOrthogonal()
