@@ -84,7 +84,7 @@ namespace dc
 			pointer operator->() const noexcept { return _ptr.operator->(); }
 
 			// extra functionality
-			unique_ptr clone() const { return unique_ptr(_ptr->clone()); }
+			unique_ptr clone() const { return _ptr ? unique_ptr(_ptr->clone()) : unique_ptr(); }
 
 			std::unique_ptr<T, D>& get_std_ptr() { return _ptr; }
 	};
