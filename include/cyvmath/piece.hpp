@@ -48,7 +48,7 @@ namespace cyvmath
 		MOVEMENT_RANGE
 	};
 
-	typedef std::pair<MovementType, int8_t> Movement;
+	typedef std::pair<MovementType, int8_t> MovementScope;
 
 	class Piece
 	{
@@ -90,7 +90,7 @@ namespace cyvmath
 				return _coord.clone();
 			}
 
-			virtual const Movement& getMovementData() const = 0;
+			virtual const MovementScope& getMovementScope() const = 0;
 
 			/// @return true if the move was valid, false otherwise
 			virtual bool moveTo(const CoordinateDcUqP&, bool checkMoveValidity) = 0;

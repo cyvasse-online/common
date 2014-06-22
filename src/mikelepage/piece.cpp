@@ -22,19 +22,19 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
-		const Movement& Piece::getMovementData() const
+		const MovementScope& Piece::getMovementScope() const
 		{
-			static const std::map<PieceType, Movement> data {
-					{PIECE_MOUNTAIN,    Movement(MOVEMENT_NONE,       0)},
-					{PIECE_RABBLE,      Movement(MOVEMENT_ORTHOGONAL, 1)},
-					{PIECE_CROSSBOWS,   Movement(MOVEMENT_ORTHOGONAL, 3)},
-					{PIECE_SPEARS,      Movement(MOVEMENT_DIAGONAL,   2)},
-					{PIECE_LIGHT_HORSE, Movement(MOVEMENT_HEXAGONAL,  3)},
-					{PIECE_TREBUCHET,   Movement(MOVEMENT_ORTHOGONAL, 0)},
-					{PIECE_ELEPHANT,    Movement(MOVEMENT_DIAGONAL,   0)},
-					{PIECE_HEAVY_HORSE, Movement(MOVEMENT_HEXAGONAL,  0)},
-					{PIECE_DRAGON,      Movement(MOVEMENT_RANGE,      4)},
-					{PIECE_KING,        Movement(MOVEMENT_ORTHOGONAL, 1)},
+			static const std::map<PieceType, MovementScope> data {
+					{PIECE_MOUNTAIN,    MovementScope(MOVEMENT_NONE,       0)},
+					{PIECE_RABBLE,      MovementScope(MOVEMENT_ORTHOGONAL, 1)},
+					{PIECE_CROSSBOWS,   MovementScope(MOVEMENT_ORTHOGONAL, 3)},
+					{PIECE_SPEARS,      MovementScope(MOVEMENT_DIAGONAL,   2)},
+					{PIECE_LIGHT_HORSE, MovementScope(MOVEMENT_HEXAGONAL,  3)},
+					{PIECE_TREBUCHET,   MovementScope(MOVEMENT_ORTHOGONAL, 0)},
+					{PIECE_ELEPHANT,    MovementScope(MOVEMENT_DIAGONAL,   0)},
+					{PIECE_HEAVY_HORSE, MovementScope(MOVEMENT_HEXAGONAL,  0)},
+					{PIECE_DRAGON,      MovementScope(MOVEMENT_RANGE,      4)},
+					{PIECE_KING,        MovementScope(MOVEMENT_ORTHOGONAL, 1)},
 				};
 
 			return data.at(_type);

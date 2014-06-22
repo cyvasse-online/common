@@ -28,6 +28,10 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
+		using cyvmath::PieceVec;
+		using cyvmath::PieceMap;
+		using cyvmath::MovementScope;
+
 		class Piece : public cyvmath::Piece
 		{
 			public:
@@ -37,13 +41,9 @@ namespace cyvmath
 
 				virtual ~Piece() = default;
 
-				virtual const Movement& getMovementData() const final override;
+				virtual const MovementScope& getMovementScope() const final override;
 				virtual bool moveTo(const CoordinateDcUqP& coord, bool checkMoveValidity) override;
 		};
-
-		using cyvmath::PieceVec;
-		using cyvmath::PieceMap;
-		using cyvmath::Movement;
 	}
 }
 

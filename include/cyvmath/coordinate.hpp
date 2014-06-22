@@ -27,6 +27,7 @@
 #include <vector>
 #include <cassert>
 #include <cmath>
+#include <cstdint>
 #include <deepcopy_smart_ptr/unique_ptr.hpp>
 
 namespace cyvmath
@@ -44,10 +45,10 @@ namespace cyvmath
 			}
 
 		public:
-			virtual int16_t dump() const = 0;
+			virtual int_least16_t dump() const = 0;
 
-			virtual int8_t x() const = 0;
-			virtual int8_t y() const = 0;
+			virtual int_least8_t x() const = 0;
+			virtual int_least8_t y() const = 0;
 
 			bool operator==(const Coordinate& other) const
 			{

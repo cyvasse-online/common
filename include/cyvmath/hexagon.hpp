@@ -37,7 +37,7 @@ namespace cyvmath
 	   so this is implemented as a template class with a deleted constructor.
 	   The template parameter l stands for the edge length of the hexagon.
 	 */
-	template <int l>
+	template <uint_least8_t l>
 	class Hexagon
 	{
 		/* The smallest possible hexagon has 7 tiles and an edge lenth of 2
@@ -56,19 +56,21 @@ namespace cyvmath
 			{
 				public:
 					typedef std::vector<Coordinate> HexCoordinateVec;
+					typedef std::pair<int_least8_t, int_least8_t> Movement;
+					typedef std::vector<Movement> MovementVec;
 
 				private:
-					int8_t _x;
-					int8_t _y;
+					int_least8_t _x;
+					int_least8_t _y;
 
-					Coordinate(int8_t x, int8_t y)
+					Coordinate(int_least8_t x, int_least8_t y)
 						: _x(x)
 						, _y(y)
 					{ }
 
 					DEEPCOPYABLE_DERIVED(Coordinate)
 
-					static bool isValid(int8_t x, int8_t y)
+					static bool isValid(int_least8_t x, int_least8_t y)
 					{
 						return x >= 0 && x < (l * 2 - 1) &&
 							   y >= 0 && y < (l * 2 - 1) &&
@@ -81,18 +83,16 @@ namespace cyvmath
 						return isValid(_x, _y);
 					}
 
-					HexCoordinateVec getCoordinates(const std::array<std::pair<int8_t, int8_t>, 6>& steps, int8_t distance) const
+					HexCoordinateVec getCoordinates(const MovementVec& steps, int_least8_t distance) const
 					{
 						HexCoordinateVec vec;
 
-						for(int direction = 0; direction < 6; direction++)
+						for(auto& step : steps)
 						{
-							std::pair<int, int> op = steps.at(direction);
-
 							Coordinate tmpCoord(*this);
-							for(int i = 0; i < distance; i++)
+							for(auto i = 0; i < distance; i++)
 							{
-								tmpCoord = {tmpCoord->_x + op.first, tmpCoord->_y + op.second};
+								tmpCoord = {tmpCoord->_x + step.first, tmpCoord->_y + step.second};
 
 								// if one step into this direction results in a
 								// invalid coordinate, all further ones do too
@@ -109,22 +109,22 @@ namespace cyvmath
 				public:
 					virtual ~Coordinate() = default;
 
-					int8_t x() const final override
+					int_least8_t x() const final override
 					{
 						return _x;
 					}
 
-					int8_t y() const final override
+					int_least8_t y() const final override
 					{
 						return _y;
 					}
 
-					int8_t z() const
+					int_least8_t z() const
 					{
 						return -(_x + _y);
 					}
 
-					int16_t dump() const final override
+					int_least16_t dump() const final override
 					{
 						return (_x << 8) | _y;
 					}
@@ -132,7 +132,7 @@ namespace cyvmath
 					/** Get the distance to another coordinate in form of the amount
 						of single moves to adjacent tiles required to move there
 					 */
-					int8_t getDistance(Coordinate other) const
+					int_least8_t getDistance(Coordinate other) const
 					{
 						// Concept from http://keekerdc.com/2011/03/hexagon-grids-coordinate-systems-and-distance-calculations/
 						// I have no idea why the maximum of x-, y- and z-difference
@@ -152,7 +152,7 @@ namespace cyvmath
 						An orthogonal move is a straight move in one of the six
 						directions of the neighboring hex-tiles.
 					 */
-					int8_t getDistanceOrthogonal(Coordinate other) const
+					int_least8_t getDistanceOrthogonal(Coordinate other) const
 					{
 						if(!isOrthogonal(other))
 							return -1;
@@ -166,15 +166,15 @@ namespace cyvmath
 						The default value is the maximal distance possible on
 						this hexagon (no distance limit).
 					 */
-					HexCoordinateVec getCoordinatesOrthogonal(int8_t distance = (l * 2 - 2)) const
+					HexCoordinateVec getCoordinatesOrthogonal(int_least8_t distance = (l * 2 - 2)) const
 					{
-						static const std::array<std::pair<int8_t, int8_t>, 6> steps = {
-								std::make_pair(-1,  1), // top left
-								std::make_pair( 0,  1), // top right
-								std::make_pair( 1,  0), // right
-								std::make_pair( 1, -1), // bottom right
-								std::make_pair( 0, -1), // bottom left
-								std::make_pair(-1,  0)  // left
+						static const MovementVec steps = {
+								{-1,  1}, // top left
+								{ 0,  1}, // top right
+								{ 1,  0}, // right
+								{ 1, -1}, // bottom right
+								{ 0, -1}, // bottom left
+								{-1,  0}  // left
 							};
 
 						return getCoordinates(steps, distance);
@@ -183,9 +183,9 @@ namespace cyvmath
 					/// Check if the given coordinate is reachable in one diagonal move
 					bool isDiagonal(Coordinate other) const
 					{
-						int8_t dX = _x - other._x;
-						int8_t dY = _y - other._y;
-						int8_t dZ = z() - other.z();
+						int_least8_t dX = _x - other._x;
+						int_least8_t dY = _y - other._y;
+						int_least8_t dZ = z() - other.z();
 
 						return dX == dY ||
 							   dX == dZ ||
@@ -198,7 +198,7 @@ namespace cyvmath
 						A diagonal move is a straight move in one of the six
 						directions of the lines between the neighboring hex-tiles.
 					 */
-					int8_t getDistanceDiagonal(Coordinate other) const
+					int_least8_t getDistanceDiagonal(Coordinate other) const
 					{
 						if(!isDiagonal(other))
 							return -1;
@@ -212,15 +212,15 @@ namespace cyvmath
 						The default value is the maximal distance possible on
 						this hexagon (no distance limit).
 					 */
-					HexCoordinateVec getCoordinatesDiagonal(int8_t distance = (l * 1)) const
+					HexCoordinateVec getCoordinatesDiagonal(int_least8_t distance = (l * 1)) const
 					{
-						static const std::array<std::pair<int8_t, int8_t>, 6> steps = {
-								std::make_pair(-1,  2), // top
-								std::make_pair( 1,  1), // top right
-								std::make_pair( 2, -1), // bottom right
-								std::make_pair( 1, -2), // bottom
-								std::make_pair(-1, -1), // bottom left
-								std::make_pair(-2,  1)  // top left
+						static const MovementVec steps = {
+								{-1,  2}, // top
+								{ 1,  1}, // top right
+								{ 2, -1}, // bottom right
+								{ 1, -2}, // bottom
+								{-1, -1}, // bottom left
+								{-2,  1}  // top left
 							};
 
 						return getCoordinates(steps, distance);
@@ -236,7 +236,7 @@ namespace cyvmath
 					 */
 					// There certainly is no other rule set than MikeL's that uses this
 					// but there probably is no better place to put this code either.
-					int8_t getDistanceHexagonalLine(Coordinate other, Coordinate center) const
+					int_least8_t getDistanceHexagonalLine(Coordinate other, Coordinate center) const
 					{
 						// Check if the given coordinate has the same distance to center as this
 						if(getDistance(center) != other.getDistance(center))
@@ -246,7 +246,7 @@ namespace cyvmath
 						return 0;
 					}
 
-					bool set(int8_t x, int8_t y)
+					bool set(int_least8_t x, int_least8_t y)
 					{
 						if(isValid(x, y))
 						{
@@ -262,18 +262,18 @@ namespace cyvmath
 					/// @{
 					/// Create a Coordinate object from an x and an y
 					/// If the coordinte is invalid, return nullptr
-					static std::unique_ptr<Coordinate> create(int8_t x, int8_t y)
+					static std::unique_ptr<Coordinate> create(int_least8_t x, int_least8_t y)
 					{
 						if(isValid(x, y))
-							return std::unique_ptr<Coordinate>(new Coordinate(x, y));
+							return make_unique<Coordinate>(x, y);
 
 						return nullptr;
 					}
 
-					static std::unique_ptr<Coordinate> create(std::pair<int8_t, int8_t> c)
+					static std::unique_ptr<Coordinate> create(std::pair<int_least8_t, int_least8_t> c)
 					{
 						if(isValid(c.first, c.second))
-							return std::unique_ptr<Coordinate>(new Coordinate(c.first, c.second));
+							return make_unique<Coordinate>(c.first, c.second);
 
 						return nullptr;
 					}
@@ -310,13 +310,13 @@ namespace cyvmath
 			typedef typename Coordinate::HexCoordinateVec HexCoordinateVec;
 
 			/// The edge length of the hexagon (template parameter)
-			static const int edgeLength = l;
+			static constexpr uint_least8_t edgeLength = l;
 
 			/// The amount of tiles that make up the hexagon
-			static const int tileCount = (edgeLength * (edgeLength - 1)) / 2 * 6 + 1;
+			static constexpr uint_least16_t tileCount = (l * (l - 1)) / 2 * 6 + 1;
 
 			/// Get a container with all possible coordinates in this hexagon
-			static HexCoordinateVec getAllCoordinates()
+			static const HexCoordinateVec& getAllCoordinates()
 			{
 				static HexCoordinateVec vec;
 
@@ -324,12 +324,12 @@ namespace cyvmath
 				{
 					vec.reserve(tileCount);
 
-					for(int x = 0; x < (2 * l) - 1; x++)
+					for(auto x = 0; x < (2 * l) - 1; x++)
 					{
-						int yBegin = (x < (l - 1)) ? (l - 1 - x) : 0;
-						int yEnd   = (x < (l - 1)) ? (2 * l - 1) : (2 * l - 1) + (l - 1 - x);
+						auto yBegin = (x < (l - 1)) ? (l - 1 - x) : 0;
+						auto yEnd   = (x < (l - 1)) ? (2 * l - 1) : (2 * l - 1) + (l - 1 - x);
 
-						for(int y = yBegin; y < yEnd; y++)
+						for(auto y = yBegin; y < yEnd; y++)
 						{
 							std::unique_ptr<Coordinate> c = Coordinate::create(x, y);
 							assert(c);
