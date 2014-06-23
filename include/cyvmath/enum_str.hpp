@@ -23,11 +23,11 @@
 
 namespace cyvmath
 {
-	template <typename T1, typename T2>
-	using initMap = std::initializer_list<std::pair<const T1, T2>>;
+	template <typename T>
+	using initMap = std::initializer_list<std::pair<const T, std::string>>;
 
 	template <typename EnumT>
-	std::map<std::string, const EnumT> swapFirstSecond(initMap<EnumT, std::string> orig)
+	std::map<std::string, const EnumT> swapFirstSecond(initMap<EnumT> orig)
 	{
 		std::map<std::string, const EnumT> ret;
 		for(const std::pair<const EnumT, std::string>& it : orig)
@@ -43,7 +43,7 @@ namespace cyvmath
 	#define ENUM_STR(type, init) \
 		inline std::string type ## ToStr(type e) \
 		{ \
-			static std::map< type , std::string> data(init); \
+			static std::map< type , std::string> data(initMap< type > init); \
 			\
 			auto it = data.find(e); \
 			if(it == data.end()) \
@@ -54,7 +54,7 @@ namespace cyvmath
 		\
 		inline type StrTo ## type(const std::string& s) \
 		{ \
-			static std::map<std::string, const type > data(swapFirstSecond(init)); \
+			static std::map<std::string, const type > data(swapFirstSecond(initMap< type > init)); \
 			\
 			auto it = data.find(s); \
 			if(it == data.end()) \

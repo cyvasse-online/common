@@ -28,7 +28,7 @@ namespace cyvmath
 		PLAYER_BLACK
 	};
 
-	ENUM_STR(PlayersColor, (initMap<PlayersColor, std::string> {
+	ENUM_STR(PlayersColor, ({
 		{PLAYER_UNDEFINED, "undefined"},
 		{PLAYER_WHITE, "white"},
 		{PLAYER_BLACK, "black"}

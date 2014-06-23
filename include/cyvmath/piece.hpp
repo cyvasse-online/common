@@ -21,12 +21,14 @@
 #include <memory>
 #include <utility>
 #include "coordinate.hpp"
+#include "enum_str.hpp"
 #include "players_color.hpp"
 
 namespace cyvmath
 {
 	enum PieceType
 	{
+		PIECE_UNDEFINED,
 		PIECE_MOUNTAIN,
 		PIECE_RABBLE,
 		PIECE_CROSSBOWS,
@@ -38,6 +40,20 @@ namespace cyvmath
 		PIECE_DRAGON,
 		PIECE_KING
 	};
+
+	ENUM_STR(PieceType, ({
+		{PIECE_UNDEFINED, "undefined"},
+		{PIECE_MOUNTAIN, "mountain"},
+		{PIECE_RABBLE, "rabble"},
+		{PIECE_CROSSBOWS, "crossbows"},
+		{PIECE_SPEARS, "spears"},
+		{PIECE_LIGHT_HORSE, "light horse"},
+		{PIECE_TREBUCHET, "trebuchet"},
+		{PIECE_ELEPHANT, "elephant"},
+		{PIECE_HEAVY_HORSE, "heavy horse"},
+		{PIECE_DRAGON, "dragon"},
+		{PIECE_KING, "king"}
+	}))
 
 	enum MovementType
 	{

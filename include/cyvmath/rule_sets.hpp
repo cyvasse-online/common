@@ -27,7 +27,7 @@ namespace cyvmath
 		RULESET_MIKELEPAGE
 	};
 
-	ENUM_STR(RuleSet, (initMap<RuleSet, std::string> {
+	ENUM_STR(RuleSet, ({
 		{RULESET_UNDEFINED, "undefined"},
 		{RULESET_MIKELEPAGE, "mikelepage"}
 	}))
