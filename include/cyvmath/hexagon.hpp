@@ -92,7 +92,8 @@ namespace cyvmath
 							Coordinate tmpCoord(*this);
 							for(auto i = 0; i < distance; i++)
 							{
-								tmpCoord = {tmpCoord->_x + step.first, tmpCoord->_y + step.second};
+								// explicit cast to int_least8_t to disable compiler warning
+								tmpCoord = {int_least8_t (tmpCoord._x + step.first), int_least8_t (tmpCoord._y + step.second)};
 
 								// if one step into this direction results in a
 								// invalid coordinate, all further ones do too
@@ -166,7 +167,7 @@ namespace cyvmath
 						The default value is the maximal distance possible on
 						this hexagon (no distance limit).
 					 */
-					HexCoordinateVec getCoordinatesOrthogonal(int_least8_t distance = (l * 2 - 2)) const
+					HexCoordinateVec getCoordinatesOrthogonal(uint_least8_t distance = (l * 2 - 2)) const
 					{
 						static const MovementVec steps = {
 								{-1,  1}, // top left
@@ -212,7 +213,7 @@ namespace cyvmath
 						The default value is the maximal distance possible on
 						this hexagon (no distance limit).
 					 */
-					HexCoordinateVec getCoordinatesDiagonal(int_least8_t distance = (l * 1)) const
+					HexCoordinateVec getCoordinatesDiagonal(uint_least8_t distance = (l * 1)) const
 					{
 						static const MovementVec steps = {
 								{-1,  2}, // top
@@ -259,13 +260,29 @@ namespace cyvmath
 						return false;
 					}
 
+					HexCoordinateVec getCoordinates(MovementScope scope)
+					{
+						switch(scope.first)
+						{
+							case MOVEMENT_ORTHOGONAL:
+								return scope.second ? getCoordinatesOrthogonal(scope.second)
+									: getCoordinatesOrthogonal();
+							case MOVEMENT_DIAGONAL:
+								return scope.second ? getCoordinatesDiagonal(scope.second)
+									: getCoordinatesDiagonal();
+							default:
+								return HexCoordinateVec();
+						}
+					}
+
 					/// @{
 					/// Create a Coordinate object from an x and an y
 					/// If the coordinte is invalid, return nullptr
 					static std::unique_ptr<Coordinate> create(int_least8_t x, int_least8_t y)
 					{
 						if(isValid(x, y))
-							return make_unique<Coordinate>(x, y);
+							// can't use make_unique because private constructor has to be called directly
+							return std::unique_ptr<Coordinate>(new Coordinate(x, y));
 
 						return nullptr;
 					}
