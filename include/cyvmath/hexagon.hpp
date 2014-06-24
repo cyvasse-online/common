@@ -167,7 +167,7 @@ namespace cyvmath
 						The default value is the maximal distance possible on
 						this hexagon (no distance limit).
 					 */
-					HexCoordinateVec getCoordinatesOrthogonal(uint_least8_t distance = (l * 2 - 2)) const
+					HexCoordinateVec getCoordinatesOrthogonal(uint_least8_t distance = ((l - 1) * 2)) const
 					{
 						static const MovementVec steps = {
 								{-1,  1}, // top left
@@ -213,7 +213,7 @@ namespace cyvmath
 						The default value is the maximal distance possible on
 						this hexagon (no distance limit).
 					 */
-					HexCoordinateVec getCoordinatesDiagonal(uint_least8_t distance = (l * 1)) const
+					HexCoordinateVec getCoordinatesDiagonal(uint_least8_t distance = (l - 1)) const
 					{
 						static const MovementVec steps = {
 								{-1,  2}, // top
@@ -235,16 +235,33 @@ namespace cyvmath
 						The direct distance from this coordinate to another one on that
 						line may be different than the distance along the line.
 					 */
-					// There certainly is no other rule set than MikeL's that uses this
-					// but there probably is no better place to put this code either.
 					int_least8_t getDistanceHexagonalLine(Coordinate other, Coordinate center) const
 					{
+						auto distance = getDistance(center);
+
 						// Check if the given coordinate has the same distance to center as this
-						if(getDistance(center) != other.getDistance(center))
+						if(distance != other.getDistance(center))
 							return -1;
 
 						// TODO
+						/*const MovementVec steps = {
+								{-distance,  distance}, // top left
+								{        0,  distance}, // top right
+								{ distance,         0}, // right
+								{ distance, -distance}, // bottom right
+								{        0, -distance}, // bottom left
+								{-distance,         0}  // left
+							};
+
+						auto cornerCoords = getCoordinates(steps, 1);*/
+
 						return 0;
+					}
+
+					HexCoordinateVec getCoordinatesHexagonalLine(Coordinate center,
+						uint_least8_t distance = ((l - 1) * 6 - 2))
+					{
+						return HexCoordinateVec();
 					}
 
 					bool set(int_least8_t x, int_least8_t y)
@@ -258,21 +275,6 @@ namespace cyvmath
 						}
 
 						return false;
-					}
-
-					HexCoordinateVec getCoordinates(MovementScope scope)
-					{
-						switch(scope.first)
-						{
-							case MOVEMENT_ORTHOGONAL:
-								return scope.second ? getCoordinatesOrthogonal(scope.second)
-									: getCoordinatesOrthogonal();
-							case MOVEMENT_DIAGONAL:
-								return scope.second ? getCoordinatesDiagonal(scope.second)
-									: getCoordinatesDiagonal();
-							default:
-								return HexCoordinateVec();
-						}
 					}
 
 					/// @{

@@ -34,6 +34,9 @@ namespace cyvmath
 
 		class Piece : public cyvmath::Piece
 		{
+			private:
+				bool moveToValid(Hexagon::Coordinate);
+
 			public:
 				Piece(PlayersColor color, PieceType type, dc::unique_ptr<Coordinate>&& coord, PieceMap& map)
 					: cyvmath::Piece(color, type, std::move(coord), map)
@@ -43,6 +46,8 @@ namespace cyvmath
 
 				virtual const MovementScope& getMovementScope() const final override;
 				virtual bool moveTo(const CoordinateDcUqP& coord, bool checkMoveValidity) override;
+
+				Hexagon::HexCoordinateVec getPossibleTargetTiles();
 		};
 	}
 }

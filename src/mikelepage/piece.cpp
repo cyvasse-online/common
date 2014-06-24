@@ -22,6 +22,35 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
+		bool Piece::moveToValid(Hexagon::Coordinate targetC)
+		{
+			auto startC = dynamic_cast<Hexagon::Coordinate*>(_coord.get());
+			assert(startC);
+
+			auto scope = getMovementScope();
+
+			int_least8_t distance = -1;
+			switch(scope.first)
+			{
+				case MOVEMENT_ORTHOGONAL:
+					distance = startC->getDistanceOrthogonal(targetC);
+					break;
+				case MOVEMENT_DIAGONAL:
+					distance = startC->getDistanceDiagonal(targetC);
+					break;
+				case MOVEMENT_HEXAGONAL:
+					// distance = startC->getDistanceHexagonalLine(..., targetC);
+					break;
+				// disable compiler warning about unhandled values
+				default: { }
+			}
+
+			if(distance == -1 || (scope.second && distance > scope.second))
+				return false;
+
+			return true;
+		}
+
 		const MovementScope& Piece::getMovementScope() const
 		{
 			static const std::map<PieceType, MovementScope> data {
@@ -44,7 +73,10 @@ namespace cyvmath
 		{
 			if(checkMoveValidity)
 			{
-				// TODO: Check if the movement is legal, return if the check fails
+				auto tmpC = dynamic_cast<Hexagon::Coordinate*>(coord.get());
+				assert(tmpC);
+
+				if(!moveToValid(*tmpC)) return false;
 			}
 
 			PieceMap::iterator it = _map.find(_coord);
@@ -64,6 +96,27 @@ namespace cyvmath
 			assert(res.second);
 
 			return true;
+		}
+
+		Hexagon::HexCoordinateVec Piece::getPossibleTargetTiles()
+		{
+			auto scope = getMovementScope();
+			auto coord = dynamic_cast<Hexagon::Coordinate*>(_coord.get());
+
+			switch(scope.first)
+			{
+				case MOVEMENT_ORTHOGONAL:
+					return scope.second ? coord->getCoordinatesOrthogonal(scope.second)
+						: coord->getCoordinatesOrthogonal();
+				case MOVEMENT_DIAGONAL:
+					return scope.second ? coord->getCoordinatesDiagonal(scope.second)
+						: coord->getCoordinatesDiagonal();
+				case MOVEMENT_HEXAGONAL:
+				//	return scope.second ? coord->getCoordinatesHexagonalLine(..., scope.second)
+				//		: coord->getCoordinatesHexagonalLine(...);
+				default:
+					return Hexagon::HexCoordinateVec();
+			}
 		}
 	}
 }
