@@ -69,7 +69,7 @@ namespace cyvmath
 	class Piece
 	{
 		public:
-			typedef std::map<CoordinateDcUqP, std::shared_ptr<Piece>, dc::managed_less<CoordinateDcUqP>> PieceMap;
+			typedef std::map<CoordinateDcUqP, std::shared_ptr<Piece>, managed_less<CoordinateDcUqP>> PieceMap;
 
 		protected:
 			const PlayersColor _color;

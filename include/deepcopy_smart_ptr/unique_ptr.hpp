@@ -108,18 +108,18 @@ namespace dc
 		friend dc::unique_ptr< type >; \
 		virtual type * clone() override \
 		{ return new type(*this); }
-
-	template<class T>
-	struct managed_less
-	{
-		bool operator()(const T& obj1, const T& obj2) const
-		{
-			return (*obj1) < (*obj2);
-		}
-	};
 }
 
-/* outside any namespace to avoid conflicts when std::make_unique() is added to STL */
+template<class T>
+struct managed_less
+{
+	bool operator()(const T& obj1, const T& obj2) const
+	{
+		return (*obj1) < (*obj2);
+	}
+};
+
+// outside any namespace to avoid conflicts when std::make_unique() is added to STL
 template<class T, class... Args>
 inline std::unique_ptr<T> make_unique(Args&&... args)
 {
