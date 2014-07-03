@@ -68,25 +68,14 @@ namespace cyvmath
 
 	class Piece
 	{
-		public:
-			typedef std::map<CoordinateDcUqP, std::shared_ptr<Piece>, managed_less<CoordinateDcUqP>> PieceMap;
-
 		protected:
 			const PlayersColor _color;
 			const PieceType _type;
 
-			// position on the board
-			dc::unique_ptr<Coordinate> _coord;
-
-			// piece map with all pieces on the board
-			PieceMap& _map;
-
 		public:
-			Piece(PlayersColor color, PieceType type, dc::unique_ptr<Coordinate>&& coord, PieceMap& map)
+			Piece(PlayersColor color, PieceType type)
 				: _color(color)
 				, _type(type)
-				, _coord(std::move(coord))
-				, _map(map)
 			{ }
 
 			virtual ~Piece() = default;
@@ -101,19 +90,8 @@ namespace cyvmath
 				return _type;
 			}
 
-			CoordinateDcUqP getCoord() const
-			{
-				return _coord.clone();
-			}
-
 			virtual const MovementScope& getMovementScope() const = 0;
-
-			/// @return true if the move was valid, false otherwise
-			virtual bool moveTo(const CoordinateDcUqP&, bool checkMoveValidity) = 0;
 	};
-
-	typedef std::vector<std::shared_ptr<Piece>> PieceVec;
-	typedef Piece::PieceMap PieceMap;
 }
 
 #endif // _CYVMATH_PIECE_HPP_

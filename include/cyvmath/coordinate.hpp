@@ -17,26 +17,13 @@
 #ifndef _CYVMATH_COORDINATE_HPP_
 #define _CYVMATH_COORDINATE_HPP_
 
-#include <algorithm>
-#include <array>
-#include <functional>
-#include <ostream>
-#include <string>
-#include <stdexcept>
-#include <utility>
-#include <vector>
-#include <cassert>
-#include <cmath>
 #include <cstdint>
-#include <deepcopy_smart_ptr/unique_ptr.hpp>
 
 namespace cyvmath
 {
 	class Coordinate
 	{
 		protected:
-			DEEPCOPYABLE_ABSTRACT_BASE(Coordinate)
-
 			virtual bool isValid() const = 0;
 
 			operator bool() const
@@ -65,11 +52,6 @@ namespace cyvmath
 				return dump() < other.dump();
 			}
 	};
-
-	typedef std::unique_ptr<Coordinate> CoordinateUqP;
-	typedef std::shared_ptr<Coordinate> CoordinateShP;
-	typedef dc::unique_ptr<Coordinate> CoordinateDcUqP;
-	typedef std::vector<CoordinateDcUqP> CoordinateVec;
 }
 
 #endif // _CYVMATH_COORDINATE_HPP_

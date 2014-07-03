@@ -29,7 +29,7 @@ namespace cyvmath
 
 			for(auto& it : _activePieces)
 			{
-				if(outsideOwnSide(it.first->y()))
+				if(outsideOwnSide(it.first.y()))
 					return false;
 			}
 

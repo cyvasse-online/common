@@ -19,6 +19,8 @@
 
 #include <cyvmath/player.hpp>
 
+#include "piece.hpp"
+
 namespace cyvmath
 {
 	namespace mikelepage
@@ -28,6 +30,10 @@ namespace cyvmath
 			protected:
 				bool _dragonAlive;
 
+				PieceMap _activePieces;
+				PieceVec _inactivePieces;
+				PieceVec _allPieces;
+
 			public:
 				Player(PlayersColor color)
 					: cyvmath::Player(color)
@@ -35,6 +41,12 @@ namespace cyvmath
 				{ }
 
 				virtual ~Player() = default;
+
+				PieceMap& getActivePieces()
+				{ return _activePieces; }
+
+				PieceVec& getInactivePieces()
+				{ return _inactivePieces; }
 
 				virtual bool setupComplete() override;
 		};

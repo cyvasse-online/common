@@ -22,33 +22,44 @@
 #include <map>
 #include <memory>
 #include <utility>
+#include <make_unique.hpp>
 #include "common.hpp"
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
-		using cyvmath::PieceVec;
-		using cyvmath::PieceMap;
 		using cyvmath::MovementScope;
 
 		class Piece : public cyvmath::Piece
 		{
-			private:
-				bool moveToValid(Hexagon::Coordinate);
+			public:
+				typedef std::map<Coordinate, std::shared_ptr<Piece>> PieceMap;
+
+			protected:
+				// can be none, so this is a pointer
+				std::unique_ptr<Coordinate> _coord;
+				PieceMap& _pieceMap;
+
+				bool moveToValid(Coordinate);
 
 			public:
-				Piece(PlayersColor color, PieceType type, dc::unique_ptr<Coordinate>&& coord, PieceMap& map)
-					: cyvmath::Piece(color, type, std::move(coord), map)
+				Piece(PlayersColor color, PieceType type, std::unique_ptr<Coordinate> coord, PieceMap& map)
+					: cyvmath::Piece(color, type)
+					, _coord(std::move(coord))
+					, _pieceMap(map)
 				{ }
 
 				virtual ~Piece() = default;
 
 				virtual const MovementScope& getMovementScope() const final override;
-				virtual bool moveTo(const CoordinateDcUqP& coord, bool checkMoveValidity) override;
+				virtual bool moveTo(Coordinate, bool checkMoveValidity);
 
-				Hexagon::HexCoordinateVec getPossibleTargetTiles();
+				CoordinateVec getPossibleTargetTiles();
 		};
+
+		typedef Piece::PieceMap PieceMap;
+		typedef std::vector<std::shared_ptr<Piece>> PieceVec;
 	}
 }
 

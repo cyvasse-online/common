@@ -18,6 +18,7 @@
 #define _CYVMATH_MATCH_HPP_
 
 #include <map>
+#include <memory>
 #include "player.hpp"
 
 namespace cyvmath
@@ -25,14 +26,13 @@ namespace cyvmath
 	class Match
 	{
 		protected:
-			std::map<PlayersColor, std::shared_ptr<Player>> _players;
 			PlayersColor _activePlayer;
 
 			bool _setup;
 
 			Match(PlayersColor firstPlayer)
-				: _setup(true)
-				, _activePlayer(firstPlayer)
+				: _activePlayer(firstPlayer)
+				, _setup(true)
 			{ }
 
 		public:

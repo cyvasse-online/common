@@ -22,24 +22,21 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
-		bool Piece::moveToValid(Hexagon::Coordinate targetC)
+		bool Piece::moveToValid(Coordinate target)
 		{
-			auto startC = dynamic_cast<Hexagon::Coordinate*>(_coord.get());
-			assert(startC);
-
 			auto scope = getMovementScope();
 
 			int_least8_t distance = -1;
 			switch(scope.first)
 			{
 				case MOVEMENT_ORTHOGONAL:
-					distance = startC->getDistanceOrthogonal(targetC);
+					distance = _coord->getDistanceOrthogonal(target);
 					break;
 				case MOVEMENT_DIAGONAL:
-					distance = startC->getDistanceDiagonal(targetC);
+					distance = _coord->getDistanceDiagonal(target);
 					break;
 				case MOVEMENT_HEXAGONAL:
-					// distance = startC->getDistanceHexagonalLine(..., targetC);
+					// distance = _coord->getDistanceHexagonalLine(..., target);
 					break;
 				// disable compiler warning about unhandled values
 				default: { }
@@ -69,53 +66,53 @@ namespace cyvmath
 			return data.at(_type);
 		}
 
-		bool Piece::moveTo(const CoordinateDcUqP& coord, bool checkMoveValidity)
+		bool Piece::moveTo(Coordinate target, bool checkMoveValidity)
 		{
-			if(checkMoveValidity)
+			if(checkMoveValidity && !moveToValid(target))
+				return false;
+
+			PieceMap::iterator it = _pieceMap.find(*_coord);
+			if(it != _pieceMap.end())
 			{
-				auto tmpC = dynamic_cast<Hexagon::Coordinate*>(coord.get());
-				assert(tmpC);
+				// moving a piece that's already on the board
+				// this is always the case until the dragon
+				// and promotion stuff is added to the game.
 
-				if(!moveToValid(*tmpC)) return false;
+				_coord = make_unique<Coordinate>(target);
+
+				assert(it->second.get() == this);
+				// add to new position in map before removing old
+				// entry to ensure shared_ptr doesn't free the data
+				std::pair<PieceMap::iterator, bool> res = _pieceMap.emplace(*_coord, it->second);
+
+				if(!res.second) // there was already a piece on the target tile
+					return false;
 			}
+			// else ... [TODO]
 
-			PieceMap::iterator it = _map.find(_coord);
-			assert(it != _map.end());
-
-			_coord = coord.clone();
-
-			assert(it->second.get() == this);
-			// add to new position in map before removing old
-			// entry to ensure shared_ptr doesn't free the data
-			std::pair<PieceMap::iterator, bool> res = _map.emplace(coord.clone(), it->second);
-			_map.erase(it);
-
-			// assert there was no other piece already on coord.
-			// the check for that is probably better to do outside this
-			// functions, but this assertion may be removed in the future.
-			assert(res.second);
+			if(it != _pieceMap.end())
+				_pieceMap.erase(it);
 
 			return true;
 		}
 
-		Hexagon::HexCoordinateVec Piece::getPossibleTargetTiles()
+		CoordinateVec Piece::getPossibleTargetTiles()
 		{
 			auto scope = getMovementScope();
-			auto coord = dynamic_cast<Hexagon::Coordinate*>(_coord.get());
 
 			switch(scope.first)
 			{
 				case MOVEMENT_ORTHOGONAL:
-					return scope.second ? coord->getCoordinatesOrthogonal(scope.second)
-						: coord->getCoordinatesOrthogonal();
+					return scope.second ? _coord->getCoordinatesOrthogonal(scope.second)
+						: _coord->getCoordinatesOrthogonal();
 				case MOVEMENT_DIAGONAL:
-					return scope.second ? coord->getCoordinatesDiagonal(scope.second)
-						: coord->getCoordinatesDiagonal();
+					return scope.second ? _coord->getCoordinatesDiagonal(scope.second)
+						: _coord->getCoordinatesDiagonal();
 				case MOVEMENT_HEXAGONAL:
-				//	return scope.second ? coord->getCoordinatesHexagonalLine(..., scope.second)
-				//		: coord->getCoordinatesHexagonalLine(...);
+				//	return scope.second ? _coord->getCoordinatesHexagonalLine(..., scope.second)
+				//		: _coord->getCoordinatesHexagonalLine(...);
 				default:
-					return Hexagon::HexCoordinateVec();
+					return CoordinateVec();
 			}
 		}
 	}

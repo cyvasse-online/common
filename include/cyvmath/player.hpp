@@ -17,7 +17,7 @@
 #ifndef _CYVMATH_PLAYER_HPP_
 #define _CYVMATH_PLAYER_HPP_
 
-#include "piece.hpp"
+#include "players_color.hpp"
 
 namespace cyvmath
 {
@@ -26,10 +26,6 @@ namespace cyvmath
 		protected:
 			const PlayersColor _color;
 
-			PieceMap _activePieces;
-			PieceVec _inactivePieces;
-			PieceVec _allPieces;
-
 			Player(PlayersColor color)
 				: _color(color)
 			{ }
@@ -37,11 +33,6 @@ namespace cyvmath
 			virtual ~Player() = default;
 
 		public:
-			const PieceMap& getActivePieces() const
-			{
-				return _activePieces;
-			}
-
 			virtual bool setupComplete() = 0;
 	};
 }

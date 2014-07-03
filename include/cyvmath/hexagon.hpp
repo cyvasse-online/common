@@ -55,7 +55,7 @@ namespace cyvmath
 			class Coordinate : public cyvmath::Coordinate
 			{
 				public:
-					typedef std::vector<Coordinate> HexCoordinateVec;
+					typedef std::vector<Coordinate> CoordinateVec;
 					typedef std::pair<int_least8_t, int_least8_t> Movement;
 					typedef std::vector<Movement> MovementVec;
 
@@ -67,8 +67,6 @@ namespace cyvmath
 						: _x(x)
 						, _y(y)
 					{ }
-
-					DEEPCOPYABLE_DERIVED(Coordinate)
 
 					static bool isValid(int_least8_t x, int_least8_t y)
 					{
@@ -83,9 +81,9 @@ namespace cyvmath
 						return isValid(_x, _y);
 					}
 
-					HexCoordinateVec getCoordinates(const MovementVec& steps, int_least8_t distance) const
+					CoordinateVec getCoordinates(const MovementVec& steps, int_least8_t distance) const
 					{
-						HexCoordinateVec vec;
+						CoordinateVec vec;
 
 						for(auto& step : steps)
 						{
@@ -167,7 +165,7 @@ namespace cyvmath
 						The default value is the maximal distance possible on
 						this hexagon (no distance limit).
 					 */
-					HexCoordinateVec getCoordinatesOrthogonal(uint_least8_t distance = ((l - 1) * 2)) const
+					CoordinateVec getCoordinatesOrthogonal(uint_least8_t distance = ((l - 1) * 2)) const
 					{
 						static const MovementVec steps = {
 								{-1,  1}, // top left
@@ -213,7 +211,7 @@ namespace cyvmath
 						The default value is the maximal distance possible on
 						this hexagon (no distance limit).
 					 */
-					HexCoordinateVec getCoordinatesDiagonal(uint_least8_t distance = (l - 1)) const
+					CoordinateVec getCoordinatesDiagonal(uint_least8_t distance = (l - 1)) const
 					{
 						static const MovementVec steps = {
 								{-1,  2}, // top
@@ -258,10 +256,10 @@ namespace cyvmath
 						return 0;
 					}
 
-					HexCoordinateVec getCoordinatesHexagonalLine(Coordinate center,
+					CoordinateVec getCoordinatesHexagonalLine(Coordinate center,
 						uint_least8_t distance = ((l - 1) * 6 - 2))
 					{
-						return HexCoordinateVec();
+						return CoordinateVec();
 					}
 
 					bool set(int_least8_t x, int_least8_t y)
@@ -326,7 +324,7 @@ namespace cyvmath
 					}
 			};
 
-			typedef typename Coordinate::HexCoordinateVec HexCoordinateVec;
+			typedef typename Coordinate::CoordinateVec CoordinateVec;
 
 			/// The edge length of the hexagon (template parameter)
 			static constexpr uint_least8_t edgeLength = l;
@@ -335,9 +333,9 @@ namespace cyvmath
 			static constexpr uint_least16_t tileCount = (l * (l - 1)) / 2 * 6 + 1;
 
 			/// Get a container with all possible coordinates in this hexagon
-			static const HexCoordinateVec& getAllCoordinates()
+			static const CoordinateVec& getAllCoordinates()
 			{
-				static HexCoordinateVec vec;
+				static CoordinateVec vec;
 
 				if(vec.empty())
 				{
