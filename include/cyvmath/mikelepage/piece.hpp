@@ -52,10 +52,13 @@ namespace cyvmath
 
 				virtual ~Piece() = default;
 
-				virtual const MovementScope& getMovementScope() const final override;
-				virtual bool moveTo(Coordinate, bool checkMoveValidity);
+				std::unique_ptr<Coordinate> getCoord()
+				{ return make_unique(_coord); }
 
 				CoordinateVec getPossibleTargetTiles();
+
+				virtual const MovementScope& getMovementScope() const final override;
+				virtual bool moveTo(Coordinate, bool checkMoveValidity);
 		};
 
 		typedef Piece::PieceMap PieceMap;

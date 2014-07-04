@@ -30,9 +30,12 @@ namespace cyvmath
 				: _color(color)
 			{ }
 
+		public:
 			virtual ~Player() = default;
 
-		public:
+			PlayersColor getColor()
+			{ return _color; }
+
 			virtual bool setupComplete() = 0;
 	};
 }

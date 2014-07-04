@@ -80,15 +80,11 @@ namespace cyvmath
 
 			virtual ~Piece() = default;
 
-			PlayersColor getPlayersColor() const
-			{
-				return _color;
-			}
+			PlayersColor getColor() const
+			{ return _color; }
 
 			PieceType getPieceType() const
-			{
-				return _type;
-			}
+			{ return _type; }
 
 			virtual const MovementScope& getMovementScope() const = 0;
 	};
