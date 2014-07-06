@@ -22,7 +22,25 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
-		bool Piece::moveToValid(Coordinate target)
+		const MovementVec Piece::stepsOrthogonal = {
+				{-1,  1}, // top left
+				{ 0,  1}, // top right
+				{ 1,  0}, // right
+				{ 1, -1}, // bottom right
+				{ 0, -1}, // bottom left
+				{-1,  0}  // left
+			};
+
+		const MovementVec Piece::stepsDiagonal = {
+				{-1,  2}, // top
+				{ 1,  1}, // top right
+				{ 2, -1}, // bottom right
+				{ 1, -2}, // bottom
+				{-1, -1}, // bottom left
+				{-2,  1}  // top left
+			};
+
+		bool Piece::moveToValid(Coordinate target) const
 		{
 			auto scope = getMovementScope();
 
@@ -48,6 +66,41 @@ namespace cyvmath
 			return true;
 		}
 
+		CoordinateVec Piece::getPossibleTargetTiles(const MovementVec& steps, int_least8_t distance) const
+		{
+			CoordinateVec vec;
+
+			for(auto& step : steps)
+			{
+				auto tmpCoord = make_unique<Coordinate>(*_coord);
+				for(auto i = 0; i < distance; i++)
+				{
+					assert(tmpCoord);
+					tmpCoord = Coordinate::create((tmpCoord->x() + step.first), (tmpCoord->y() + step.second));
+
+					// if one step into this direction results in a
+					// invalid coordinate, all further ones do too
+					if(!tmpCoord)
+						break;
+
+					// the same is true for a piece blocking the way
+					// but when it's an opponents piece, then add the
+					// tile to the return vec before ending the loop
+					auto it = _activePieces.find(*tmpCoord);
+					if(it != _activePieces.end())
+					{
+						if(it->second->getColor() != _color)
+							vec.push_back(*tmpCoord);
+						break;
+					}
+
+					vec.push_back(*tmpCoord);
+				}
+			}
+
+			return vec;
+		}
+
 		const MovementScope& Piece::getMovementScope() const
 		{
 			static const std::map<PieceType, MovementScope> data {
@@ -71,8 +124,8 @@ namespace cyvmath
 			if(checkMoveValidity && !moveToValid(target))
 				return false;
 
-			PieceMap::iterator it = _pieceMap.find(*_coord);
-			if(it != _pieceMap.end())
+			PieceMap::iterator it = _activePieces.find(*_coord);
+			if(it != _activePieces.end())
 			{
 				// moving a piece that's already on the board
 				// this is always the case until the dragon
@@ -83,15 +136,15 @@ namespace cyvmath
 				assert(it->second.get() == this);
 				// add to new position in map before removing old
 				// entry to ensure shared_ptr doesn't free the data
-				std::pair<PieceMap::iterator, bool> res = _pieceMap.emplace(*_coord, it->second);
+				std::pair<PieceMap::iterator, bool> res = _activePieces.emplace(*_coord, it->second);
 
 				if(!res.second) // there was already a piece on the target tile
 					return false;
 			}
 			// else ... [TODO]
 
-			if(it != _pieceMap.end())
-				_pieceMap.erase(it);
+			if(it != _activePieces.end())
+				_activePieces.erase(it);
 
 			return true;
 		}
@@ -99,20 +152,31 @@ namespace cyvmath
 		CoordinateVec Piece::getPossibleTargetTiles()
 		{
 			auto scope = getMovementScope();
+			auto distance = scope.second;
 
 			switch(scope.first)
 			{
 				case MOVEMENT_ORTHOGONAL:
-					return scope.second ? _coord->getCoordinatesOrthogonal(scope.second)
-						: _coord->getCoordinatesOrthogonal();
+					if(!distance)
+						distance = (Hexagon::edgeLength - 1) * 2;
+
+					return getPossibleTargetTiles(stepsOrthogonal, distance);
+					break;
 				case MOVEMENT_DIAGONAL:
-					return scope.second ? _coord->getCoordinatesDiagonal(scope.second)
-						: _coord->getCoordinatesDiagonal();
-				case MOVEMENT_HEXAGONAL:
-				//	return scope.second ? _coord->getCoordinatesHexagonalLine(..., scope.second)
-				//		: _coord->getCoordinatesHexagonalLine(...);
+					if(!distance)
+						distance = Hexagon::edgeLength - 1;
+
+					return getPossibleTargetTiles(stepsDiagonal, distance);
+					break;
+				// case MOVEMENT_HEXAGONAL:
+				//	if(!distance)
+				//		distance = (Hexagon::edgeLength - 1) * 2;
+				//
+				//	return getPossibleTargetTiles(stepsOrthogonal, distance);
+					break;
 				default:
 					return CoordinateVec();
+					break;
 			}
 		}
 	}

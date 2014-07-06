@@ -31,6 +31,7 @@ namespace cyvmath
 		{
 			protected:
 				std::map<PlayersColor, std::shared_ptr<Player>> _players;
+				PieceMap _activePieces;
 
 				Match(PlayersColor firstPlayer)
 					: cyvmath::Match(firstPlayer)

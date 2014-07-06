@@ -30,20 +30,18 @@ namespace cyvmath
 			protected:
 				bool _dragonAlive;
 
-				PieceMap _activePieces;
+				PieceMap& _activePieces;
 				PieceVec _inactivePieces;
 				PieceVec _allPieces;
 
 			public:
-				Player(PlayersColor color)
+				Player(PlayersColor color, PieceMap& activePieces)
 					: cyvmath::Player(color)
+					, _activePieces(activePieces)
 					, _dragonAlive(true)
 				{ }
 
 				virtual ~Player() = default;
-
-				PieceMap& getActivePieces()
-				{ return _activePieces; }
 
 				PieceVec& getInactivePieces()
 				{ return _inactivePieces; }

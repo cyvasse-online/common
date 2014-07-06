@@ -51,14 +51,13 @@ namespace cyvmath
 			Hexagon() = delete;
 
 		public:
+			class Coordinate;
+
+			typedef std::vector<Coordinate> CoordinateVec;
+
 			/// A coordinate on the hexboard (see mockup/hexboard-coordinates-internal.svg)
 			class Coordinate : public cyvmath::Coordinate
 			{
-				public:
-					typedef std::vector<Coordinate> CoordinateVec;
-					typedef std::pair<int_least8_t, int_least8_t> Movement;
-					typedef std::vector<Movement> MovementVec;
-
 				private:
 					int_least8_t _x;
 					int_least8_t _y;
@@ -79,30 +78,6 @@ namespace cyvmath
 					bool isValid() const
 					{
 						return isValid(_x, _y);
-					}
-
-					CoordinateVec getCoordinates(const MovementVec& steps, int_least8_t distance) const
-					{
-						CoordinateVec vec;
-
-						for(auto& step : steps)
-						{
-							Coordinate tmpCoord(*this);
-							for(auto i = 0; i < distance; i++)
-							{
-								// explicit cast to int_least8_t to disable compiler warning
-								tmpCoord = {int_least8_t (tmpCoord._x + step.first), int_least8_t (tmpCoord._y + step.second)};
-
-								// if one step into this direction results in a
-								// invalid coordinate, all further ones do too
-								if(!tmpCoord)
-									break;
-
-								vec.push_back(tmpCoord);
-							}
-						}
-
-						return vec;
 					}
 
 				public:
@@ -159,26 +134,6 @@ namespace cyvmath
 						return getDistance(other);
 					}
 
-					/** Get all coordinates reachable in one orthogonal move of
-						maximally the provided distance of tiles
-
-						The default value is the maximal distance possible on
-						this hexagon (no distance limit).
-					 */
-					CoordinateVec getCoordinatesOrthogonal(uint_least8_t distance = ((l - 1) * 2)) const
-					{
-						static const MovementVec steps = {
-								{-1,  1}, // top left
-								{ 0,  1}, // top right
-								{ 1,  0}, // right
-								{ 1, -1}, // bottom right
-								{ 0, -1}, // bottom left
-								{-1,  0}  // left
-							};
-
-						return getCoordinates(steps, distance);
-					}
-
 					/// Check if the given coordinate is reachable in one diagonal move
 					bool isDiagonal(Coordinate other) const
 					{
@@ -203,26 +158,6 @@ namespace cyvmath
 							return -1;
 
 						return getDistance(other) / 2;
-					}
-
-					/** Get all coordinates reachable in one diagonal move of
-						maximally the provided distance of tiles
-
-						The default value is the maximal distance possible on
-						this hexagon (no distance limit).
-					 */
-					CoordinateVec getCoordinatesDiagonal(uint_least8_t distance = (l - 1)) const
-					{
-						static const MovementVec steps = {
-								{-1,  2}, // top
-								{ 1,  1}, // top right
-								{ 2, -1}, // bottom right
-								{ 1, -2}, // bottom
-								{-1, -1}, // bottom left
-								{-2,  1}  // top left
-							};
-
-						return getCoordinates(steps, distance);
 					}
 
 					/** Get the distance to another coordinate with the same distance to
@@ -254,12 +189,6 @@ namespace cyvmath
 						auto cornerCoords = getCoordinates(steps, 1);*/
 
 						return 0;
-					}
-
-					CoordinateVec getCoordinatesHexagonalLine(Coordinate center,
-						uint_least8_t distance = ((l - 1) * 6 - 2))
-					{
-						return CoordinateVec();
 					}
 
 					bool set(int_least8_t x, int_least8_t y)
@@ -323,8 +252,6 @@ namespace cyvmath
 						return os;
 					}
 			};
-
-			typedef typename Coordinate::CoordinateVec CoordinateVec;
 
 			/// The edge length of the hexagon (template parameter)
 			static constexpr uint_least8_t edgeLength = l;
