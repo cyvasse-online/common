@@ -17,7 +17,7 @@
 #ifndef _CYVMATH_PLAYERS_COLOR_HPP_
 #define _CYVMATH_PLAYERS_COLOR_HPP_
 
-#include "enum_str.hpp"
+#include <enum_str.hpp>
 
 namespace cyvmath
 {

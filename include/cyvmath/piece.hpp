@@ -20,8 +20,8 @@
 #include <map>
 #include <memory>
 #include <utility>
+#include <enum_str.hpp>
 #include "coordinate.hpp"
-#include "enum_str.hpp"
 #include "players_color.hpp"
 
 namespace cyvmath
