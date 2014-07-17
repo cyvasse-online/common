@@ -26,14 +26,14 @@ namespace cyvmath
 		protected:
 			const PlayersColor _color;
 
-			Player(PlayersColor color)
+			constexpr Player(PlayersColor color)
 				: _color(color)
 			{ }
 
 		public:
 			virtual ~Player() = default;
 
-			PlayersColor getColor()
+			PlayersColor getColor() const
 			{ return _color; }
 
 			virtual bool setupComplete() = 0;

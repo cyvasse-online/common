@@ -30,7 +30,7 @@ namespace cyvmath
 
 			bool _setup;
 
-			Match(PlayersColor firstPlayer)
+			constexpr Match(PlayersColor firstPlayer)
 				: _activePlayer(firstPlayer)
 				, _setup(true)
 			{ }

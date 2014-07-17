@@ -29,6 +29,7 @@
 #include <vector>
 #include <cassert>
 #include <cmath>
+#include <make_unique.hpp>
 
 namespace cyvmath
 {
@@ -62,12 +63,12 @@ namespace cyvmath
 					int_least8_t _x;
 					int_least8_t _y;
 
-					Coordinate(int_least8_t x, int_least8_t y)
+					constexpr Coordinate(int_least8_t x, int_least8_t y)
 						: _x(x)
 						, _y(y)
 					{ }
 
-					static bool isValid(int_least8_t x, int_least8_t y)
+					static constexpr bool isValid(int_least8_t x, int_least8_t y)
 					{
 						return x >= 0 && x < (l * 2 - 1) &&
 							   y >= 0 && y < (l * 2 - 1) &&
@@ -75,7 +76,7 @@ namespace cyvmath
 							   (x + y) <= (l - 1) * 3;
 					}
 
-					bool isValid() const
+					constexpr bool isValid() const
 					{
 						return isValid(_x, _y);
 					}
@@ -83,22 +84,22 @@ namespace cyvmath
 				public:
 					virtual ~Coordinate() = default;
 
-					int_least8_t x() const final override
+					constexpr int_least8_t x() const final override
 					{
 						return _x;
 					}
 
-					int_least8_t y() const final override
+					constexpr int_least8_t y() const final override
 					{
 						return _y;
 					}
 
-					int_least8_t z() const
+					constexpr int_least8_t z() const
 					{
 						return -(_x + _y);
 					}
 
-					int_least16_t dump() const final override
+					constexpr int_least16_t dump() const final override
 					{
 						return (_x << 8) | _y;
 					}
@@ -106,7 +107,7 @@ namespace cyvmath
 					/** Get the distance to another coordinate in form of the amount
 						of single moves to adjacent tiles required to move there
 					 */
-					int_least8_t getDistance(Coordinate other) const
+					constexpr int_least8_t getDistance(Coordinate other) const
 					{
 						// Concept from http://keekerdc.com/2011/03/hexagon-grids-coordinate-systems-and-distance-calculations/
 						// I have no idea why the maximum of x-, y- and z-difference
@@ -115,7 +116,7 @@ namespace cyvmath
 					}
 
 					/// Check if the given coordinate is reachable in one orthogonal move
-					bool isOrthogonal(Coordinate other) const
+					constexpr bool isOrthogonal(Coordinate other) const
 					{
 						return _x == other._x || _y == other._y || z() == other.z();
 					}
@@ -126,24 +127,28 @@ namespace cyvmath
 						An orthogonal move is a straight move in one of the six
 						directions of the neighboring hex-tiles.
 					 */
-					int_least8_t getDistanceOrthogonal(Coordinate other) const
+					constexpr int_least8_t getDistanceOrthogonal(Coordinate other) const
 					{
-						if(!isOrthogonal(other))
-							return -1;
-
-						return getDistance(other);
+						return isOrthogonal(other) ? getDistance(other) : -1;
 					}
 
 					/// Check if the given coordinate is reachable in one diagonal move
-					bool isDiagonal(Coordinate other) const
+					constexpr bool isDiagonal(Coordinate other) const
 					{
-						int_least8_t dX = _x - other._x;
-						int_least8_t dY = _y - other._y;
-						int_least8_t dZ = z() - other.z();
+						// until C++14, this has to be implemented using
+						// macros because C++11 doesn't allow constexpr
+						// functions to include variable declarations
+						#define dX _x - other._x
+						#define dY _y - other._y
+						#define dZ z() - other.z()
 
 						return dX == dY ||
 							   dX == dZ ||
 							   dY == dZ;
+
+						#undef dX
+						#undef dY
+						#undef dZ
 					}
 
 					/** Get the diagonal distance to a coordinate, or -1 if
@@ -152,12 +157,9 @@ namespace cyvmath
 						A diagonal move is a straight move in one of the six
 						directions of the lines between the neighboring hex-tiles.
 					 */
-					int_least8_t getDistanceDiagonal(Coordinate other) const
+					constexpr int_least8_t getDistanceDiagonal(Coordinate other) const
 					{
-						if(!isDiagonal(other))
-							return -1;
-
-						return getDistance(other) / 2;
+						return isDiagonal(other) ? getDistance(other) / 2 : -1;
 					}
 
 					/** Get the distance to another coordinate with the same distance to
@@ -207,21 +209,17 @@ namespace cyvmath
 					/// @{
 					/// Create a Coordinate object from an x and an y
 					/// If the coordinte is invalid, return nullptr
-					static std::unique_ptr<Coordinate> create(int_least8_t x, int_least8_t y)
+					static constexpr std::unique_ptr<Coordinate> create(int_least8_t x, int_least8_t y)
 					{
-						if(isValid(x, y))
-							// can't use make_unique because private constructor has to be called directly
-							return std::unique_ptr<Coordinate>(new Coordinate(x, y));
-
-						return nullptr;
+						// can't use make_unique because private constructor has to be called directly
+						return isValid(x, y)
+							? std::unique_ptr<Coordinate>(new Coordinate(x, y))
+							: nullptr;
 					}
 
-					static std::unique_ptr<Coordinate> create(std::pair<int_least8_t, int_least8_t> c)
+					static constexpr std::unique_ptr<Coordinate> create(std::pair<int_least8_t, int_least8_t> c)
 					{
-						if(isValid(c.first, c.second))
-							return make_unique<Coordinate>(c.first, c.second);
-
-						return nullptr;
+						return create(c.first, c.second);
 					}
 					/// @}
 
