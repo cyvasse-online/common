@@ -23,13 +23,13 @@ namespace cyvmath
 {
 	enum RuleSet
 	{
-		RULESET_UNDEFINED,
-		RULESET_MIKELEPAGE
+		RULE_SET_UNDEFINED,
+		RULE_SET_MIKELEPAGE
 	};
 
 	ENUM_STR(RuleSet, ({
-		{RULESET_UNDEFINED, "undefined"},
-		{RULESET_MIKELEPAGE, "mikelepage"}
+		{RULE_SET_UNDEFINED, "undefined"},
+		{RULE_SET_MIKELEPAGE, "mikelepage"}
 	}))
 }
 

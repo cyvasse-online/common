@@ -14,36 +14,20 @@
 * If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _CYVMATH_MIKELEPAGE_MATCH_HPP_
-#define _CYVMATH_MIKELEPAGE_MATCH_HPP_
+#ifndef _RULE_SET_CREATE_
+#define _RULE_SET_CREATE_
 
-#include <cyvmath/match.hpp>
-
-#include <map>
 #include <memory>
-#include "player.hpp"
+#include "players_color.hpp"
+#include "rule_sets.hpp"
 
 namespace cyvmath
 {
-	namespace mikelepage
-	{
-		class Match : public cyvmath::Match
-		{
-			protected:
-				std::map<PlayersColor, std::shared_ptr<Player>> _players;
-				PieceMap _activePieces;
+	class Match;
+	class Player;
 
-			public:
-				Match()
-					: cyvmath::Match(PLAYER_WHITE)
-				{ }
-
-				PieceMap& getActivePieces()
-				{ return _activePieces; }
-
-				virtual ~Match() = default;
-		};
-	}
+	std::unique_ptr<Match> createMatch(RuleSet);
+	std::unique_ptr<Player> createPlayer(PlayersColor, Match&);
 }
 
-#endif // _CYVMATH_MIKELEPAGE_MATCH_HPP_
+#endif // _RULE_SET_CREATE_
