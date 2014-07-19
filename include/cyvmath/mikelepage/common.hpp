@@ -44,7 +44,7 @@ namespace cyvmath
 
 		typedef Hexagon<6> Hexagon;
 		typedef Hexagon::Coordinate Coordinate;
-		typedef Hexagon::CoordinateVec CoordinateVec;
+		typedef Hexagon::CoordinateSet CoordinateSet;
 	}
 }
 

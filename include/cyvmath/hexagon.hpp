@@ -23,10 +23,10 @@
 #include <array>
 #include <functional>
 #include <ostream>
+#include <set>
 #include <string>
 #include <stdexcept>
 #include <utility>
-#include <vector>
 #include <cassert>
 #include <cmath>
 #include <make_unique.hpp>
@@ -52,10 +52,6 @@ namespace cyvmath
 			Hexagon() = delete;
 
 		public:
-			class Coordinate;
-
-			typedef std::vector<Coordinate> CoordinateVec;
-
 			/// A coordinate on the hexboard (see mockup/hexboard-coordinates-internal.svg)
 			class Coordinate : public cyvmath::Coordinate
 			{
@@ -251,6 +247,8 @@ namespace cyvmath
 					}
 			};
 
+			typedef std::set<Coordinate> CoordinateSet;
+
 			/// The edge length of the hexagon (template parameter)
 			static constexpr uint_least8_t edgeLength = l;
 
@@ -258,14 +256,12 @@ namespace cyvmath
 			static constexpr uint_least16_t tileCount = (l * (l - 1)) / 2 * 6 + 1;
 
 			/// Get a container with all possible coordinates in this hexagon
-			static const CoordinateVec& getAllCoordinates()
+			static const CoordinateSet& getAllCoordinates()
 			{
-				static CoordinateVec vec;
+				static CoordinateSet set;
 
-				if(vec.empty())
+				if(set.empty())
 				{
-					vec.reserve(tileCount);
-
 					for(auto x = 0; x < (2 * l) - 1; x++)
 					{
 						auto yBegin = (x < (l - 1)) ? (l - 1 - x) : 0;
@@ -276,12 +272,13 @@ namespace cyvmath
 							std::unique_ptr<Coordinate> c = Coordinate::create(x, y);
 							assert(c);
 
-							vec.push_back(*c);
+							auto res = set.insert(*c);
+							assert(res.second);
 						}
 					}
 				}
 
-				return vec;
+				return set;
 			}
 	};
 }

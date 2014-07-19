@@ -31,6 +31,7 @@ namespace cyvmath
 	{
 		using cyvmath::MovementScope;
 
+		class Match;
 		class Piece;
 
 		typedef std::map<Coordinate, std::shared_ptr<Piece>> PieceMap;
@@ -47,16 +48,16 @@ namespace cyvmath
 			protected:
 				// can be none, so this is a pointer
 				std::unique_ptr<Coordinate> _coord;
-				PieceMap& _activePieces;
+				Match& _match;
 
 				bool moveToValid(Coordinate) const;
-				CoordinateVec getPossibleTargetTiles(const MovementVec&, int_least8_t distance) const;
+				CoordinateSet getPossibleTargetTiles(const MovementVec&, int_least8_t distance) const;
 
 			public:
-				Piece(PlayersColor color, PieceType type, std::unique_ptr<Coordinate> coord, PieceMap& activePieces)
+				Piece(PlayersColor color, PieceType type, std::unique_ptr<Coordinate> coord, Match& match)
 					: cyvmath::Piece(color, type)
 					, _coord(std::move(coord))
-					, _activePieces(activePieces)
+					, _match(match)
 				{ }
 
 				virtual ~Piece() = default;
@@ -64,7 +65,7 @@ namespace cyvmath
 				std::unique_ptr<Coordinate> getCoord()
 				{ return make_unique(_coord); }
 
-				CoordinateVec getPossibleTargetTiles();
+				CoordinateSet getPossibleTargetTiles();
 
 				virtual const MovementScope& getMovementScope() const final override;
 				virtual bool moveTo(Coordinate, bool checkMoveValidity);

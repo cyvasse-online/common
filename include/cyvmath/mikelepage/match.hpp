@@ -19,8 +19,11 @@
 
 #include <cyvmath/match.hpp>
 
+#include <initializer_list>
 #include <map>
 #include <memory>
+#include <utility>
+#include "common.hpp"
 #include "player.hpp"
 
 namespace cyvmath
@@ -31,7 +34,9 @@ namespace cyvmath
 		{
 			protected:
 				std::map<PlayersColor, std::shared_ptr<Player>> _players;
+
 				PieceMap _activePieces;
+				std::map<PlayersColor, Coordinate> _fortressPositions;
 
 			public:
 				Match()
@@ -40,6 +45,9 @@ namespace cyvmath
 
 				PieceMap& getActivePieces()
 				{ return _activePieces; }
+
+				std::map<PlayersColor, Coordinate>& getFortressPositions()
+				{ return _fortressPositions; }
 
 				virtual ~Match() = default;
 		};
