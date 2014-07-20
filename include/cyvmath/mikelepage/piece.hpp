@@ -21,7 +21,7 @@
 
 #include <map>
 #include <memory>
-#include <utility>
+#include <valarray>
 #include <make_unique.hpp>
 #include "common.hpp"
 
@@ -32,18 +32,15 @@ namespace cyvmath
 		using cyvmath::MovementScope;
 
 		class Match;
-		class Piece;
 
-		typedef std::map<Coordinate, std::shared_ptr<Piece>> PieceMap;
-		typedef std::vector<std::shared_ptr<Piece>> PieceVec;
-		typedef std::pair<int_least8_t, int_least8_t> Movement;
-		typedef std::vector<Movement> MovementVec;
+		typedef std::vector<std::valarray<int_least8_t>> MovementVec;
 
 		class Piece : public cyvmath::Piece
 		{
 			public:
 				static const MovementVec stepsOrthogonal;
 				static const MovementVec stepsDiagonal;
+				static const MovementVec stepsHexagonalLine;
 
 			protected:
 				// can be none, so this is a pointer
@@ -62,14 +59,17 @@ namespace cyvmath
 
 				virtual ~Piece() = default;
 
-				std::unique_ptr<Coordinate> getCoord()
+				std::unique_ptr<Coordinate> getCoord() const
 				{ return make_unique(_coord); }
 
-				CoordinateSet getPossibleTargetTiles();
+				CoordinateSet getPossibleTargetTiles() const;
 
 				virtual const MovementScope& getMovementScope() const final override;
 				virtual bool moveTo(Coordinate, bool checkMoveValidity);
 		};
+
+		typedef std::map<Coordinate, std::shared_ptr<Piece>> PieceMap;
+		typedef std::vector<std::shared_ptr<Piece>> PieceVec;
 	}
 }
 

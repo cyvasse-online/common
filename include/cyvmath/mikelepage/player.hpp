@@ -37,8 +37,8 @@ namespace cyvmath
 			public:
 				Player(PlayersColor color, PieceMap& activePieces)
 					: cyvmath::Player(color)
-					, _activePieces(activePieces)
 					, _dragonAlive(true)
+					, _activePieces(activePieces)
 				{ }
 
 				virtual ~Player() = default;

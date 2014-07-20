@@ -26,7 +26,7 @@ namespace cyvmath
 		protected:
 			virtual bool isValid() const = 0;
 
-			operator bool() const
+			explicit operator bool() const
 			{
 				return isValid();
 			}

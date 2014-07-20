@@ -83,7 +83,7 @@ namespace cyvmath
 			PlayersColor getColor() const
 			{ return _color; }
 
-			PieceType getPieceType() const
+			PieceType getType() const
 			{ return _type; }
 
 			virtual const MovementScope& getMovementScope() const = 0;

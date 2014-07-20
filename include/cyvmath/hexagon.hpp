@@ -26,7 +26,7 @@
 #include <set>
 #include <string>
 #include <stdexcept>
-#include <utility>
+#include <valarray>
 #include <cassert>
 #include <cmath>
 #include <make_unique.hpp>
@@ -213,9 +213,10 @@ namespace cyvmath
 							: nullptr;
 					}
 
-					static constexpr std::unique_ptr<Coordinate> create(std::pair<int_least8_t, int_least8_t> c)
+					static std::unique_ptr<Coordinate> create(std::valarray<int_least8_t> a)
 					{
-						return create(c.first, c.second);
+						assert(a.size() == 2);
+						return create(a[0], a[1]);
 					}
 					/// @}
 

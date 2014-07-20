@@ -22,7 +22,6 @@
 #include <initializer_list>
 #include <map>
 #include <memory>
-#include <utility>
 #include "common.hpp"
 #include "player.hpp"
 
@@ -46,7 +45,7 @@ namespace cyvmath
 				PieceMap& getActivePieces()
 				{ return _activePieces; }
 
-				std::map<PlayersColor, Coordinate>& getFortressPositions()
+				const std::map<PlayersColor, Coordinate>& getFortressPositions() const
 				{ return _fortressPositions; }
 
 				virtual ~Match() = default;
