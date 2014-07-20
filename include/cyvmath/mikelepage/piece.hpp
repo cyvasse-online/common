@@ -22,6 +22,7 @@
 #include <map>
 #include <memory>
 #include <valarray>
+#include <vector>
 #include <make_unique.hpp>
 #include "common.hpp"
 

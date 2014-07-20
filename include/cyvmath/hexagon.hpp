@@ -72,7 +72,7 @@ namespace cyvmath
 							   (x + y) <= (l - 1) * 3;
 					}
 
-					constexpr bool isValid() const
+					bool isValid() const
 					{
 						return isValid(_x, _y);
 					}
@@ -80,12 +80,12 @@ namespace cyvmath
 				public:
 					virtual ~Coordinate() = default;
 
-					constexpr int_least8_t x() const final override
+					int_least8_t x() const final override
 					{
 						return _x;
 					}
 
-					constexpr int_least8_t y() const final override
+					int_least8_t y() const final override
 					{
 						return _y;
 					}
@@ -95,7 +95,7 @@ namespace cyvmath
 						return -(_x + _y);
 					}
 
-					constexpr int_least16_t dump() const final override
+					int_least16_t dump() const final override
 					{
 						return (_x << 8) | _y;
 					}
