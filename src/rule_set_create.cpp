@@ -42,5 +42,6 @@ namespace cyvmath
 
 			return make_unique<mikelepage::Player>(color, m.getActivePieces());
 		}
+		else throw std::runtime_error("Match object not recognized");
 	}
 }

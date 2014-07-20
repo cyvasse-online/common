@@ -202,6 +202,15 @@ namespace cyvmath
 						return false;
 					}
 
+					std::string toString()
+					{
+						std::string ret;
+						ret.append(1, char(x()) + 'A');
+						ret.append(std::to_string(int(y())));
+
+						return ret;
+					}
+
 					/// @{
 					/// Create a Coordinate object from an x and an y
 					/// If the coordinte is invalid, return nullptr
@@ -237,7 +246,9 @@ namespace cyvmath
 							  We don't accept lowercase letters.
 						   y: Public coordinate notation starts with 1, we start with 0
 						 */
-						return {str.at(0) - 'A', std::stoi(str.substr(1)) - 1};
+						return std::unique_ptr<Coordinate>(
+							new Coordinate(str.at(0) - 'A', std::stoi(str.substr(1)) - 1)
+						);
 					}
 
 					// for debugging

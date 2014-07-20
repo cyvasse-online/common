@@ -32,7 +32,6 @@ namespace cyvmath
 
 				PieceMap& _activePieces;
 				PieceVec _inactivePieces;
-				PieceVec _allPieces;
 
 			public:
 				Player(PlayersColor color, PieceMap& activePieces)
