@@ -1,0 +1,19 @@
+{
+	"messageType": "request",
+	"messageID": 1,
+	"action": "join game",
+	"param": {
+		"matchID":"URJS"
+	}
+}
+
+{
+	"messageType": "reply",
+	"messageID": 1,
+	"success": true,
+	"data": {
+		"color": "black",
+		"playerID": "OcanC0N3",
+		"ruleSet": "mikelepage"
+	}
+}

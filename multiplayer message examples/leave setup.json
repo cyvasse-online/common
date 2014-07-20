@@ -1,0 +1,20 @@
+{
+	"messageType": "game update",
+	"update": "leave setup",
+	"data": {
+		"pieces": [
+			{
+				"type": "spears",
+				"position": "F4"
+			},
+			{
+				"type": "mountain",
+				"position": "I3"
+			},
+			{
+				"type": "dragon",
+				"position": null
+			}
+		]
+	}
+}

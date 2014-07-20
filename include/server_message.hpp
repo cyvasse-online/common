@@ -23,7 +23,8 @@ enum MessageType
 {
 	MESSAGE_UNDEFINED,
 	MESSAGE_REQUEST,
-	MESSAGE_REPLY
+	MESSAGE_REPLY,
+	MESSAGE_GAME_UPDATE
 };
 
 enum ActionType
@@ -32,16 +33,21 @@ enum ActionType
 	ACTION_CREATE_GAME,
 	ACTION_JOIN_GAME,
 	ACTION_RESUME_GAME,
-	ACTION_START,
-	ACTION_MOVE_PIECE,
-	ACTION_RESIGN,
 	ACTION_CHAT_MSG
+};
+
+enum UpdateType
+{
+	UPDATE_LEAVE_SETUP,
+	UPDATE_MOVE_PIECE,
+	UPDATE_RESIGN
 };
 
 ENUM_STR(MessageType, ({
 	{MESSAGE_UNDEFINED, "undefined"},
 	{MESSAGE_REQUEST, "request"},
-	{MESSAGE_REPLY, "reply"}
+	{MESSAGE_REPLY, "reply"},
+	{MESSAGE_GAME_UPDATE, "game update"}
 }))
 
 ENUM_STR(ActionType, ({
@@ -49,10 +55,13 @@ ENUM_STR(ActionType, ({
 	{ACTION_CREATE_GAME, "create game"},
 	{ACTION_JOIN_GAME, "join game"},
 	{ACTION_RESUME_GAME, "resume game"},
-	{ACTION_START, "start"},
-	{ACTION_MOVE_PIECE, "move piece"},
-	{ACTION_RESIGN, "resign"},
 	{ACTION_CHAT_MSG, "chat message"}
+}))
+
+ENUM_STR(UpdateType, ({
+	{UPDATE_LEAVE_SETUP, "leave setup"},
+	{UPDATE_MOVE_PIECE, "move piece"},
+	{UPDATE_RESIGN, "resign"}
 }))
 
 #endif // _SERVER_MESSAGE_HPP_

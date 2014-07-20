@@ -1,0 +1,19 @@
+{
+	"messageType": "request",
+	"messageID": 1,
+	"action": "create game",
+	"param": {
+		"ruleSet": "mikelepage",
+		"color": "white"
+	}
+}
+
+{
+	"messageType": "reply",
+	"messageID": 1,
+	"success": true,
+	"data": {
+		"matchID": "URJS",
+		"playerID": "OQI15ZqM"
+	}
+}
