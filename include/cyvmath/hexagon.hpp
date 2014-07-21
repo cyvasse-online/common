@@ -206,7 +206,7 @@ namespace cyvmath
 					{
 						std::string ret;
 						ret.append(1, char(x()) + 'A');
-						ret.append(std::to_string(int(y())));
+						ret.append(std::to_string(int(y() + 1)));
 
 						return ret;
 					}
