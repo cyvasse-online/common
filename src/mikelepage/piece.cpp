@@ -120,7 +120,8 @@ namespace cyvmath
 					auto it = activePieces.find(*tmpCoord);
 					if(it != activePieces.end())
 					{
-						if(it->second->getColor() != _color)
+						if(it->second->getType() != PIECE_MOUNTAIN &&
+						   it->second->getColor() != _color)
 						{
 							auto res = set.insert(*tmpCoord);
 							assert(res.second);
@@ -225,10 +226,10 @@ namespace cyvmath
 
 					CoordinateSet res;
 
-					for(auto it : _match.getFortressPositions())
+					for(auto fPosIt : _match.getFortressPositions())
 					{
 						TileStateVec tmpTileVec;
-						Coordinate fortressPosition = it.second;
+						Coordinate fortressPosition = fPosIt.second;
 						int_least8_t fortressDistance = fortressPosition.getDistance(*_coord);
 
 						// begin in top left of the hexagonal line
@@ -260,7 +261,8 @@ namespace cyvmath
 										auto it = activePieces.find(*tmpCoord);
 										if(it != activePieces.end())
 										{
-											if(it->second->getColor() == _color)
+											if(it->second->getType() == PIECE_MOUNTAIN ||
+											   it->second->getColor() == _color)
 												tileState = TILE_STATE_INACCESSIBLE;
 											else // TODO: Check whether the piece can be attacked
 												tileState = TILE_STATE_LAST_ACCESSIBLE;

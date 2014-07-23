@@ -202,7 +202,7 @@ namespace cyvmath
 						return false;
 					}
 
-					std::string toString()
+					std::string toString() const
 					{
 						std::string ret;
 						ret.append(1, char(x()) + 'A');
