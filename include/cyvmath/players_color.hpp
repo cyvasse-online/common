@@ -28,11 +28,15 @@ namespace cyvmath
 		PLAYER_BLACK
 	};
 
+	// moving the definition to the cpp leads
+	// to undefined references for some reason
 	ENUM_STR(PlayersColor, ({
 		{PLAYER_UNDEFINED, "undefined"},
 		{PLAYER_WHITE, "white"},
 		{PLAYER_BLACK, "black"}
 	}))
+
+	PlayersColor operator!(PlayersColor color);
 }
 
 #endif // _CYVMATH_PLAYERS_COLOR_HPP_

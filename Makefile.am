@@ -20,6 +20,7 @@ libcyvmath_a_SOURCES = \
 	include/cyvmath/player.hpp \
 	include/cyvmath/players_color.hpp \
 	include/cyvmath/rule_sets.hpp \
+	src/players_color.cpp \
 	src/rule_set_create.cpp \
 	src/mikelepage/piece.cpp \
 	src/mikelepage/player.cpp
