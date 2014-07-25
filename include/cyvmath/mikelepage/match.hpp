@@ -42,6 +42,9 @@ namespace cyvmath
 					: cyvmath::Match(PLAYER_WHITE)
 				{ }
 
+				std::shared_ptr<Player> getPlayer(PlayersColor color) const
+				{ return _players.at(color); }
+
 				PieceMap& getActivePieces()
 				{ return _activePieces; }
 

@@ -28,7 +28,7 @@ namespace cyvmath
 		class Player : public cyvmath::Player
 		{
 			protected:
-				bool _dragonAlive;
+				bool _dragonAliveInactive;
 
 				PieceMap& _activePieces;
 				PieceVec _inactivePieces;
@@ -36,16 +36,22 @@ namespace cyvmath
 			public:
 				Player(PlayersColor color, PieceMap& activePieces)
 					: cyvmath::Player(color)
-					, _dragonAlive(true)
+					, _dragonAliveInactive(true)
 					, _activePieces(activePieces)
 				{ }
 
 				virtual ~Player() = default;
 
+				bool dragonAliveInactive() const
+				{ return _dragonAliveInactive; }
+
 				PieceVec& getInactivePieces()
 				{ return _inactivePieces; }
 
 				virtual bool setupComplete() override;
+
+				void dragonBroughtOut()
+				{ _dragonAliveInactive = false; }
 		};
 	}
 }

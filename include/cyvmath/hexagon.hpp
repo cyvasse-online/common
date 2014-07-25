@@ -211,6 +211,9 @@ namespace cyvmath
 						return ret;
 					}
 
+					std::valarray<int_least8_t> toValarray() const
+					{ return {_x, _y}; }
+
 					/// @{
 					/// Create a Coordinate object from an x and an y
 					/// If the coordinte is invalid, return nullptr

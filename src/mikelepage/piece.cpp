@@ -22,8 +22,6 @@
 #include <cyvmath/mikelepage/common.hpp>
 #include <cyvmath/mikelepage/match.hpp>
 
-#include <iostream>
-
 namespace cyvmath
 {
 	namespace mikelepage
@@ -99,7 +97,7 @@ namespace cyvmath
 			{
 				assert(step.size() == 2);
 
-				std::valarray<int_least8_t> tmpPos = {_coord->x(), _coord->y()};
+				std::valarray<int_least8_t> tmpPos = _coord->toValarray();
 				auto tmpCoord = make_unique<Coordinate>(*_coord);
 
 				for(auto i = 0; i < distance; i++)
@@ -161,28 +159,46 @@ namespace cyvmath
 				return false;
 
 			PieceMap& activePieces = _match.getActivePieces();
+			Player& player = *_match.getPlayer(_color);
 
-			PieceMap::iterator it = activePieces.find(*_coord);
-			if(it != activePieces.end())
+			std::shared_ptr<Piece> selfSharedPtr;
+
+			if(_coord)
 			{
-				// moving a piece that's already on the board
-				// this is always the case until the dragon
-				// and promotion stuff is added to the game.
+				PieceMap::iterator it = activePieces.find(*_coord);
+				assert(it != activePieces.end());
 
-				_coord = make_unique<Coordinate>(target);
-
-				assert(it->second.get() == this);
-				// add to new position in map before removing old
-				// entry to ensure shared_ptr doesn't free the data
-				auto res = activePieces.emplace(*_coord, it->second);
-
-				if(!res.second) // there was already a piece on the target tile
-					return false;
-			}
-			// else ... [TODO]
-
-			if(it != activePieces.end())
+				selfSharedPtr = it->second;
 				activePieces.erase(it);
+			}
+			else
+			{
+				// piece is not on the board
+				// this means either we move the dragon
+				// or there is a bug in the game
+				assert(_type == PIECE_DRAGON);
+				assert(player.dragonAliveInactive());
+
+				PieceVec::iterator it;
+				for(it = player.getInactivePieces().begin(); it != player.getInactivePieces().end(); ++it)
+				{
+					if(it->get() == this)
+					{
+						selfSharedPtr = *it;
+						break;
+					}
+				}
+
+				player.getInactivePieces().erase(it);
+				player.dragonBroughtOut();
+			}
+
+			assert(selfSharedPtr.get() == this);
+
+			_coord = make_unique<Coordinate>(target);
+
+			auto res = activePieces.emplace(target, selfSharedPtr);
+			assert(res.second);
 
 			return true;
 		}
@@ -224,7 +240,7 @@ namespace cyvmath
 
 					PieceMap& activePieces = _match.getActivePieces();
 
-					CoordinateSet res;
+					CoordinateSet ret;
 
 					for(auto fPosIt : _match.getFortressPositions())
 					{
@@ -307,7 +323,7 @@ namespace cyvmath
 									auto coord = Coordinate::create(tileIt->first);
 									assert(coord);
 
-									res.insert(*coord);
+									ret.insert(*coord);
 								}
 
 								if(tmpTileState != TILE_STATE_EMPTY)
@@ -316,7 +332,42 @@ namespace cyvmath
 						}
 					}
 
-					return res;
+					return ret;
+				}
+				case MOVEMENT_RANGE:
+				{
+					CoordinateSet ret;
+
+					if(_coord)
+					{
+						// TODO
+					}
+					else
+					{
+						// TODO: revise when terrain is added
+
+						Coordinate fortressPos = _match.getFortressPositions().at(_color);
+
+						auto it = _match.getActivePieces().find(fortressPos);
+						// fortress is empty or has an opponents piece in it
+						if(it == _match.getActivePieces().end() || it->second->getColor() != _color)
+							ret.insert(fortressPos);
+
+						// check adjacent tiles of the fortress
+						for(const auto& step : stepsOrthogonal)
+						{
+							auto tmpCoord = Coordinate::create(fortressPos.toValarray() + step);
+
+							if(tmpCoord)
+							{
+								auto it = _match.getActivePieces().find(*tmpCoord);
+								if(it == _match.getActivePieces().end() || it->second->getColor() != _color)
+									ret.insert(*tmpCoord);
+							}
+						}
+					}
+
+					return ret;
 				}
 				default:
 					return CoordinateSet();
