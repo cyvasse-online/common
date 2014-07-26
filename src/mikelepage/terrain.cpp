@@ -14,15 +14,30 @@
 * If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <cyvmath/players_color.hpp>
-
-#include <cassert>
+#include <cyvmath/mikelepage/terrain.hpp>
 
 namespace cyvmath
 {
-	PlayersColor operator!(PlayersColor color)
+	namespace mikelepage
 	{
-		assert(color != PlayersColor::UNDEFINED);
-		return color == PlayersColor::WHITE ? PlayersColor::BLACK : PlayersColor::WHITE;
+		ENUM_STR(TerrainType, ({
+			{TerrainType::UNDEFINED, "undefined"},
+			{TerrainType::HILL, "hill"},
+			{TerrainType::FOREST, "forest"},
+			{TerrainType::GRASSLAND, "grassland"}
+		}))
+
+		std::array<PieceType, 2> Terrain::getAdvantagedPieceTypes()
+		{
+			static const std::map<TerrainType, std::array<PieceType, 2>> data = {
+				{TerrainType::HILL,      {PieceType::CROSSBOWS,   PieceType::TREBUCHET}},
+				{TerrainType::FOREST,    {PieceType::SPEARS,      PieceType::ELEPHANT}},
+				{TerrainType::GRASSLAND, {PieceType::LIGHT_HORSE, PieceType::HEAVY_HORSE}}
+			};
+
+			assert(_type != TerrainType::UNDEFINED);
+
+			return data.at(_type);
+		}
 	}
 }

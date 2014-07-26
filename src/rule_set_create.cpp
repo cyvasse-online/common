@@ -27,7 +27,7 @@ namespace cyvmath
 	{
 		switch(ruleSet)
 		{
-			case RULE_SET_MIKELEPAGE:
+			case RuleSet::MIKELEPAGE:
 				return make_unique<mikelepage::Match>();
 			default:
 				throw std::invalid_argument("invalid rule set");

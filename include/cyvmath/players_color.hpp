@@ -23,17 +23,17 @@ namespace cyvmath
 {
 	enum PlayersColor
 	{
-		PLAYER_UNDEFINED,
-		PLAYER_WHITE,
-		PLAYER_BLACK
+		UNDEFINED,
+		WHITE,
+		BLACK
 	};
 
 	// moving the definition to the cpp leads
 	// to undefined references for some reason
 	ENUM_STR(PlayersColor, ({
-		{PLAYER_UNDEFINED, "undefined"},
-		{PLAYER_WHITE, "white"},
-		{PLAYER_BLACK, "black"}
+		{PlayersColor::UNDEFINED, "undefined"},
+		{PlayersColor::WHITE, "white"},
+		{PlayersColor::BLACK, "black"}
 	}))
 
 	PlayersColor operator!(PlayersColor color);

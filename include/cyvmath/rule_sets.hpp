@@ -21,15 +21,15 @@
 
 namespace cyvmath
 {
-	enum RuleSet
+	enum class RuleSet
 	{
-		RULE_SET_UNDEFINED,
-		RULE_SET_MIKELEPAGE
+		UNDEFINED,
+		MIKELEPAGE
 	};
 
 	ENUM_STR(RuleSet, ({
-		{RULE_SET_UNDEFINED, "undefined"},
-		{RULE_SET_MIKELEPAGE, "mikelepage"}
+		{RuleSet::UNDEFINED, "undefined"},
+		{RuleSet::MIKELEPAGE, "mikelepage"}
 	}))
 }
 

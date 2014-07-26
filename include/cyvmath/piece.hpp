@@ -26,45 +26,45 @@
 
 namespace cyvmath
 {
-	enum PieceType
+	enum class PieceType
 	{
-		PIECE_UNDEFINED,
-		PIECE_MOUNTAIN,
-		PIECE_RABBLE,
-		PIECE_CROSSBOWS,
-		PIECE_SPEARS,
-		PIECE_LIGHT_HORSE,
-		PIECE_TREBUCHET,
-		PIECE_ELEPHANT,
-		PIECE_HEAVY_HORSE,
-		PIECE_DRAGON,
-		PIECE_KING
+		UNDEFINED,
+		MOUNTAIN,
+		RABBLE,
+		CROSSBOWS,
+		SPEARS,
+		LIGHT_HORSE,
+		TREBUCHET,
+		ELEPHANT,
+		HEAVY_HORSE,
+		DRAGON,
+		KING
 	};
 
 	ENUM_STR(PieceType, ({
-		{PIECE_UNDEFINED, "undefined"},
-		{PIECE_MOUNTAIN, "mountain"},
-		{PIECE_RABBLE, "rabble"},
-		{PIECE_CROSSBOWS, "crossbows"},
-		{PIECE_SPEARS, "spears"},
-		{PIECE_LIGHT_HORSE, "light horse"},
-		{PIECE_TREBUCHET, "trebuchet"},
-		{PIECE_ELEPHANT, "elephant"},
-		{PIECE_HEAVY_HORSE, "heavy horse"},
-		{PIECE_DRAGON, "dragon"},
-		{PIECE_KING, "king"}
+		{PieceType::UNDEFINED, "undefined"},
+		{PieceType::MOUNTAIN, "mountain"},
+		{PieceType::RABBLE, "rabble"},
+		{PieceType::CROSSBOWS, "crossbows"},
+		{PieceType::SPEARS, "spears"},
+		{PieceType::LIGHT_HORSE, "light horse"},
+		{PieceType::TREBUCHET, "trebuchet"},
+		{PieceType::ELEPHANT, "elephant"},
+		{PieceType::HEAVY_HORSE, "heavy horse"},
+		{PieceType::DRAGON, "dragon"},
+		{PieceType::KING, "king"}
 	}))
 
-	enum MovementType
+	enum class MovementT
 	{
-		MOVEMENT_NONE,
-		MOVEMENT_ORTHOGONAL,
-		MOVEMENT_DIAGONAL,
-		MOVEMENT_HEXAGONAL,
-		MOVEMENT_RANGE
+		NONE,
+		ORTHOGONAL,
+		DIAGONAL,
+		HEXAGONAL,
+		RANGE
 	};
 
-	typedef std::pair<MovementType, int8_t> MovementScope;
+	typedef std::pair<MovementT, int8_t> MovementScope;
 
 	class Piece
 	{

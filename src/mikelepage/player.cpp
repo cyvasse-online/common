@@ -24,8 +24,9 @@ namespace cyvmath
 	{
 		bool Player::setupComplete()
 		{
-			auto outsideOwnSide = (_color == PLAYER_WHITE) ? [](int8_t y) { return y >= (Hexagon::edgeLength - 1); }
-						                                   : [](int8_t y) { return y <= (Hexagon::edgeLength - 1); };
+			auto outsideOwnSide = (_color == PlayersColor::WHITE)
+				? [](int8_t y) { return y >= (Hexagon::edgeLength - 1); }
+				: [](int8_t y) { return y <= (Hexagon::edgeLength - 1); };
 
 			for(auto& it : _activePieces)
 			{

@@ -14,46 +14,45 @@
 * If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _CYVMATH_MIKELEPAGE_MATCH_HPP_
-#define _CYVMATH_MIKELEPAGE_MATCH_HPP_
+#ifndef _CYVMATH_MIKELEPAGE_TERRAIN_HPP_
+#define _CYVMATH_MIKELEPAGE_TERRAIN_HPP_
 
-#include <cyvmath/match.hpp>
-
-#include <initializer_list>
-#include <map>
-#include <memory>
+#include <array>
+#include <enum_str.hpp>
 #include "common.hpp"
-#include "player.hpp"
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
-		class Match : public cyvmath::Match
+		enum class TerrainType
 		{
-			protected:
-				std::map<PlayersColor, std::shared_ptr<Player>> _players;
+			UNDEFINED,
+			HILL,
+			FOREST,
+			GRASSLAND
+		};
 
-				PieceMap _activePieces;
-				std::map<PlayersColor, Coordinate> _fortressPositions;
+		ENUM_STR_PROT(TerrainType)
+
+		class Terrain
+		{
+			private:
+				TerrainType _type;
+				Coordinate _coord;
 
 			public:
-				Match()
-					: cyvmath::Match(PlayersColor::WHITE)
+				Terrain(TerrainType type, Coordinate coord)
+					: _type(type)
+					, _coord(coord)
 				{ }
 
-				std::shared_ptr<Player> getPlayer(PlayersColor color) const
-				{ return _players.at(color); }
+				TerrainType getType()
+				{ return _type; }
 
-				PieceMap& getActivePieces()
-				{ return _activePieces; }
-
-				const std::map<PlayersColor, Coordinate>& getFortressPositions() const
-				{ return _fortressPositions; }
-
-				virtual ~Match() = default;
+				std::array<PieceType, 2> getAdvantagedPieceTypes();
 		};
 	}
 }
 
-#endif // _CYVMATH_MIKELEPAGE_MATCH_HPP_
+#endif // _CYVMATH_MIKELEPAGE_TERRAIN_HPP_

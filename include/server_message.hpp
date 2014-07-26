@@ -19,49 +19,49 @@
 
 #include "enum_str.hpp"
 
-enum MessageType
+enum class Message
 {
-	MESSAGE_UNDEFINED,
-	MESSAGE_REQUEST,
-	MESSAGE_REPLY,
-	MESSAGE_GAME_UPDATE
+	UNDEFINED,
+	REQUEST,
+	REPLY,
+	GAME_UPDATE
 };
 
-enum ActionType
+enum class Action
 {
-	ACTION_UNDEFINED,
-	ACTION_CREATE_GAME,
-	ACTION_JOIN_GAME,
-	ACTION_RESUME_GAME,
-	ACTION_CHAT_MSG
+	UNDEFINED,
+	CREATE_GAME,
+	JOIN_GAME,
+	RESUME_GAME,
+	CHAT_MSG
 };
 
-enum UpdateType
+enum class Update
 {
-	UPDATE_LEAVE_SETUP,
-	UPDATE_MOVE_PIECE,
-	UPDATE_RESIGN
+	LEAVE_SETUP,
+	MOVE_PIECE,
+	RESIGN
 };
 
-ENUM_STR(MessageType, ({
-	{MESSAGE_UNDEFINED, "undefined"},
-	{MESSAGE_REQUEST, "request"},
-	{MESSAGE_REPLY, "reply"},
-	{MESSAGE_GAME_UPDATE, "game update"}
+ENUM_STR(Message, ({
+	{Message::UNDEFINED, "undefined"},
+	{Message::REQUEST, "request"},
+	{Message::REPLY, "reply"},
+	{Message::GAME_UPDATE, "game update"}
 }))
 
-ENUM_STR(ActionType, ({
-	{ACTION_UNDEFINED, "undefined"},
-	{ACTION_CREATE_GAME, "create game"},
-	{ACTION_JOIN_GAME, "join game"},
-	{ACTION_RESUME_GAME, "resume game"},
-	{ACTION_CHAT_MSG, "chat message"}
+ENUM_STR(Action, ({
+	{Action::UNDEFINED, "undefined"},
+	{Action::CREATE_GAME, "create game"},
+	{Action::JOIN_GAME, "join game"},
+	{Action::RESUME_GAME, "resume game"},
+	{Action::CHAT_MSG, "chat message"}
 }))
 
-ENUM_STR(UpdateType, ({
-	{UPDATE_LEAVE_SETUP, "leave setup"},
-	{UPDATE_MOVE_PIECE, "move piece"},
-	{UPDATE_RESIGN, "resign"}
+ENUM_STR(Update, ({
+	{Update::LEAVE_SETUP, "leave setup"},
+	{Update::MOVE_PIECE, "move piece"},
+	{Update::RESIGN, "resign"}
 }))
 
 #endif // _SERVER_MESSAGE_HPP_

@@ -26,21 +26,7 @@ namespace cyvmath
 	namespace mikelepage
 	{
 		using cyvmath::PlayersColor;
-		using cyvmath::PLAYER_UNDEFINED;
-		using cyvmath::PLAYER_WHITE;
-		using cyvmath::PLAYER_BLACK;
-
 		using cyvmath::PieceType;
-		using cyvmath::PIECE_MOUNTAIN;
-		using cyvmath::PIECE_RABBLE;
-		using cyvmath::PIECE_CROSSBOWS;
-		using cyvmath::PIECE_SPEARS;
-		using cyvmath::PIECE_LIGHT_HORSE;
-		using cyvmath::PIECE_TREBUCHET;
-		using cyvmath::PIECE_ELEPHANT;
-		using cyvmath::PIECE_HEAVY_HORSE;
-		using cyvmath::PIECE_DRAGON;
-		using cyvmath::PIECE_KING;
 
 		typedef Hexagon<6> Hexagon;
 		typedef Hexagon::Coordinate Coordinate;

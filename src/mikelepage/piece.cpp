@@ -66,13 +66,13 @@ namespace cyvmath
 			int_least8_t distance = -1;
 			switch(scope.first)
 			{
-				case MOVEMENT_ORTHOGONAL:
+				case MovementT::ORTHOGONAL:
 					distance = _coord->getDistanceOrthogonal(target);
 					break;
-				case MOVEMENT_DIAGONAL:
+				case MovementT::DIAGONAL:
 					distance = _coord->getDistanceDiagonal(target);
 					break;
-				case MOVEMENT_HEXAGONAL:
+				case MovementT::HEXAGONAL:
 					// distance = _coord->getDistanceHexagonalLine(..., target);
 					break;
 				// disable compiler warning about unhandled values
@@ -118,7 +118,7 @@ namespace cyvmath
 					auto it = activePieces.find(*tmpCoord);
 					if(it != activePieces.end())
 					{
-						if(it->second->getType() != PIECE_MOUNTAIN &&
+						if(it->second->getType() != PieceType::MOUNTAIN &&
 						   it->second->getColor() != _color)
 						{
 							auto res = set.insert(*tmpCoord);
@@ -138,16 +138,16 @@ namespace cyvmath
 		const MovementScope& Piece::getMovementScope() const
 		{
 			static const std::map<PieceType, MovementScope> data {
-					{PIECE_MOUNTAIN,    MovementScope(MOVEMENT_NONE,       0)},
-					{PIECE_RABBLE,      MovementScope(MOVEMENT_ORTHOGONAL, 1)},
-					{PIECE_CROSSBOWS,   MovementScope(MOVEMENT_ORTHOGONAL, 3)},
-					{PIECE_SPEARS,      MovementScope(MOVEMENT_DIAGONAL,   2)},
-					{PIECE_LIGHT_HORSE, MovementScope(MOVEMENT_HEXAGONAL,  3)},
-					{PIECE_TREBUCHET,   MovementScope(MOVEMENT_ORTHOGONAL, 0)},
-					{PIECE_ELEPHANT,    MovementScope(MOVEMENT_DIAGONAL,   0)},
-					{PIECE_HEAVY_HORSE, MovementScope(MOVEMENT_HEXAGONAL,  0)},
-					{PIECE_DRAGON,      MovementScope(MOVEMENT_RANGE,      4)},
-					{PIECE_KING,        MovementScope(MOVEMENT_ORTHOGONAL, 1)},
+					{PieceType::MOUNTAIN,    MovementScope(MovementT::NONE,       0)},
+					{PieceType::RABBLE,      MovementScope(MovementT::ORTHOGONAL, 1)},
+					{PieceType::CROSSBOWS,   MovementScope(MovementT::ORTHOGONAL, 3)},
+					{PieceType::SPEARS,      MovementScope(MovementT::DIAGONAL,   2)},
+					{PieceType::LIGHT_HORSE, MovementScope(MovementT::HEXAGONAL,  3)},
+					{PieceType::TREBUCHET,   MovementScope(MovementT::ORTHOGONAL, 0)},
+					{PieceType::ELEPHANT,    MovementScope(MovementT::DIAGONAL,   0)},
+					{PieceType::HEAVY_HORSE, MovementScope(MovementT::HEXAGONAL,  0)},
+					{PieceType::DRAGON,      MovementScope(MovementT::RANGE,      4)},
+					{PieceType::KING,        MovementScope(MovementT::ORTHOGONAL, 1)},
 				};
 
 			return data.at(_type);
@@ -176,7 +176,7 @@ namespace cyvmath
 				// piece is not on the board
 				// this means either we move the dragon
 				// or there is a bug in the game
-				assert(_type == PIECE_DRAGON);
+				assert(_type == PieceType::DRAGON);
 				assert(player.dragonAliveInactive());
 
 				PieceVec::iterator it;
@@ -208,29 +208,29 @@ namespace cyvmath
 			auto scope = getMovementScope();
 			auto distance = scope.second;
 
-			if(_type != PIECE_DRAGON)
+			if(_type != PieceType::DRAGON)
 				assert(_coord);
 
 			switch(scope.first)
 			{
-				case MOVEMENT_ORTHOGONAL:
+				case MovementT::ORTHOGONAL:
 					if(!distance)
 						distance = (Hexagon::edgeLength - 1) * 2;
 
 					return getPossibleTargetTiles(stepsOrthogonal, distance);
-				case MOVEMENT_DIAGONAL:
+				case MovementT::DIAGONAL:
 					if(!distance)
 						distance = Hexagon::edgeLength - 1;
 
 					return getPossibleTargetTiles(stepsDiagonal, distance);
-				case MOVEMENT_HEXAGONAL:
+				case MovementT::HEXAGONAL:
 				{
-					typedef enum
+					typedef enum class TileState
 					{
-						TILE_STATE_START,
-						TILE_STATE_EMPTY,
-						TILE_STATE_INACCESSIBLE,
-						TILE_STATE_LAST_ACCESSIBLE
+						START,
+						EMPTY,
+						INACCESSIBLE,
+						LAST_ACCESSIBLE
 					} TileState;
 
 					typedef std::vector<std::pair<std::valarray<int_least8_t>, TileState>> TileStateVec;
@@ -264,24 +264,24 @@ namespace cyvmath
 								tmpPos += step;
 								auto tmpCoord = Coordinate::create(tmpPos);
 
-								auto tileState = TILE_STATE_EMPTY;
+								auto tileState = TileState::EMPTY;
 
 								if(!tmpCoord)
-									tileState = TILE_STATE_INACCESSIBLE;
+									tileState = TileState::INACCESSIBLE;
 								else
 								{
 									if(*tmpCoord == *_coord)
-										tileState = TILE_STATE_START;
+										tileState = TileState::START;
 									else
 									{
 										auto it = activePieces.find(*tmpCoord);
 										if(it != activePieces.end())
 										{
-											if(it->second->getType() == PIECE_MOUNTAIN ||
+											if(it->second->getType() == PieceType::MOUNTAIN ||
 											   it->second->getColor() == _color)
-												tileState = TILE_STATE_INACCESSIBLE;
+												tileState = TileState::INACCESSIBLE;
 											else // TODO: Check whether the piece can be attacked
-												tileState = TILE_STATE_LAST_ACCESSIBLE;
+												tileState = TileState::LAST_ACCESSIBLE;
 										}
 									}
 								}
@@ -292,7 +292,7 @@ namespace cyvmath
 
 						TileStateVec::iterator startTileIt;
 						for(startTileIt = tmpTileVec.begin(); startTileIt != tmpTileVec.end(); ++startTileIt)
-							if(startTileIt->second == TILE_STATE_START) break;
+							if(startTileIt->second == TileState::START) break;
 
 						assert(startTileIt != tmpTileVec.end());
 
@@ -318,7 +318,7 @@ namespace cyvmath
 
 								tmpTileState = tileIt->second;
 
-								if(tmpTileState == TILE_STATE_EMPTY || tmpTileState == TILE_STATE_LAST_ACCESSIBLE)
+								if(tmpTileState == TileState::EMPTY || tmpTileState == TileState::LAST_ACCESSIBLE)
 								{
 									auto coord = Coordinate::create(tileIt->first);
 									assert(coord);
@@ -326,7 +326,7 @@ namespace cyvmath
 									ret.insert(*coord);
 								}
 
-								if(tmpTileState != TILE_STATE_EMPTY)
+								if(tmpTileState != TileState::EMPTY)
 									break;
 							}
 						}
@@ -334,7 +334,7 @@ namespace cyvmath
 
 					return ret;
 				}
-				case MOVEMENT_RANGE:
+				case MovementT::RANGE:
 				{
 					CoordinateSet ret;
 
