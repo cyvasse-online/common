@@ -135,6 +135,27 @@ namespace cyvmath
 			return set;
 		}
 
+		Tier Piece::getBaseTier() const
+		{
+			static const std::map<PieceType, Tier> data {
+				{PieceType::RABBLE,      Tier::_1},
+				{PieceType::KING,        Tier::_1},
+				{PieceType::CROSSBOWS,   Tier::_2},
+				{PieceType::SPEARS,      Tier::_2},
+				{PieceType::LIGHT_HORSE, Tier::_2},
+				{PieceType::TREBUCHET,   Tier::_3},
+				{PieceType::ELEPHANT,    Tier::_3},
+				{PieceType::HEAVY_HORSE, Tier::_3},
+				{PieceType::DRAGON,      Tier::_4}
+			};
+
+			auto it = data.find(_type);
+			if(it == data.end())
+				return Tier::UNDEFINED;
+
+			return it->second;
+		}
+
 		TerrainType Piece::getSetupTerrain() const
 		{
 			static const std::map<PieceType, TerrainType> data {
@@ -285,9 +306,9 @@ namespace cyvmath
 							centers.insert(fortress->getCoord());
 					}
 
-					// if one fortress ruining code is implemented, there will be an extra coordinate set saved
-					// in the match class as replacement for the fortress(es), if one or both is / are ruined
-					// TODO: cycle over that additional set, and assert(centers.size() + set.size() == 2)
+					std::set<Coordinate>& replacementCenters = _match.getFortressReplaceCorners();
+					assert(centers.size() + replacementCenters.size() == 2);
+					centers.insert(replacementCenters.begin(), replacementCenters.end());
 
 					std::set<Coordinate> ret;
 
@@ -329,8 +350,12 @@ namespace cyvmath
 											if(it->second->getType() == PieceType::MOUNTAIN ||
 											   it->second->getColor() == _color)
 												tileState = TileState::INACCESSIBLE;
-											else // TODO: Check whether the piece can be attacked
+											else
+											{
+												// TODO: Check whether the piece can be attacked
+
 												tileState = TileState::LAST_ACCESSIBLE;
+											}
 										}
 									}
 								}

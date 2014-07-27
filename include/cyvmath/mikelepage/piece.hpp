@@ -35,6 +35,12 @@ namespace cyvmath
 
 		class Match;
 
+		enum class Tier
+		{
+			UNDEFINED,
+			_1, _2, _3, _4
+		};
+
 		typedef std::vector<std::valarray<int_least8_t>> MovementVec;
 
 		class Piece : public cyvmath::Piece
@@ -65,6 +71,8 @@ namespace cyvmath
 				{ return make_unique(_coord); }
 
 				std::set<Coordinate> getPossibleTargetTiles() const;
+
+				Tier getBaseTier() const;
 				TerrainType getSetupTerrain() const;
 				virtual const MovementScope& getMovementScope() const final override;
 

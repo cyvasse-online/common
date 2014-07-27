@@ -19,6 +19,7 @@
 
 #include <cyvmath/match.hpp>
 
+#include "coordinate.hpp"
 #include "player.hpp"
 #include "terrain.hpp"
 
@@ -33,6 +34,10 @@ namespace cyvmath
 
 				PieceMap _activePieces;
 				TerrainMap _terrain;
+
+				// alternative centers for horse movement;
+				// one replacement coord per ruined fortress
+				std::set<Coordinate> _fortressReplaceCorners;
 
 			public:
 				Match()
@@ -50,6 +55,9 @@ namespace cyvmath
 
 				TerrainMap& getTerrain()
 				{ return _terrain; }
+
+				std::set<Coordinate>& getFortressReplaceCorners()
+				{ return _fortressReplaceCorners; }
 
 				virtual ~Match() = default;
 		};
