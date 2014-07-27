@@ -20,6 +20,7 @@
 #include <initializer_list>
 #include <map>
 #include <string>
+#include <cassert>
 
 template <typename T>
 using initMap = std::initializer_list<std::pair<const T, std::string>>;
@@ -38,14 +39,17 @@ std::map<std::string, const EnumT> swapFirstSecond(initMap<EnumT> orig)
 	std::string type ## ToStr(type e); \
 	type StrTo ## type(const std::string& s);
 
-#define ENUM_STR(type, init) \
+#define ENUM_STR(type, init, default_val) \
 	inline std::string type ## ToStr(type e) \
 	{ \
 		static std::map< type , std::string> data(initMap< type > init); \
 		\
 		auto it = data.find(e); \
 		if(it == data.end()) \
-			return std::string(); \
+		{ \
+			assert(e != default_val); \
+			return type ## ToStr(default_val); \
+		} \
 		\
 		return it->second; \
 	}\
@@ -56,7 +60,7 @@ std::map<std::string, const EnumT> swapFirstSecond(initMap<EnumT> orig)
 		\
 		auto it = data.find(s); \
 		if(it == data.end()) \
-			return static_cast<type>(0); \
+			return default_val; \
 		\
 		return it->second; \
 	}

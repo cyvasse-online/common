@@ -45,7 +45,7 @@ namespace cyvmath
 			const PieceType _type;
 
 		public:
-			constexpr Piece(PlayersColor color, PieceType type)
+			Piece(PlayersColor color, PieceType type)
 				: _color(color)
 				, _type(type)
 			{ }

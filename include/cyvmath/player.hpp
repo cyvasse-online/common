@@ -26,7 +26,7 @@ namespace cyvmath
 		protected:
 			const PlayersColor _color;
 
-			constexpr Player(PlayersColor color)
+			Player(PlayersColor color)
 				: _color(color)
 			{ }
 

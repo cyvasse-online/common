@@ -20,9 +20,22 @@
 
 namespace cyvmath
 {
-	PlayersColor operator!(PlayersColor color)
+	const PlayersColor PlayersColor::UNDEFINED = PlayersColor(-1);
+	const PlayersColor PlayersColor::WHITE     = PlayersColor(0);
+	const PlayersColor PlayersColor::BLACK     = PlayersColor(1);
+
+	PlayersColor PlayersColor::operator!() const
 	{
-		assert(color != PlayersColor::UNDEFINED);
-		return color == PlayersColor::WHITE ? PlayersColor::BLACK : PlayersColor::WHITE;
+		assert(_val != -1);
+
+		// int-to-bool, operator!(bool), bool-to-int
+		return PlayersColor(!_val);
+	}
+
+	PlayersColor::operator unsigned() const
+	{
+		assert(_val != -1);
+
+		return _val;
 	}
 }

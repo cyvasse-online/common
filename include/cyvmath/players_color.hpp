@@ -21,22 +21,68 @@
 
 namespace cyvmath
 {
-	enum PlayersColor
+	// supposed to act like an enum, but
+	// enums can't have conversion operators
+
+	class PlayersColor
 	{
-		UNDEFINED,
-		WHITE,
-		BLACK
+		private:
+			int _val;
+
+			explicit PlayersColor(int val)
+				: _val(val)
+			{ }
+
+		public:
+			PlayersColor(const PlayersColor& other)
+				: _val(other._val)
+			{ }
+
+			static const PlayersColor UNDEFINED;
+			static const PlayersColor WHITE;
+			static const PlayersColor BLACK;
+
+			PlayersColor operator!() const;
+
+			bool operator==(PlayersColor other) const
+			{ return _val == other._val; }
+
+			bool operator!=(PlayersColor other) const
+			{ return _val != other._val; }
+
+			bool operator<(PlayersColor other) const
+			{ return _val < other._val; }
+
+			bool operator>(PlayersColor other) const
+			{ return _val > other._val; }
+
+			operator unsigned() const;
+
+			// don't allow comparing with bool,
+			// int or unsigned, which would
+			// otherwise be possible because of
+			// the conversion operator to unsigned
+			bool operator==(bool) const     = delete;
+			bool operator==(int) const      = delete;
+			bool operator==(unsigned) const = delete;
+			bool operator!=(bool) const     = delete;
+			bool operator!=(int) const      = delete;
+			bool operator!=(unsigned) const = delete;
+			bool operator<(int) const       = delete;
+			bool operator<(unsigned) const  = delete;
+			bool operator>(int) const       = delete;
+			bool operator>(unsigned) const  = delete;
 	};
 
 	// moving the definition to the cpp leads
 	// to undefined references for some reason
 	ENUM_STR(PlayersColor, ({
-		{PlayersColor::UNDEFINED, "undefined"},
-		{PlayersColor::WHITE, "white"},
-		{PlayersColor::BLACK, "black"}
-	}))
-
-	PlayersColor operator!(PlayersColor color);
+			{PlayersColor::UNDEFINED, "undefined"},
+			{PlayersColor::WHITE, "white"},
+			{PlayersColor::BLACK, "black"}
+		}),
+		PlayersColor::UNDEFINED
+	)
 }
 
 #endif // _CYVMATH_PLAYERS_COLOR_HPP_

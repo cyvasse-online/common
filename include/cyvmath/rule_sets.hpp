@@ -28,9 +28,11 @@ namespace cyvmath
 	};
 
 	ENUM_STR(RuleSet, ({
-		{RuleSet::UNDEFINED, "undefined"},
-		{RuleSet::MIKELEPAGE, "mikelepage"}
-	}))
+			{RuleSet::UNDEFINED, "undefined"},
+			{RuleSet::MIKELEPAGE, "mikelepage"}
+		}),
+		RuleSet::UNDEFINED
+	)
 }
 
 #endif // _CYVMATH_RULESETS_HPP_

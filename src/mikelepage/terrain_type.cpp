@@ -21,10 +21,12 @@ namespace cyvmath
 	namespace mikelepage
 	{
 		ENUM_STR(TerrainType, ({
-			{TerrainType::UNDEFINED, "undefined"},
-			{TerrainType::HILL, "hill"},
-			{TerrainType::FOREST, "forest"},
-			{TerrainType::GRASSLAND, "grassland"}
-		}))
+				{TerrainType::UNDEFINED, "undefined"},
+				{TerrainType::HILL, "hill"},
+				{TerrainType::FOREST, "forest"},
+				{TerrainType::GRASSLAND, "grassland"}
+			}),
+			TerrainType::UNDEFINED
+		)
 	}
 }

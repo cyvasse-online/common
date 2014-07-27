@@ -32,7 +32,7 @@ namespace cyvmath
 		class Match : public cyvmath::Match
 		{
 			protected:
-				PlayerMap _players;
+				PlayerArray _players;
 
 				PieceMap _activePieces;
 				TerrainMap _terrain;
@@ -42,11 +42,11 @@ namespace cyvmath
 					: cyvmath::Match(PlayersColor::WHITE)
 				{ }
 
-				PlayerMap& getPlayers()
+				PlayerArray& getPlayers()
 				{ return _players; }
 
 				std::shared_ptr<Player> getPlayer(PlayersColor color) const
-				{ return _players.at(color); }
+				{ return _players[color]; }
 
 				PieceMap& getActivePieces()
 				{ return _activePieces; }

@@ -279,7 +279,7 @@ namespace cyvmath
 
 					for(auto player : _match.getPlayers())
 					{
-						auto fortress = player.second->getFortress();
+						auto fortress = player->getFortress();
 
 						if(fortress)
 							centers.insert(fortress->getCoord());

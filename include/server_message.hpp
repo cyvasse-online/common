@@ -38,30 +38,38 @@ enum class Action
 
 enum class Update
 {
+	UNDEFINED,
 	LEAVE_SETUP,
 	MOVE_PIECE,
 	RESIGN
 };
 
 ENUM_STR(Message, ({
-	{Message::UNDEFINED, "undefined"},
-	{Message::REQUEST, "request"},
-	{Message::REPLY, "reply"},
-	{Message::GAME_UPDATE, "game update"}
-}))
+		{Message::UNDEFINED, "undefined"},
+		{Message::REQUEST, "request"},
+		{Message::REPLY, "reply"},
+		{Message::GAME_UPDATE, "game update"}
+	}),
+	Message::UNDEFINED
+)
 
 ENUM_STR(Action, ({
-	{Action::UNDEFINED, "undefined"},
-	{Action::CREATE_GAME, "create game"},
-	{Action::JOIN_GAME, "join game"},
-	{Action::RESUME_GAME, "resume game"},
-	{Action::CHAT_MSG, "chat message"}
-}))
+		{Action::UNDEFINED, "undefined"},
+		{Action::CREATE_GAME, "create game"},
+		{Action::JOIN_GAME, "join game"},
+		{Action::RESUME_GAME, "resume game"},
+		{Action::CHAT_MSG, "chat message"}
+	}),
+	Action::UNDEFINED
+)
 
 ENUM_STR(Update, ({
-	{Update::LEAVE_SETUP, "leave setup"},
-	{Update::MOVE_PIECE, "move piece"},
-	{Update::RESIGN, "resign"}
-}))
+		{Update::UNDEFINED, "undefined"},
+		{Update::LEAVE_SETUP, "leave setup"},
+		{Update::MOVE_PIECE, "move piece"},
+		{Update::RESIGN, "resign"}
+	}),
+	Update::UNDEFINED
+)
 
 #endif // _SERVER_MESSAGE_HPP_

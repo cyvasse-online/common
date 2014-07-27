@@ -17,6 +17,7 @@
 #ifndef _CYVMATH_MIKELEPAGE_PLAYER_HPP_
 #define _CYVMATH_MIKELEPAGE_PLAYER_HPP_
 
+#include <array>
 #include <map>
 #include <memory>
 #include <cyvmath/player.hpp>
@@ -68,7 +69,7 @@ namespace cyvmath
 				{ _fortress.reset(); }
 		};
 
-		typedef std::map<PlayersColor, std::shared_ptr<Player>> PlayerMap;
+		typedef std::array<std::shared_ptr<Player>, 2> PlayerArray;
 	}
 }
 
