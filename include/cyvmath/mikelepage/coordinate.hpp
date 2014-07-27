@@ -14,34 +14,18 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cyvmath/rule_set_create.hpp>
+#ifndef _CYVMATH_MIKELEPAGE_COORDINATE_HPP_
+#define _CYVMATH_MIKELEPAGE_COORDINATE_HPP_
 
-#include <stdexcept>
-#include <make_unique.hpp>
-#include <cyvmath/mikelepage/match.hpp>
-#include <cyvmath/mikelepage/player.hpp>
+#include <cyvmath/hexagon.hpp>
 
 namespace cyvmath
 {
-	std::unique_ptr<Match> createMatch(RuleSet ruleSet)
+	namespace mikelepage
 	{
-		switch(ruleSet)
-		{
-			case RuleSet::MIKELEPAGE:
-				return make_unique<mikelepage::Match>();
-			default:
-				throw std::invalid_argument("invalid rule set");
-		}
-	}
-
-	std::unique_ptr<Player> createPlayer(PlayersColor color, Match& match)
-	{
-		if(dynamic_cast<mikelepage::Match*>(&match) != nullptr)
-		{
-			auto& m = dynamic_cast<mikelepage::Match&>(match);
-
-			return make_unique<mikelepage::Player>(color, m.getActivePieces());
-		}
-		else throw std::runtime_error("Match object not recognized");
+		typedef Hexagon<6> Hexagon;
+		typedef Hexagon::Coordinate Coordinate;
 	}
 }
+
+#endif // _CYVMATH_MIKELEPAGE_COORDINATE_HPP_

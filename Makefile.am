@@ -18,19 +18,23 @@ libcyvmath_a_SOURCES = \
 	include/cyvmath/coordinate.hpp \
 	include/cyvmath/hexagon.hpp \
 	include/cyvmath/match.hpp \
+	include/cyvmath/piece_type.hpp \
 	include/cyvmath/piece.hpp \
 	include/cyvmath/player.hpp \
 	include/cyvmath/players_color.hpp \
 	include/cyvmath/rule_sets.hpp \
-	include/cyvmath/mikelepage/common.hpp \
+	include/cyvmath/mikelepage/coordinate.hpp \
+	include/cyvmath/mikelepage/fortress.hpp \
 	include/cyvmath/mikelepage/match.hpp \
 	include/cyvmath/mikelepage/piece.hpp \
 	include/cyvmath/mikelepage/player.hpp \
+	include/cyvmath/terrain_type.hpp \
 	include/cyvmath/terrain.hpp \
 	src/players_color.cpp \
 	src/rule_set_create.cpp \
 	src/mikelepage/piece.cpp \
 	src/mikelepage/player.cpp \
+	src/mikelepage/terrain_type.cpp \
 	src/mikelepage/terrain.cpp
 
 libcyvmath_a_CPPFLAGS = \

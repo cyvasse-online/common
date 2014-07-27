@@ -19,14 +19,14 @@
 #include <utility>
 #include <valarray>
 #include <vector>
-#include <cyvmath/mikelepage/common.hpp>
 #include <cyvmath/mikelepage/match.hpp>
+#include <cyvmath/mikelepage/fortress.hpp>
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
-		const MovementVec Piece::stepsOrthogonal = {
+		const MovementVec Piece::stepsOrthogonal {
 			{-1,  1}, // top left
 			{ 0,  1}, // top right
 			{ 1,  0}, // right
@@ -35,7 +35,7 @@ namespace cyvmath
 			{-1,  0}  // left
 		};
 
-		const MovementVec Piece::stepsDiagonal = {
+		const MovementVec Piece::stepsDiagonal {
 			{-1,  2}, // top
 			{ 1,  1}, // top right
 			{ 2, -1}, // bottom right
@@ -44,7 +44,7 @@ namespace cyvmath
 			{-2,  1}  // top left
 		};
 
-		const MovementVec Piece::stepsHexagonalLine = {
+		const MovementVec Piece::stepsHexagonalLine {
 			{ 1,  0}, // right
 			{ 1, -1}, // bottom right
 			{ 0, -1}, // bottom left
@@ -66,13 +66,13 @@ namespace cyvmath
 			int_least8_t distance = -1;
 			switch(scope.first)
 			{
-				case MovementT::ORTHOGONAL:
+				case Movement::ORTHOGONAL:
 					distance = _coord->getDistanceOrthogonal(target);
 					break;
-				case MovementT::DIAGONAL:
+				case Movement::DIAGONAL:
 					distance = _coord->getDistanceDiagonal(target);
 					break;
-				case MovementT::HEXAGONAL:
+				case Movement::HEXAGONAL:
 					// distance = _coord->getDistanceHexagonalLine(..., target);
 					break;
 				// disable compiler warning about unhandled values
@@ -85,13 +85,13 @@ namespace cyvmath
 			return true;*/
 		}
 
-		CoordinateSet Piece::getPossibleTargetTiles(const MovementVec& steps, int_least8_t distance) const
+		std::set<Coordinate> Piece::getPossibleTargetTiles(const MovementVec& steps, int_least8_t distance) const
 		{
 			assert(_coord);
 
 			PieceMap& activePieces = _match.getActivePieces();
 
-			CoordinateSet set;
+			std::set<Coordinate> set;
 
 			for(const auto& step : steps)
 			{
@@ -135,20 +135,37 @@ namespace cyvmath
 			return set;
 		}
 
+		TerrainType Piece::getSetupTerrain() const
+		{
+			static const std::map<PieceType, TerrainType> data {
+				{PieceType::CROSSBOWS,   TerrainType::HILL},
+				{PieceType::SPEARS,      TerrainType::FOREST},
+				{PieceType::LIGHT_HORSE, TerrainType::GRASSLAND}
+			};
+
+			auto it = data.find(_type);
+			if(it == data.end())
+				return TerrainType::UNDEFINED;
+
+			return it->second;
+		}
+
 		const MovementScope& Piece::getMovementScope() const
 		{
 			static const std::map<PieceType, MovementScope> data {
-					{PieceType::MOUNTAIN,    MovementScope(MovementT::NONE,       0)},
-					{PieceType::RABBLE,      MovementScope(MovementT::ORTHOGONAL, 1)},
-					{PieceType::CROSSBOWS,   MovementScope(MovementT::ORTHOGONAL, 3)},
-					{PieceType::SPEARS,      MovementScope(MovementT::DIAGONAL,   2)},
-					{PieceType::LIGHT_HORSE, MovementScope(MovementT::HEXAGONAL,  3)},
-					{PieceType::TREBUCHET,   MovementScope(MovementT::ORTHOGONAL, 0)},
-					{PieceType::ELEPHANT,    MovementScope(MovementT::DIAGONAL,   0)},
-					{PieceType::HEAVY_HORSE, MovementScope(MovementT::HEXAGONAL,  0)},
-					{PieceType::DRAGON,      MovementScope(MovementT::RANGE,      4)},
-					{PieceType::KING,        MovementScope(MovementT::ORTHOGONAL, 1)},
+					{PieceType::MOUNTAIN,    MovementScope(MovementType::NONE,       0)},
+					{PieceType::RABBLE,      MovementScope(MovementType::ORTHOGONAL, 1)},
+					{PieceType::CROSSBOWS,   MovementScope(MovementType::ORTHOGONAL, 3)},
+					{PieceType::SPEARS,      MovementScope(MovementType::DIAGONAL,   2)},
+					{PieceType::LIGHT_HORSE, MovementScope(MovementType::HEXAGONAL,  3)},
+					{PieceType::TREBUCHET,   MovementScope(MovementType::ORTHOGONAL, 0)},
+					{PieceType::ELEPHANT,    MovementScope(MovementType::DIAGONAL,   0)},
+					{PieceType::HEAVY_HORSE, MovementScope(MovementType::HEXAGONAL,  0)},
+					{PieceType::DRAGON,      MovementScope(MovementType::RANGE,      4)},
+					{PieceType::KING,        MovementScope(MovementType::ORTHOGONAL, 1)},
 				};
+
+			assert(_type != PieceType::UNDEFINED);
 
 			return data.at(_type);
 		}
@@ -170,6 +187,24 @@ namespace cyvmath
 
 				selfSharedPtr = it->second;
 				activePieces.erase(it);
+
+				if(!checkMoveValidity)
+				{
+					if(_type == PieceType::KING)
+						player.getFortress()->setCoord(target);
+					else
+					{
+						TerrainType tType = getSetupTerrain();
+
+						if(tType != TerrainType::UNDEFINED)
+						{
+							auto it = _match.getTerrain().find(*_coord);
+							assert(it != _match.getTerrain().end());
+
+							it->second->setCoord(target);
+						}
+					}
+				}
 			}
 			else
 			{
@@ -203,7 +238,7 @@ namespace cyvmath
 			return true;
 		}
 
-		CoordinateSet Piece::getPossibleTargetTiles() const
+		std::set<Coordinate> Piece::getPossibleTargetTiles() const
 		{
 			auto scope = getMovementScope();
 			auto distance = scope.second;
@@ -213,17 +248,17 @@ namespace cyvmath
 
 			switch(scope.first)
 			{
-				case MovementT::ORTHOGONAL:
+				case MovementType::ORTHOGONAL:
 					if(!distance)
 						distance = (Hexagon::edgeLength - 1) * 2;
 
 					return getPossibleTargetTiles(stepsOrthogonal, distance);
-				case MovementT::DIAGONAL:
+				case MovementType::DIAGONAL:
 					if(!distance)
 						distance = Hexagon::edgeLength - 1;
 
 					return getPossibleTargetTiles(stepsDiagonal, distance);
-				case MovementT::HEXAGONAL:
+				case MovementType::HEXAGONAL:
 				{
 					typedef enum class TileState
 					{
@@ -240,26 +275,40 @@ namespace cyvmath
 
 					PieceMap& activePieces = _match.getActivePieces();
 
-					CoordinateSet ret;
+					std::set<Coordinate> centers;
 
-					for(auto fPosIt : _match.getFortressPositions())
+					for(auto player : _match.getPlayers())
+					{
+						auto fortress = player.second->getFortress();
+
+						if(fortress)
+							centers.insert(fortress->getCoord());
+					}
+
+					// if one fortress ruining code is implemented, there will be an extra coordinate set saved
+					// in the match class as replacement for the fortress(es), if one or both is / are ruined
+					// TODO: cycle over that additional set, and assert(centers.size() + set.size() == 2)
+
+					std::set<Coordinate> ret;
+
+					for(Coordinate centerCoord : centers)
 					{
 						TileStateVec tmpTileVec;
-						Coordinate fortressPosition = fPosIt.second;
-						int_least8_t fortressDistance = fortressPosition.getDistance(*_coord);
+
+						int_least8_t centerDistance = centerCoord.getDistance(*_coord);
 
 						// begin in top left of the hexagonal line
-						std::valarray<int_least8_t> tmpPos = {
+						std::valarray<int_least8_t> tmpPos {
 							// explicit cast to avoid compiler warning
-							int_least8_t(fortressPosition.x() - fortressDistance),
-							int_least8_t(fortressPosition.y() + fortressDistance)
+							int_least8_t(centerCoord.x() - centerDistance),
+							int_least8_t(centerCoord.y() + centerDistance)
 						};
 
 						for(const auto& step : stepsHexagonalLine)
 						{
 							assert(step.size() == 2);
 
-							for(auto i = 0; i < fortressDistance; i++)
+							for(auto i = 0; i < centerDistance; i++)
 							{
 								tmpPos += step;
 								auto tmpCoord = Coordinate::create(tmpPos);
@@ -334,9 +383,9 @@ namespace cyvmath
 
 					return ret;
 				}
-				case MovementT::RANGE:
+				case MovementType::RANGE:
 				{
-					CoordinateSet ret;
+					std::set<Coordinate> ret;
 
 					if(_coord)
 					{
@@ -344,9 +393,12 @@ namespace cyvmath
 					}
 					else
 					{
-						// TODO: revise when terrain is added
+						auto fortress = _match.getPlayer(_color)->getFortress();
 
-						Coordinate fortressPos = _match.getFortressPositions().at(_color);
+						if(!fortress) // fortress ruined, dragon can't be brought out
+							return std::set<Coordinate>();
+
+						Coordinate fortressPos = fortress->getCoord();
 
 						auto it = _match.getActivePieces().find(fortressPos);
 						// fortress is empty or has an opponents piece in it
@@ -370,7 +422,7 @@ namespace cyvmath
 					return ret;
 				}
 				default:
-					return CoordinateSet();
+					return std::set<Coordinate>();
 			}
 		}
 	}

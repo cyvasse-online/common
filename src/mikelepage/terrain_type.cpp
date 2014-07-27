@@ -14,34 +14,17 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cyvmath/rule_set_create.hpp>
-
-#include <stdexcept>
-#include <make_unique.hpp>
-#include <cyvmath/mikelepage/match.hpp>
-#include <cyvmath/mikelepage/player.hpp>
+#include <cyvmath/mikelepage/terrain_type.hpp>
 
 namespace cyvmath
 {
-	std::unique_ptr<Match> createMatch(RuleSet ruleSet)
+	namespace mikelepage
 	{
-		switch(ruleSet)
-		{
-			case RuleSet::MIKELEPAGE:
-				return make_unique<mikelepage::Match>();
-			default:
-				throw std::invalid_argument("invalid rule set");
-		}
-	}
-
-	std::unique_ptr<Player> createPlayer(PlayersColor color, Match& match)
-	{
-		if(dynamic_cast<mikelepage::Match*>(&match) != nullptr)
-		{
-			auto& m = dynamic_cast<mikelepage::Match&>(match);
-
-			return make_unique<mikelepage::Player>(color, m.getActivePieces());
-		}
-		else throw std::runtime_error("Match object not recognized");
+		ENUM_STR(TerrainType, ({
+			{TerrainType::UNDEFINED, "undefined"},
+			{TerrainType::HILL, "hill"},
+			{TerrainType::FOREST, "forest"},
+			{TerrainType::GRASSLAND, "grassland"}
+		}))
 	}
 }

@@ -1,18 +1,18 @@
 /* Copyright 2014 Jonas Platte
-*
-* This file is part of Cyvasse Online.
-*
-* Cyvasse Online is free software: you can redistribute it and/or modify it under the
-* terms of the GNU Affero General Public License as published by the Free Software Foundation,
-* either version 3 of the License, or (at your option) any later version.
-*
-* Cyvasse Online is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-* PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
-*
-* You should have received a copy of the GNU Affero General Public License along with this program.
-* If not, see <http://www.gnu.org/licenses/>.
-*/
+ *
+ * This file is part of Cyvasse Online.
+ *
+ * Cyvasse Online is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ *
+ * Cyvasse Online is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef _CYVMATH_MIKELEPAGE_MATCH_HPP_
 #define _CYVMATH_MIKELEPAGE_MATCH_HPP_
@@ -22,8 +22,8 @@
 #include <initializer_list>
 #include <map>
 #include <memory>
-#include "common.hpp"
 #include "player.hpp"
+#include "terrain.hpp"
 
 namespace cyvmath
 {
@@ -32,15 +32,18 @@ namespace cyvmath
 		class Match : public cyvmath::Match
 		{
 			protected:
-				std::map<PlayersColor, std::shared_ptr<Player>> _players;
+				PlayerMap _players;
 
 				PieceMap _activePieces;
-				std::map<PlayersColor, Coordinate> _fortressPositions;
+				TerrainMap _terrain;
 
 			public:
 				Match()
 					: cyvmath::Match(PlayersColor::WHITE)
 				{ }
+
+				PlayerMap& getPlayers()
+				{ return _players; }
 
 				std::shared_ptr<Player> getPlayer(PlayersColor color) const
 				{ return _players.at(color); }
@@ -48,8 +51,8 @@ namespace cyvmath
 				PieceMap& getActivePieces()
 				{ return _activePieces; }
 
-				const std::map<PlayersColor, Coordinate>& getFortressPositions() const
-				{ return _fortressPositions; }
+				TerrainMap& getTerrain()
+				{ return _terrain; }
 
 				virtual ~Match() = default;
 		};

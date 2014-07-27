@@ -16,7 +16,7 @@
 
 #include <cyvmath/mikelepage/player.hpp>
 
-#include <cyvmath/mikelepage/common.hpp>
+#include <cassert>
 
 namespace cyvmath
 {
@@ -35,6 +35,13 @@ namespace cyvmath
 			}
 
 			return true;
+		}
+
+		void Player::setFortress(std::shared_ptr<Fortress> fortress)
+		{
+			assert(fortress);
+
+			_fortress = fortress;
 		}
 	}
 }

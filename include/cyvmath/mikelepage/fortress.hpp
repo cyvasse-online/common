@@ -14,34 +14,38 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cyvmath/rule_set_create.hpp>
+#ifndef _CYVMATH_MIKELEPAGE_FORTRESS_HPP_
+#define _CYVMATH_MIKELEPAGE_FORTRESS_HPP_
 
-#include <stdexcept>
-#include <make_unique.hpp>
-#include <cyvmath/mikelepage/match.hpp>
-#include <cyvmath/mikelepage/player.hpp>
+#include <cyvmath/players_color.hpp>
+#include "coordinate.hpp"
 
 namespace cyvmath
 {
-	std::unique_ptr<Match> createMatch(RuleSet ruleSet)
+	namespace mikelepage
 	{
-		switch(ruleSet)
+		class Fortress
 		{
-			case RuleSet::MIKELEPAGE:
-				return make_unique<mikelepage::Match>();
-			default:
-				throw std::invalid_argument("invalid rule set");
-		}
-	}
+			private:
+				PlayersColor _color;
+				Coordinate _coord;
 
-	std::unique_ptr<Player> createPlayer(PlayersColor color, Match& match)
-	{
-		if(dynamic_cast<mikelepage::Match*>(&match) != nullptr)
-		{
-			auto& m = dynamic_cast<mikelepage::Match&>(match);
+			public:
+				Fortress(PlayersColor color, Coordinate coord)
+					: _color(color)
+					, _coord(coord)
+				{ }
 
-			return make_unique<mikelepage::Player>(color, m.getActivePieces());
-		}
-		else throw std::runtime_error("Match object not recognized");
+				PlayersColor getColor()
+				{ return _color; }
+
+				Coordinate getCoord()
+				{ return _coord; }
+
+				virtual void setCoord(Coordinate coord)
+				{ _coord = coord; }
+		};
 	}
 }
+
+#endif // _CYVMATH_MIKELEPAGE_FORTRESS_HPP_

@@ -17,6 +17,8 @@
 #ifndef _CYVMATH_MIKELEPAGE_PLAYER_HPP_
 #define _CYVMATH_MIKELEPAGE_PLAYER_HPP_
 
+#include <map>
+#include <memory>
 #include <cyvmath/player.hpp>
 
 #include "piece.hpp"
@@ -25,6 +27,8 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
+		class Fortress;
+
 		class Player : public cyvmath::Player
 		{
 			protected:
@@ -32,6 +36,8 @@ namespace cyvmath
 
 				PieceMap& _activePieces;
 				PieceVec _inactivePieces;
+
+				std::shared_ptr<Fortress> _fortress;
 
 			public:
 				Player(PlayersColor color, PieceMap& activePieces)
@@ -48,11 +54,21 @@ namespace cyvmath
 				PieceVec& getInactivePieces()
 				{ return _inactivePieces; }
 
+				std::shared_ptr<Fortress> getFortress()
+				{ return _fortress; }
+
+				void setFortress(std::shared_ptr<Fortress>);
+
 				virtual bool setupComplete() override;
 
 				void dragonBroughtOut()
 				{ _dragonAliveInactive = false; }
+
+				void fortressRuined()
+				{ _fortress.reset(); }
 		};
+
+		typedef std::map<PlayersColor, std::shared_ptr<Player>> PlayerMap;
 	}
 }
 

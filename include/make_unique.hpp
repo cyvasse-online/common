@@ -1,9 +1,9 @@
 /* Copyright 2014 Jonas Platte
-*
-* This file is NO part of Cyvasse Online or cyvmath.
-*
-* Use it however you want to.
-*/
+ *
+ * This file is NO part of Cyvasse Online or cyvmath.
+ *
+ * Use it however you want to.
+ */
 
 #ifndef _MAKE_UNIQUE_HPP_
 #define _MAKE_UNIQUE_HPP_

@@ -14,24 +14,25 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_MIKELEPAGE_COMMON_HPP_
-#define _CYVMATH_MIKELEPAGE_COMMON_HPP_
+#ifndef _CYVMATH_MIKELEPAGE_TERRAIN_TYPE_HPP_
+#define _CYVMATH_MIKELEPAGE_TERRAIN_TYPE_HPP_
 
-#include <cyvmath/hexagon.hpp>
-#include <cyvmath/players_color.hpp>
-#include <cyvmath/piece.hpp>
+#include <enum_str.hpp>
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
-		using cyvmath::PlayersColor;
-		using cyvmath::PieceType;
+		enum class TerrainType
+		{
+			UNDEFINED,
+			HILL,
+			FOREST,
+			GRASSLAND
+		};
 
-		typedef Hexagon<6> Hexagon;
-		typedef Hexagon::Coordinate Coordinate;
-		typedef Hexagon::CoordinateSet CoordinateSet;
+		ENUM_STR_PROT(TerrainType)
 	}
 }
 
-#endif // _CYVMATH_MIKELEPAGE_COMMON_HPP_
+#endif // _CYVMATH_MIKELEPAGE_TERRAIN_TYPE_HPP_

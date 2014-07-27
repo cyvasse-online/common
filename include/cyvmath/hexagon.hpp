@@ -175,7 +175,7 @@ namespace cyvmath
 							return -1;
 
 						// TODO
-						/*const MovementVec steps = {
+						/*const MovementVec steps {
 								{-distance,  distance}, // top left
 								{        0,  distance}, // top right
 								{ distance,         0}, // right
@@ -262,8 +262,6 @@ namespace cyvmath
 					}
 			};
 
-			typedef std::set<Coordinate> CoordinateSet;
-
 			/// The edge length of the hexagon (template parameter)
 			static constexpr uint_least8_t edgeLength = l;
 
@@ -271,9 +269,9 @@ namespace cyvmath
 			static constexpr uint_least16_t tileCount = (l * (l - 1)) / 2 * 6 + 1;
 
 			/// Get a container with all possible coordinates in this hexagon
-			static const CoordinateSet& getAllCoordinates()
+			static const std::set<Coordinate>& getAllCoordinates()
 			{
-				static CoordinateSet set;
+				static std::set<Coordinate> set;
 
 				if(set.empty())
 				{

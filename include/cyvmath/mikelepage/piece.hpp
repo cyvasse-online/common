@@ -24,7 +24,8 @@
 #include <valarray>
 #include <vector>
 #include <make_unique.hpp>
-#include "common.hpp"
+#include "coordinate.hpp"
+#include "terrain_type.hpp"
 
 namespace cyvmath
 {
@@ -49,7 +50,7 @@ namespace cyvmath
 				Match& _match;
 
 				bool moveToValid(Coordinate) const;
-				CoordinateSet getPossibleTargetTiles(const MovementVec&, int_least8_t distance) const;
+				std::set<Coordinate> getPossibleTargetTiles(const MovementVec&, int_least8_t distance) const;
 
 			public:
 				Piece(PlayersColor color, PieceType type, std::unique_ptr<Coordinate> coord, Match& match)
@@ -63,9 +64,10 @@ namespace cyvmath
 				std::unique_ptr<Coordinate> getCoord() const
 				{ return make_unique(_coord); }
 
-				CoordinateSet getPossibleTargetTiles() const;
-
+				std::set<Coordinate> getPossibleTargetTiles() const;
+				TerrainType getSetupTerrain() const;
 				virtual const MovementScope& getMovementScope() const final override;
+
 				virtual bool moveTo(Coordinate, bool checkMoveValidity);
 		};
 

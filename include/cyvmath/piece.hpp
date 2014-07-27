@@ -22,40 +22,12 @@
 #include <utility>
 #include <enum_str.hpp>
 #include "coordinate.hpp"
+#include "piece_type.hpp"
 #include "players_color.hpp"
 
 namespace cyvmath
 {
-	enum class PieceType
-	{
-		UNDEFINED,
-		MOUNTAIN,
-		RABBLE,
-		CROSSBOWS,
-		SPEARS,
-		LIGHT_HORSE,
-		TREBUCHET,
-		ELEPHANT,
-		HEAVY_HORSE,
-		DRAGON,
-		KING
-	};
-
-	ENUM_STR(PieceType, ({
-		{PieceType::UNDEFINED, "undefined"},
-		{PieceType::MOUNTAIN, "mountain"},
-		{PieceType::RABBLE, "rabble"},
-		{PieceType::CROSSBOWS, "crossbows"},
-		{PieceType::SPEARS, "spears"},
-		{PieceType::LIGHT_HORSE, "light horse"},
-		{PieceType::TREBUCHET, "trebuchet"},
-		{PieceType::ELEPHANT, "elephant"},
-		{PieceType::HEAVY_HORSE, "heavy horse"},
-		{PieceType::DRAGON, "dragon"},
-		{PieceType::KING, "king"}
-	}))
-
-	enum class MovementT
+	enum class MovementType
 	{
 		NONE,
 		ORTHOGONAL,
@@ -64,7 +36,7 @@ namespace cyvmath
 		RANGE
 	};
 
-	typedef std::pair<MovementT, int8_t> MovementScope;
+	typedef std::pair<MovementType, int8_t> MovementScope;
 
 	class Piece
 	{
