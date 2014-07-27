@@ -34,7 +34,6 @@ libcyvmath_a_SOURCES = \
 	src/rule_set_create.cpp \
 	src/mikelepage/piece.cpp \
 	src/mikelepage/player.cpp \
-	src/mikelepage/terrain_type.cpp \
 	src/mikelepage/terrain.cpp
 
 libcyvmath_a_CPPFLAGS = \

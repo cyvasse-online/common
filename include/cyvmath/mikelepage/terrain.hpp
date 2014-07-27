@@ -30,8 +30,8 @@ namespace cyvmath
 	{
 		class Terrain
 		{
-			private:
-				TerrainType _type;
+			protected:
+				const TerrainType _type;
 				Coordinate _coord;
 
 			public:

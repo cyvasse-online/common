@@ -26,8 +26,8 @@ namespace cyvmath
 	{
 		class Fortress
 		{
-			private:
-				PlayersColor _color;
+			protected:
+				const PlayersColor _color;
 				Coordinate _coord;
 
 			public:
