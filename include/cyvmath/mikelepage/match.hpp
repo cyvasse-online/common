@@ -19,9 +19,6 @@
 
 #include <cyvmath/match.hpp>
 
-#include <initializer_list>
-#include <map>
-#include <memory>
 #include "player.hpp"
 #include "terrain.hpp"
 

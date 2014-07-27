@@ -18,7 +18,6 @@
 #define _CYVMATH_MIKELEPAGE_PLAYER_HPP_
 
 #include <array>
-#include <map>
 #include <memory>
 #include <cyvmath/player.hpp>
 

@@ -18,6 +18,7 @@
 #define _CYVMATH_MIKELEPAGE_TERRAIN_HPP_
 
 #include <array>
+#include <map>
 #include <memory>
 #include <cyvmath/piece_type.hpp>
 #include "coordinate.hpp"
