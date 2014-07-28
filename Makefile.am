@@ -23,6 +23,7 @@ libcyvmath_a_SOURCES = \
 	include/cyvmath/player.hpp \
 	include/cyvmath/players_color.hpp \
 	include/cyvmath/rule_sets.hpp \
+	include/cyvmath/mikelepage/bearing_table.hpp \
 	include/cyvmath/mikelepage/coordinate.hpp \
 	include/cyvmath/mikelepage/fortress.hpp \
 	include/cyvmath/mikelepage/match.hpp \
@@ -32,6 +33,7 @@ libcyvmath_a_SOURCES = \
 	include/cyvmath/terrain.hpp \
 	src/players_color.cpp \
 	src/rule_set_create.cpp \
+	src/mikelepage/bearing_table.cpp \
 	src/mikelepage/piece.cpp \
 	src/mikelepage/player.cpp \
 	src/mikelepage/terrain.cpp

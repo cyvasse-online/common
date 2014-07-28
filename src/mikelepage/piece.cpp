@@ -156,6 +156,28 @@ namespace cyvmath
 			return it->second;
 		}
 
+		Tier Piece::getEffectiveDefenseTier() const
+		{
+			Tier baseTier = getBaseTier();
+
+			if(baseTier == Tier::UNDEFINED || baseTier == Tier::_4)
+				return baseTier;
+
+			assert(_coord);
+
+			auto terrainIt = _match.getTerrain().find(*_coord);
+			if(terrainIt == _match.getTerrain().end())
+				return baseTier;
+
+			switch(baseTier)
+			{
+				case Tier::_1: return Tier::_2;
+				case Tier::_2: return Tier::_3;
+				case Tier::_3: return Tier::_4;
+				default: assert(0);
+			}
+		}
+
 		TerrainType Piece::getSetupTerrain() const
 		{
 			static const std::map<PieceType, TerrainType> data {
@@ -259,6 +281,11 @@ namespace cyvmath
 			return true;
 		}
 
+		std::set<Piece*> Piece::getReachableOpponentPieces() const
+		{
+			// TODO
+		}
+
 		std::set<Coordinate> Piece::getPossibleTargetTiles() const
 		{
 			auto scope = getMovementScope();
@@ -349,7 +376,9 @@ namespace cyvmath
 										{
 											if(it->second->getType() == PieceType::MOUNTAIN ||
 											   it->second->getColor() == _color)
+											{
 												tileState = TileState::INACCESSIBLE;
+											}
 											else
 											{
 												// TODO: Check whether the piece can be attacked

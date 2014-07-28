@@ -70,9 +70,11 @@ namespace cyvmath
 				std::unique_ptr<Coordinate> getCoord() const
 				{ return make_unique(_coord); }
 
+				std::set<Piece*> getReachableOpponentPieces() const;
 				std::set<Coordinate> getPossibleTargetTiles() const;
 
 				Tier getBaseTier() const;
+				Tier getEffectiveDefenseTier() const;
 				TerrainType getSetupTerrain() const;
 				virtual const MovementScope& getMovementScope() const final override;
 
