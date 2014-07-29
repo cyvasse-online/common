@@ -28,6 +28,7 @@
 #include <valarray>
 #include <cassert>
 #include <cmath>
+#include <cstdlib>
 #include <make_unique.hpp>
 
 namespace cyvmath
