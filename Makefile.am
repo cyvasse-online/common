@@ -34,9 +34,9 @@ libcyvmath_a_SOURCES = \
 	src/players_color.cpp \
 	src/rule_set_create.cpp \
 	src/mikelepage/bearing_table.cpp \
+	src/mikelepage/match.cpp \
 	src/mikelepage/piece.cpp \
-	src/mikelepage/player.cpp \
-	src/mikelepage/terrain.cpp
+	src/mikelepage/player.cpp
 
 libcyvmath_a_CPPFLAGS = \
 	-I$(top_srcdir)/include

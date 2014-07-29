@@ -22,7 +22,6 @@
 #include <algorithm>
 #include <array>
 #include <functional>
-#include <ostream>
 #include <set>
 #include <string>
 #include <stdexcept>
@@ -33,6 +32,28 @@
 
 namespace cyvmath
 {
+	enum class DirectionOrthogonal
+	{
+		UNDEFINED,
+		TOP_LEFT,
+		TOP_RIGHT,
+		RIGHT,
+		BOTTOM_RIGHT,
+		BOTTOM_LEFT,
+		LEFT
+	};
+
+	enum class DirectionDiagonal
+	{
+		UNDEFINED,
+		TOP_LEFT,
+		TOP,
+		TOP_RIGHT,
+		BOTTOM_RIGHT,
+		BOTTOM,
+		BOTTOM_LEFT
+	};
+
 	/* This should rather be a namespace, but namespaces cannot have template parameters.
 	   hexagon<6>::Coordinate is way better understandable than hexagon::Coordinate<6>
 	   so this is implemented as a template class with a deleted constructor.
@@ -117,6 +138,23 @@ namespace cyvmath
 						return _x == other._x || _y == other._y || z() == other.z();
 					}
 
+					DirectionOrthogonal getDirectionOrthogonal(Coordinate other) const
+					{
+						if(*this == other) return DirectionOrthogonal::UNDEFINED;
+
+						if(_x == other._x)
+							return (_y > other._y) ? DirectionOrthogonal::BOTTOM_LEFT
+							                       : DirectionOrthogonal::TOP_RIGHT;
+						if(_y == other._y)
+							return (_x > other._x) ? DirectionOrthogonal::LEFT
+							                       : DirectionOrthogonal::RIGHT;
+						if(z() == other.z())
+							return (_x > other._x) ? DirectionOrthogonal::TOP_LEFT
+							                       : DirectionOrthogonal::BOTTOM_RIGHT;
+
+						return DirectionOrthogonal::UNDEFINED;
+					}
+
 					/** Like getDistance(), but return -1 if the given coordinate
 						is not reachable in one orthogonal move
 
@@ -139,12 +177,33 @@ namespace cyvmath
 						#define dZ z() - other.z()
 
 						return dX == dY ||
-							   dX == dZ ||
-							   dY == dZ;
+							   dY == dZ ||
+							   dZ == dX;
 
 						#undef dX
 						#undef dY
 						#undef dZ
+					}
+
+					DirectionDiagonal getDirectionDiagonal(Coordinate other) const
+					{
+						if(*this == other) return DirectionDiagonal::UNDEFINED;
+
+						int_least8_t dX = _x  - other._x;
+						int_least8_t dY = _y  - other._y;
+						int_least8_t dZ = z() - other.z();
+
+						if(dX == dY)
+							return (dX > 0) ? DirectionDiagonal::BOTTOM_LEFT
+							                : DirectionDiagonal::TOP_RIGHT;
+						if(dY == dZ)
+							return (dY > 0) ? DirectionDiagonal::BOTTOM_RIGHT
+							                : DirectionDiagonal::TOP_LEFT;
+						if(dZ == dX)
+							return (dZ > 0) ? DirectionDiagonal::TOP
+							                : DirectionDiagonal::BOTTOM;
+
+						return DirectionDiagonal::UNDEFINED;
 					}
 
 					/** Get the diagonal distance to a coordinate, or -1 if
@@ -252,13 +311,6 @@ namespace cyvmath
 						return std::unique_ptr<Coordinate>(
 							new Coordinate(str.at(0) - 'A', std::stoi(str.substr(1)) - 1)
 						);
-					}
-
-					// for debugging
-					friend std::ostream& operator<<(std::ostream& os, Coordinate c)
-					{
-						os << "(" << (int) c._x << ", " << (int) c._y << ", " << (int) c.z() << ")";
-						return os;
 					}
 			};
 

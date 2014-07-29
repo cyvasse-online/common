@@ -43,8 +43,6 @@ namespace cyvmath
 				TerrainType getType()
 				{ return _type; }
 
-				std::array<PieceType, 2> getAdvantagedPieceTypes();
-
 				virtual void setCoord(Coordinate coord)
 				{ _coord = coord; }
 		};

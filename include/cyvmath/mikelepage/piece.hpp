@@ -35,12 +35,35 @@ namespace cyvmath
 
 		class Match;
 
-		enum class Tier
+		enum class Tier : uint_least8_t
 		{
-			UNDEFINED,
-			_1, _2, _3, _4
+			UNDEFINED = 0,
+			_1 = 1,
+			_2 = 2,
+			_3 = 4,
+			_4 = 8
 		};
 
+		enum class TileState
+		{
+			UNDEFINED,
+			START,
+			EMPTY,
+			INACCESSIBLE,
+			OP_OCCUPIED
+		};
+
+		ENUM_STR(TileState, ({
+				{TileState::UNDEFINED, "undefined"},
+				{TileState::START, "start"},
+				{TileState::EMPTY, "empty"},
+				{TileState::INACCESSIBLE, "inaccessible"},
+				{TileState::OP_OCCUPIED, "oppupied by opponent"}
+			}),
+			TileState::UNDEFINED
+		)
+
+		typedef std::vector<std::pair<std::valarray<int_least8_t>, TileState>> TileStateVec;
 		typedef std::vector<std::valarray<int_least8_t>> MovementVec;
 
 		class Piece : public cyvmath::Piece
@@ -56,6 +79,7 @@ namespace cyvmath
 				Match& _match;
 
 				bool moveToValid(Coordinate) const;
+				std::set<const Piece*> getReachableOpponentPieces(const MovementVec&, int_least8_t distance) const;
 				std::set<Coordinate> getPossibleTargetTiles(const MovementVec&, int_least8_t distance) const;
 
 			public:
@@ -70,11 +94,15 @@ namespace cyvmath
 				std::unique_ptr<Coordinate> getCoord() const
 				{ return make_unique(_coord); }
 
-				std::set<Piece*> getReachableOpponentPieces() const;
+				bool canReach(Coordinate) const;
+
+				TileStateVec getHexagonalLineTiles() const;
+				std::set<const Piece*> getReachableOpponentPieces() const;
 				std::set<Coordinate> getPossibleTargetTiles() const;
 
 				Tier getBaseTier() const;
 				Tier getEffectiveDefenseTier() const;
+				TerrainType getHomeTerrain() const;
 				TerrainType getSetupTerrain() const;
 				virtual const MovementScope& getMovementScope() const final override;
 

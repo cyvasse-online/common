@@ -16,55 +16,189 @@
 
 #include <cyvmath/mikelepage/bearing_table.hpp>
 
+#include <valarray>
+
 namespace cyvmath
 {
     namespace mikelepage
     {
-        bool BearingTable::canTake(Piece* attackingPiece, Piece* defendingPiece) const
+        void BearingTable::addCanReach(const Piece* piece)
         {
+            assert(piece);
+            assert(piece->getType() != PieceType::MOUNTAIN);
 
+            auto reachableOpPieces = piece->getReachableOpponentPieces();
+
+            if(!reachableOpPieces.empty())
+            {
+                auto res = _canReach.emplace(piece, std::set<const Piece*>());
+                assert(res.second);
+
+                std::set<const Piece*>& selfCanReach = res.first->second;
+
+                for(const Piece* opPiece : reachableOpPieces)
+                {
+                    auto res = selfCanReach.insert(opPiece);
+                    assert(res.second);
+
+                    auto opPieceIt = _canBeReachedBy.find(opPiece);
+                    if(opPieceIt == _canBeReachedBy.end())
+                    {
+                        auto res = _canBeReachedBy.emplace(opPiece, std::set<const Piece*>{piece});
+                        assert(res.second);
+                    }
+                    else
+                    {
+                        auto res = opPieceIt->second.insert(piece);
+                        assert(res.second);
+                    }
+                }
+            }
+        }
+
+        void BearingTable::addCanBeReachedBy(const Piece* piece)
+        {
+            assert(piece);
+            assert(piece->getType() != PieceType::MOUNTAIN);
+
+            for(auto it : _pieceMap)
+            {
+                Piece* opPiece = it.second.get();
+
+                if(opPiece->getColor() == piece->getColor() ||
+                   opPiece->getType() == PieceType::MOUNTAIN)
+                    continue;
+
+                if(opPiece->canReach(*piece->getCoord()))
+                {
+                    auto otherPieceIt = _canReach.find(opPiece);
+                    if(otherPieceIt == _canReach.end())
+                    {
+                        auto res = _canReach.emplace(opPiece, std::set<const Piece*>{piece});
+                        assert(res.second);
+                    }
+                    else
+                    {
+                        auto res = otherPieceIt->second.insert(piece);
+                        assert(res.second);
+                    }
+
+                    auto pieceIt = _canBeReachedBy.find(piece);
+                    if(pieceIt == _canBeReachedBy.end())
+                    {
+                        auto res = _canBeReachedBy.emplace(piece, std::set<const Piece*>{opPiece});
+                        assert(res.second);
+                    }
+                    else
+                    {
+                        auto res = pieceIt->second.insert(opPiece);
+                        assert(res.second);
+                    }
+                }
+            }
+        }
+
+        bool BearingTable::canTake(const Piece* atkPiece, const Piece* defPiece) const
+        {
+            assert(atkPiece);
+            assert(defPiece);
+            assert(atkPiece->getType() != PieceType::MOUNTAIN);
+            assert(defPiece->getType() != PieceType::MOUNTAIN);
+
+            if(atkPiece->getBaseTier() >= defPiece->getEffectiveDefenseTier())
+                return true;
+
+            bool haveKing = (atkPiece->getType() == PieceType::KING);
+
+            Tier maxAllowedTier = haveKing ? Tier::_4 : atkPiece->getBaseTier();
+            Tier maxTier = Tier::_1;
+
+            auto defPieceIt = _canBeReachedBy.find(defPiece);
+
+            if(defPieceIt == _canBeReachedBy.end())
+                return false;
+
+            std::valarray<uint_least8_t> flankingTiers(defPieceIt->second.size());
+
+            size_t i = 0;
+            for(const Piece* piece : defPieceIt->second)
+            {
+                Tier baseTier = piece->getBaseTier();
+
+                if(baseTier > maxAllowedTier)
+                    continue;
+
+                if(piece->getType() == PieceType::KING)
+                {
+                    // king will count as maxTier after the loop
+                    haveKing = true;
+                    continue;
+                }
+
+                if(baseTier > maxTier)
+                    maxTier = baseTier;
+
+                flankingTiers[i] = static_cast<uint_least8_t>(baseTier);
+                ++i;
+            }
+
+            if(haveKing)
+                flankingTiers[i] = static_cast<uint_least8_t>(maxTier);
+
+            return flankingTiers.sum() >= static_cast<uint_least8_t>(defPiece->getEffectiveDefenseTier());
         }
 
         void BearingTable::init()
         {
-
+            for(auto it : _pieceMap)
+            {
+                if(it.second->getType() != PieceType::MOUNTAIN)
+                    addCanReach(it.second.get());
+            }
         }
 
-        void BearingTable::add(Piece* piece)
+        void BearingTable::add(const Piece* piece)
         {
-
+            addCanReach(piece);
+            addCanBeReachedBy(piece);
         }
 
-        void BearingTable::update(Piece* piece)
+        void BearingTable::update(const Piece* piece)
         {
+            assert(piece);
+
             auto it1 = _canReach.find(piece);
             auto it2 = _canBeReachedBy.find(piece);
 
-            assert(it1 != _canReach.end());
-            assert(it2 != _canBeReachedBy.end());
-
-            for(auto it1Piece : it1->second)
+            if(it1 != _canReach.end())
             {
-                auto it = _canBeReachedBy.find(it1Piece);
-                assert(it);
+                for(auto it1Piece : it1->second)
+                {
+                    auto it = _canBeReachedBy.find(it1Piece);
+                    assert(it != _canBeReachedBy.end());
 
-                auto pieceRefIt = it->second.find(piece);
-                assert(pieceRefIt);
-                it->second.erase(pieceRefIt);
+                    auto pieceRefIt = it->second.find(piece);
+                    assert(pieceRefIt != it->second.end());
+                    it->second.erase(pieceRefIt);
+                }
+
+                _canReach.erase(it1);
             }
 
-            for(auto it2Piece : it2->second)
+            if(it2 != _canBeReachedBy.end())
             {
-                auto it = _canReach.find(it2Piece);
-                assert(it);
+                for(auto it2Piece : it2->second)
+                {
+                    auto it = _canReach.find(it2Piece);
+                    assert(it != _canReach.end());
 
-                auto pieceRefIt = it->second.find(piece);
-                assert(pieceRefIt);
-                it->second.erase(pieceRefIt);
+                    auto pieceRefIt = it->second.find(piece);
+                    assert(pieceRefIt != it->second.end());
+                    it->second.erase(pieceRefIt);
+                }
+
+                _canBeReachedBy.erase(it2);
             }
-
-            _canReach.erase(it1);
-            _canBeReachedBy.erase(it2);
 
             add(piece);
         }

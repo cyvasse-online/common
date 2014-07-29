@@ -28,12 +28,15 @@ namespace cyvmath
         class BearingTable
         {
             private:
-                typedef std::map<Piece*, std::set<Piece*>> BearingMap;
+                typedef std::map<const Piece*, std::set<const Piece*>> BearingMap;
 
                 PieceMap& _pieceMap;
 
                 BearingMap _canReach;
                 BearingMap _canBeReachedBy;
+
+                void addCanReach(const Piece*);
+                void addCanBeReachedBy(const Piece*);
 
             public:
                 BearingTable(PieceMap& pieceMap)
@@ -42,13 +45,13 @@ namespace cyvmath
 
                 // non-copyable
                 BearingTable(const BearingTable&) = delete;
-                operator=(const BearingTable&) = delete;
+                BearingTable& operator=(const BearingTable&) = delete;
 
-                bool canTake(Piece* attackingPiece, Piece* defendingPiece) const;
+                bool canTake(const Piece* attackingPiece, const Piece* defendingPiece) const;
 
                 void init();
-                void add(Piece*);
-                void update(Piece*);
+                void add(const Piece*);
+                void update(const Piece*);
                 void clear();
         };
     }

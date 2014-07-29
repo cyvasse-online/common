@@ -19,6 +19,7 @@
 
 #include <cyvmath/match.hpp>
 
+#include "bearing_table.hpp"
 #include "coordinate.hpp"
 #include "player.hpp"
 #include "terrain.hpp"
@@ -35,6 +36,8 @@ namespace cyvmath
 				PieceMap _activePieces;
 				TerrainMap _terrain;
 
+				BearingTable _bearingTable;
+
 				// alternative centers for horse movement;
 				// one replacement coord per ruined fortress
 				std::set<Coordinate> _fortressReplaceCorners;
@@ -42,7 +45,10 @@ namespace cyvmath
 			public:
 				Match()
 					: cyvmath::Match(PlayersColor::WHITE)
+					, _bearingTable(_activePieces)
 				{ }
+
+				virtual ~Match() = default;
 
 				PlayerArray& getPlayers()
 				{ return _players; }
@@ -56,10 +62,12 @@ namespace cyvmath
 				TerrainMap& getTerrain()
 				{ return _terrain; }
 
-				std::set<Coordinate>& getFortressReplaceCorners()
-				{ return _fortressReplaceCorners; }
+				BearingTable& getBearingTable()
+				{ return _bearingTable; }
 
-				virtual ~Match() = default;
+				std::set<Coordinate> getHexagonMovementCenters();
+
+				virtual void removeFromBoard(std::shared_ptr<Piece>);
 		};
 	}
 }
