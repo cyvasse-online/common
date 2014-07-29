@@ -35,6 +35,7 @@ class HexagonTest : public CppUnit::TestFixture
 		std::unique_ptr<Hexagon<6>::Coordinate> h6Coord6;
 		std::unique_ptr<Hexagon<6>::Coordinate> h6Coord7;
 		std::unique_ptr<Hexagon<6>::Coordinate> h6Coord8;
+		std::unique_ptr<Hexagon<6>::Coordinate> h6Coord9;
 
 	public:
 		void setUp() override;
@@ -48,6 +49,9 @@ class HexagonTest : public CppUnit::TestFixture
 		void testDistanceDiagonal();
 		void testDistanceHexagonalLine();
 
+		void testDirectionOrthogonal();
+		void testDirectionDiagonal();
+
 	CPPUNIT_TEST_SUITE(HexagonTest);
 		CPPUNIT_TEST(testCoordValidity);
 		CPPUNIT_TEST(testCoordEquality);
@@ -56,6 +60,9 @@ class HexagonTest : public CppUnit::TestFixture
 		CPPUNIT_TEST(testDistanceOrthogonal);
 		CPPUNIT_TEST(testDistanceDiagonal);
 		CPPUNIT_TEST(testDistanceHexagonalLine);
+
+		CPPUNIT_TEST(testDirectionOrthogonal);
+		CPPUNIT_TEST(testDirectionDiagonal);
 	CPPUNIT_TEST_SUITE_END();
 };
 

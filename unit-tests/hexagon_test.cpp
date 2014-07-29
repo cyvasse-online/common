@@ -29,6 +29,7 @@ void HexagonTest::setUp()
 	h6Coord6 = Hexagon<6>::Coordinate::create(1,  9);
 	h6Coord7 = Hexagon<6>::Coordinate::create(9,  2);
 	h6Coord8 = Hexagon<6>::Coordinate::create(2,  5);
+	h6Coord9 = Hexagon<6>::Coordinate::create(5,  7);
 }
 
 void HexagonTest::tearDown()
@@ -40,6 +41,8 @@ void HexagonTest::tearDown()
 	h6Coord5.reset();
 	h6Coord6.reset();
 	h6Coord7.reset();
+	h6Coord8.reset();
+	h6Coord9.reset();
 }
 
 void HexagonTest::testCoordValidity()
@@ -51,13 +54,15 @@ void HexagonTest::testCoordValidity()
 	CPPUNIT_ASSERT(h6Coord5);
 	CPPUNIT_ASSERT(h6Coord6);
 	CPPUNIT_ASSERT(h6Coord7);
+	CPPUNIT_ASSERT(h6Coord8);
+	CPPUNIT_ASSERT(h6Coord9);
 
-	CPPUNIT_ASSERT(Hexagon<6>::Coordinate::create( 0, 11) == nullptr); // outside – top
-	CPPUNIT_ASSERT(Hexagon<6>::Coordinate::create( 8,  9) == nullptr); // outside – top right
-	CPPUNIT_ASSERT(Hexagon<6>::Coordinate::create(11,  2) == nullptr); // outside – bottom right
-	CPPUNIT_ASSERT(Hexagon<6>::Coordinate::create(10, -2) == nullptr); // outside – bottom
-	CPPUNIT_ASSERT(Hexagon<6>::Coordinate::create( 1,  3) == nullptr); // outside – bottom left
-	CPPUNIT_ASSERT(Hexagon<6>::Coordinate::create(-2,  7) == nullptr); // outside – top left
+	CPPUNIT_ASSERT(!Hexagon<6>::Coordinate::create( 0, 11)); // outside – top
+	CPPUNIT_ASSERT(!Hexagon<6>::Coordinate::create( 8,  9)); // outside – top right
+	CPPUNIT_ASSERT(!Hexagon<6>::Coordinate::create(11,  2)); // outside – bottom right
+	CPPUNIT_ASSERT(!Hexagon<6>::Coordinate::create(10, -2)); // outside – bottom
+	CPPUNIT_ASSERT(!Hexagon<6>::Coordinate::create( 1,  3)); // outside – bottom left
+	CPPUNIT_ASSERT(!Hexagon<6>::Coordinate::create(-2,  7)); // outside – top left
 }
 
 void HexagonTest::testCoordEquality()
@@ -77,26 +82,25 @@ void HexagonTest::testCoordCompleteness()
 	CPPUNIT_ASSERT(Hexagon<3>::getAllCoordinates().size() == 19);
 	CPPUNIT_ASSERT(Hexagon<4>::getAllCoordinates().size() == 37);
 
-	std::vector<Hexagon<2>::Coordinate> coords = Hexagon<2>::getAllCoordinates();
-	std::sort(coords.begin(), coords.end());
+	std::set<Hexagon<2>::Coordinate> coords = Hexagon<2>::getAllCoordinates();
 
-	CPPUNIT_ASSERT(coords.at(0) == *Hexagon<2>::Coordinate::create(0, 1));
-	CPPUNIT_ASSERT(coords.at(1) == *Hexagon<2>::Coordinate::create(0, 2));
-	CPPUNIT_ASSERT(coords.at(2) == *Hexagon<2>::Coordinate::create(1, 0));
-	CPPUNIT_ASSERT(coords.at(3) == *Hexagon<2>::Coordinate::create(1, 1));
-	CPPUNIT_ASSERT(coords.at(4) == *Hexagon<2>::Coordinate::create(1, 2));
-	CPPUNIT_ASSERT(coords.at(5) == *Hexagon<2>::Coordinate::create(2, 0));
-	CPPUNIT_ASSERT(coords.at(6) == *Hexagon<2>::Coordinate::create(2, 1));
+	CPPUNIT_ASSERT(coords.find(*Hexagon<2>::Coordinate::create(0, 1)) != coords.end());
+	CPPUNIT_ASSERT(coords.find(*Hexagon<2>::Coordinate::create(0, 2)) != coords.end());
+	CPPUNIT_ASSERT(coords.find(*Hexagon<2>::Coordinate::create(1, 0)) != coords.end());
+	CPPUNIT_ASSERT(coords.find(*Hexagon<2>::Coordinate::create(1, 1)) != coords.end());
+	CPPUNIT_ASSERT(coords.find(*Hexagon<2>::Coordinate::create(1, 2)) != coords.end());
+	CPPUNIT_ASSERT(coords.find(*Hexagon<2>::Coordinate::create(2, 0)) != coords.end());
+	CPPUNIT_ASSERT(coords.find(*Hexagon<2>::Coordinate::create(2, 1)) != coords.end());
 }
 
 void HexagonTest::testDistanceOrthogonal()
 {
-	CPPUNIT_ASSERT(h6Coord1->getDistanceOrthogonal(*h6Coord2) ==  2);
-	CPPUNIT_ASSERT(h6Coord2->getDistanceOrthogonal(*h6Coord1) ==  2);
-	CPPUNIT_ASSERT(h6Coord1->getDistanceOrthogonal(*h6Coord3) ==  5);
-	CPPUNIT_ASSERT(h6Coord3->getDistanceOrthogonal(*h6Coord1) ==  5);
-	CPPUNIT_ASSERT(h6Coord1->getDistanceOrthogonal(*h6Coord4) ==  3);
-	CPPUNIT_ASSERT(h6Coord4->getDistanceOrthogonal(*h6Coord1) ==  3);
+	CPPUNIT_ASSERT(h6Coord1->getDistanceOrthogonal(*h6Coord2) == 2);
+	CPPUNIT_ASSERT(h6Coord2->getDistanceOrthogonal(*h6Coord1) == 2);
+	CPPUNIT_ASSERT(h6Coord1->getDistanceOrthogonal(*h6Coord3) == 5);
+	CPPUNIT_ASSERT(h6Coord3->getDistanceOrthogonal(*h6Coord1) == 5);
+	CPPUNIT_ASSERT(h6Coord1->getDistanceOrthogonal(*h6Coord4) == 3);
+	CPPUNIT_ASSERT(h6Coord4->getDistanceOrthogonal(*h6Coord1) == 3);
 
 	CPPUNIT_ASSERT(h6Coord2->getDistanceOrthogonal(*h6Coord3) == -1);
 	CPPUNIT_ASSERT(h6Coord3->getDistanceOrthogonal(*h6Coord2) == -1);
@@ -108,12 +112,12 @@ void HexagonTest::testDistanceOrthogonal()
 
 void HexagonTest::testDistanceDiagonal()
 {
-	CPPUNIT_ASSERT(h6Coord1->getDistanceDiagonal(*h6Coord5) ==  1);
-	CPPUNIT_ASSERT(h6Coord5->getDistanceDiagonal(*h6Coord1) ==  1);
-	CPPUNIT_ASSERT(h6Coord1->getDistanceDiagonal(*h6Coord6) ==  2);
-	CPPUNIT_ASSERT(h6Coord6->getDistanceDiagonal(*h6Coord1) ==  2);
-	CPPUNIT_ASSERT(h6Coord1->getDistanceDiagonal(*h6Coord7) ==  3);
-	CPPUNIT_ASSERT(h6Coord7->getDistanceDiagonal(*h6Coord1) ==  3);
+	CPPUNIT_ASSERT(h6Coord1->getDistanceDiagonal(*h6Coord5) == 1);
+	CPPUNIT_ASSERT(h6Coord5->getDistanceDiagonal(*h6Coord1) == 1);
+	CPPUNIT_ASSERT(h6Coord1->getDistanceDiagonal(*h6Coord6) == 2);
+	CPPUNIT_ASSERT(h6Coord6->getDistanceDiagonal(*h6Coord1) == 2);
+	CPPUNIT_ASSERT(h6Coord1->getDistanceDiagonal(*h6Coord7) == 3);
+	CPPUNIT_ASSERT(h6Coord7->getDistanceDiagonal(*h6Coord1) == 3);
 
 	CPPUNIT_ASSERT(h6Coord1->getDistanceDiagonal(*h6Coord2) == -1);
 	CPPUNIT_ASSERT(h6Coord2->getDistanceDiagonal(*h6Coord1) == -1);
@@ -130,4 +134,42 @@ void HexagonTest::testDistanceHexagonalLine()
 	CPPUNIT_ASSERT(h6Coord4->getDistanceHexagonalLine(*h6Coord1, *h6Coord6) == -1);
 
 	CPPUNIT_ASSERT(h6Coord1->getDistanceHexagonalLine(*h6Coord1, *h6Coord1) == 0);
+}
+
+void HexagonTest::testDirectionOrthogonal()
+{
+	CPPUNIT_ASSERT(h6Coord1->getDirectionOrthogonal(*h6Coord3) == DirectionOrthogonal::TOP_RIGHT);
+	CPPUNIT_ASSERT(h6Coord3->getDirectionOrthogonal(*h6Coord1) == DirectionOrthogonal::BOTTOM_LEFT);
+	CPPUNIT_ASSERT(h6Coord1->getDirectionOrthogonal(*h6Coord2) == DirectionOrthogonal::LEFT);
+	CPPUNIT_ASSERT(h6Coord2->getDirectionOrthogonal(*h6Coord1) == DirectionOrthogonal::RIGHT);
+	CPPUNIT_ASSERT(h6Coord1->getDirectionOrthogonal(*h6Coord4) == DirectionOrthogonal::BOTTOM_RIGHT);
+	CPPUNIT_ASSERT(h6Coord4->getDirectionOrthogonal(*h6Coord1) == DirectionOrthogonal::TOP_LEFT);
+
+	CPPUNIT_ASSERT(h6Coord1->getDirectionOrthogonal(*h6Coord1) == DirectionOrthogonal::UNDEFINED);
+
+	CPPUNIT_ASSERT(h6Coord1->getDirectionOrthogonal(*h6Coord5) == DirectionOrthogonal::UNDEFINED);
+	CPPUNIT_ASSERT(h6Coord5->getDirectionOrthogonal(*h6Coord1) == DirectionOrthogonal::UNDEFINED);
+	CPPUNIT_ASSERT(h6Coord2->getDirectionOrthogonal(*h6Coord3) == DirectionOrthogonal::UNDEFINED);
+	CPPUNIT_ASSERT(h6Coord3->getDirectionOrthogonal(*h6Coord2) == DirectionOrthogonal::UNDEFINED);
+	CPPUNIT_ASSERT(h6Coord6->getDirectionOrthogonal(*h6Coord7) == DirectionOrthogonal::UNDEFINED);
+	CPPUNIT_ASSERT(h6Coord7->getDirectionOrthogonal(*h6Coord6) == DirectionOrthogonal::UNDEFINED);
+}
+
+void HexagonTest::testDirectionDiagonal()
+{
+	CPPUNIT_ASSERT(h6Coord1->getDirectionDiagonal(*h6Coord6) == DirectionDiagonal::TOP);
+	CPPUNIT_ASSERT(h6Coord6->getDirectionDiagonal(*h6Coord1) == DirectionDiagonal::BOTTOM);
+	CPPUNIT_ASSERT(h6Coord1->getDirectionDiagonal(*h6Coord7) == DirectionDiagonal::BOTTOM_RIGHT);
+	CPPUNIT_ASSERT(h6Coord7->getDirectionDiagonal(*h6Coord1) == DirectionDiagonal::TOP_LEFT);
+	CPPUNIT_ASSERT(h6Coord1->getDirectionDiagonal(*h6Coord9) == DirectionDiagonal::TOP_RIGHT);
+	CPPUNIT_ASSERT(h6Coord9->getDirectionDiagonal(*h6Coord1) == DirectionDiagonal::BOTTOM_LEFT);
+
+	CPPUNIT_ASSERT(h6Coord1->getDirectionDiagonal(*h6Coord1) == DirectionDiagonal::UNDEFINED);
+
+	CPPUNIT_ASSERT(h6Coord1->getDirectionDiagonal(*h6Coord2) == DirectionDiagonal::UNDEFINED);
+	CPPUNIT_ASSERT(h6Coord1->getDirectionDiagonal(*h6Coord2) == DirectionDiagonal::UNDEFINED);
+	CPPUNIT_ASSERT(h6Coord2->getDirectionDiagonal(*h6Coord3) == DirectionDiagonal::UNDEFINED);
+	CPPUNIT_ASSERT(h6Coord2->getDirectionDiagonal(*h6Coord3) == DirectionDiagonal::UNDEFINED);
+	CPPUNIT_ASSERT(h6Coord5->getDirectionDiagonal(*h6Coord6) == DirectionDiagonal::UNDEFINED);
+	CPPUNIT_ASSERT(h6Coord6->getDirectionDiagonal(*h6Coord5) == DirectionDiagonal::UNDEFINED);
 }
