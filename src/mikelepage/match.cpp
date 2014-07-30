@@ -41,6 +41,51 @@ namespace cyvmath
 			return ret;
 		}
 
+		Piece* Match::getPieceAt(Coordinate coord)
+		{
+			Piece* ret = nullptr;
+
+			auto it = _activePieces.find(coord);
+			if(it != _activePieces.end())
+				ret = it->second.get();
+
+			return ret;
+		}
+
+		void Match::forReachableCoords(Coordinate start, const MovementRange& range,
+		                               std::function<void(Coordinate, Piece*)> func)
+		{
+			for(const auto& step : range.first)
+			{
+				assert(step.size() == 2);
+
+				std::valarray<int_least8_t> tmpPos = start.toValarray();
+				auto tmpCoord = make_unique<Coordinate>(start);
+
+				for(auto i = 0; i < range.second; i++)
+				{
+					assert(tmpCoord);
+
+					tmpPos += step;
+					tmpCoord = Coordinate::create(tmpPos);
+
+					// if one step into this direction results in a
+					// invalid coordinate, all further ones do too
+					if(!tmpCoord)
+						break;
+
+					Piece* tmpPiece = getPieceAt(*tmpCoord);
+
+					func(*tmpCoord, tmpPiece);
+
+					// if there is a piece on the tile,
+					// we can't reach any tiles beyond it
+					if(tmpPiece)
+						break;
+				}
+			}
+		}
+
 		void Match::removeFromBoard(std::shared_ptr<Piece> piece)
 		{
 			assert(piece->getCoord());

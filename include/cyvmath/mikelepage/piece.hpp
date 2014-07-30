@@ -35,15 +35,6 @@ namespace cyvmath
 
 		class Match;
 
-		enum class Tier : uint_least8_t
-		{
-			UNDEFINED = 0,
-			_1 = 1,
-			_2 = 2,
-			_3 = 4,
-			_4 = 8
-		};
-
 		enum class TileState
 		{
 			UNDEFINED,
@@ -63,8 +54,9 @@ namespace cyvmath
 			TileState::UNDEFINED
 		)
 
-		typedef std::vector<std::pair<std::valarray<int_least8_t>, TileState>> TileStateVec;
+		typedef std::map<Coordinate, TileState> TileStateMap;
 		typedef std::vector<std::valarray<int_least8_t>> MovementVec;
+		typedef std::pair<MovementVec, uint_least8_t> MovementRange;
 
 		class Piece : public cyvmath::Piece
 		{
@@ -79,8 +71,10 @@ namespace cyvmath
 				Match& _match;
 
 				bool moveToValid(Coordinate) const;
-				std::set<const Piece*> getReachableOpponentPieces(const MovementVec&, int_least8_t distance) const;
-				std::set<Coordinate> getPossibleTargetTiles(const MovementVec&, int_least8_t distance) const;
+
+				std::set<Coordinate> getReachableTiles(const MovementRange&) const;
+				std::set<Coordinate> getPossibleTargetTiles(const MovementRange&) const;
+				std::set<const Piece*> getReachableOpponentPieces(const MovementRange&) const;
 
 			public:
 				Piece(PlayersColor color, PieceType type, std::unique_ptr<Coordinate> coord, Match& match)
@@ -94,19 +88,20 @@ namespace cyvmath
 				std::unique_ptr<Coordinate> getCoord() const
 				{ return make_unique(_coord); }
 
-				bool canReach(Coordinate) const;
-
-				TileStateVec getHexagonalLineTiles() const;
-				std::set<const Piece*> getReachableOpponentPieces() const;
-				std::set<Coordinate> getPossibleTargetTiles() const;
-
-				Tier getBaseTier() const;
-				Tier getEffectiveDefenseTier() const;
+				uint_least8_t getBaseTier() const;
+				uint_least8_t getEffectiveDefenseTier() const;
 				TerrainType getHomeTerrain() const;
 				TerrainType getSetupTerrain() const;
 				virtual const MovementScope& getMovementScope() const final override;
 
-				virtual bool moveTo(Coordinate, bool checkMoveValidity);
+				bool canReach(Coordinate) const;
+
+				TileStateMap getHexagonalLineTiles() const;
+				std::set<Coordinate> getReachableTiles() const;
+				std::set<Coordinate> getPossibleTargetTiles() const;
+				std::set<const Piece*> getReachableOpponentPieces() const;
+
+				virtual bool moveTo(Coordinate, bool setup);
 		};
 
 		typedef std::map<Coordinate, std::shared_ptr<Piece>> PieceMap;

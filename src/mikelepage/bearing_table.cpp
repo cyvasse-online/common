@@ -16,7 +16,7 @@
 
 #include <cyvmath/mikelepage/bearing_table.hpp>
 
-#include <valarray>
+#include <vector>
 
 namespace cyvmath
 {
@@ -25,6 +25,7 @@ namespace cyvmath
         void BearingTable::addCanReach(const Piece* piece)
         {
             assert(piece);
+            assert(piece->getType() != PieceType::DRAGON);
             assert(piece->getType() != PieceType::MOUNTAIN);
 
             auto reachableOpPieces = piece->getReachableOpponentPieces();
@@ -102,28 +103,32 @@ namespace cyvmath
         {
             assert(atkPiece);
             assert(defPiece);
-            assert(atkPiece->getType() != PieceType::MOUNTAIN);
             assert(defPiece->getType() != PieceType::MOUNTAIN);
 
-            if(atkPiece->getBaseTier() >= defPiece->getEffectiveDefenseTier())
+            uint_least8_t defenseTier = defPiece->getEffectiveDefenseTier();
+
+            if(atkPiece->getBaseTier() >= defenseTier)
                 return true;
 
             bool haveKing = (atkPiece->getType() == PieceType::KING);
 
-            Tier maxAllowedTier = haveKing ? Tier::_4 : atkPiece->getBaseTier();
-            Tier maxTier = Tier::_1;
+            uint_least8_t maxAllowedTier = haveKing ? 3 : atkPiece->getBaseTier();
+            uint_least8_t maxTier = 1;
 
             auto defPieceIt = _canBeReachedBy.find(defPiece);
 
             if(defPieceIt == _canBeReachedBy.end())
                 return false;
 
-            std::valarray<uint_least8_t> flankingTiers(defPieceIt->second.size());
+            std::map<uint_least8_t, uint_least8_t> flankingTiers {
+                {1, 0},
+                {2, 0},
+                {3, 0}
+            };
 
-            size_t i = 0;
             for(const Piece* piece : defPieceIt->second)
             {
-                Tier baseTier = piece->getBaseTier();
+                auto baseTier = piece->getBaseTier();
 
                 if(baseTier > maxAllowedTier)
                     continue;
@@ -138,28 +143,35 @@ namespace cyvmath
                 if(baseTier > maxTier)
                     maxTier = baseTier;
 
-                flankingTiers[i] = static_cast<uint_least8_t>(baseTier);
-                ++i;
+                ++flankingTiers[baseTier];
             }
 
             if(haveKing)
-                flankingTiers[i] = static_cast<uint_least8_t>(maxTier);
+                ++flankingTiers[maxTier];
 
-            return flankingTiers.sum() >= static_cast<uint_least8_t>(defPiece->getEffectiveDefenseTier());
+            for(uint_least8_t i = 1; i < maxTier; ++i)
+                flankingTiers[i+1] += flankingTiers[i] / 2;
+
+            uint_least8_t attackTier = maxTier + flankingTiers[maxTier] - 1;
+
+            return attackTier >= defenseTier;
         }
 
         void BearingTable::init()
         {
             for(auto it : _pieceMap)
             {
-                if(it.second->getType() != PieceType::MOUNTAIN)
+                if(it.second->getType() != PieceType::MOUNTAIN &&
+                   it.second->getType() != PieceType::DRAGON)
                     addCanReach(it.second.get());
             }
         }
 
         void BearingTable::add(const Piece* piece)
         {
-            addCanReach(piece);
+            if(piece->getType() != PieceType::DRAGON)
+                addCanReach(piece);
+
             addCanBeReachedBy(piece);
         }
 

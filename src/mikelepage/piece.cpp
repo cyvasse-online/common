@@ -16,6 +16,7 @@
 
 #include <cyvmath/mikelepage/piece.hpp>
 
+#include <algorithm>
 #include <array>
 #include <utility>
 #include <valarray>
@@ -54,182 +55,119 @@ namespace cyvmath
 			{ 0,  1}  // top right
 		};
 
-		bool Piece::moveToValid(Coordinate target) const
+		std::set<Coordinate> Piece::getReachableTiles(const MovementRange& range) const
 		{
-			auto validCoords = getPossibleTargetTiles();
-
-			return validCoords.find(target) != validCoords.end();
-
-			// something like this would be better, but
-			// for now the above is acceptable [TODO]
-			/*auto scope = getMovementScope();
-
-			int_least8_t distance = -1;
-			switch(scope.first)
-			{
-				case Movement::ORTHOGONAL:
-					distance = _coord->getDistanceOrthogonal(target);
-					break;
-				case Movement::DIAGONAL:
-					distance = _coord->getDistanceDiagonal(target);
-					break;
-				case Movement::HEXAGONAL:
-					// distance = _coord->getDistanceHexagonalLine(..., target);
-					break;
-				// disable compiler warning about unhandled values
-				default: { }
-			}
-
-			if(distance == -1 || (scope.second && distance > scope.second))
-				return false;
-
-			return true;*/
-		}
-
-		std::set<const Piece*> Piece::getReachableOpponentPieces(const MovementVec& steps, int_least8_t distance) const
-		{
-			// slightly altered version of getPossibleTargetTiles()
-			// TODO: clean up both
-
 			assert(_coord);
 
-			PieceMap& activePieces = _match.getActivePieces();
+			std::set<Coordinate> ret;
 
-			std::set<const Piece*> ret;
-
-			for(const auto& step : steps)
-			{
-				assert(step.size() == 2);
-
-				std::valarray<int_least8_t> tmpPos = _coord->toValarray();
-				auto tmpCoord = make_unique(_coord);
-
-				for(auto i = 0; i < distance; i++)
+			_match.forReachableCoords(*_coord, range, [&](Coordinate coord, Piece* piece) {
+				if(!piece ||
+					(
+						piece->getColor() != _color &&
+						piece->getType() != PieceType::MOUNTAIN
+					)
+				   )
 				{
-					assert(tmpCoord);
-
-					tmpPos += step;
-					tmpCoord = Coordinate::create(tmpPos);
-
-					// if one step into this direction results in a
-					// invalid coordinate, all further ones do too
-					if(!tmpCoord)
-						break;
-
-					auto it = activePieces.find(*tmpCoord);
-					if(it != activePieces.end())
-					{
-						if(it->second->getType() != PieceType::MOUNTAIN &&
-						   it->second->getColor() != _color)
-						{
-							auto res = ret.insert(it->second.get());
-							assert(res.second);
-						}
-						break;
-					}
+					auto res = ret.insert(coord);
+					assert(res.second);
 				}
-			}
+			});
 
 			return ret;
 		}
 
-		std::set<Coordinate> Piece::getPossibleTargetTiles(const MovementVec& steps, int_least8_t distance) const
+		std::set<Coordinate> Piece::getPossibleTargetTiles(const MovementRange& range) const
 		{
 			assert(_coord);
 
-			PieceMap& activePieces = _match.getActivePieces();
+			auto& bearingTable = _match.getBearingTable();
 
 			std::set<Coordinate> set;
 
-			for(const auto& step : steps)
-			{
-				assert(step.size() == 2);
-
-				std::valarray<int_least8_t> tmpPos = _coord->toValarray();
-				auto tmpCoord = make_unique(_coord);
-
-				for(auto i = 0; i < distance; i++)
+			_match.forReachableCoords(*_coord, range, [&](Coordinate coord, Piece* piece) {
+				if(!piece ||
+					(
+						piece->getColor() != _color &&
+						piece->getType() != PieceType::MOUNTAIN &&
+						bearingTable.canTake(this, piece)
+					)
+				   )
 				{
-					assert(tmpCoord);
-
-					tmpPos += step;
-					tmpCoord = Coordinate::create(tmpPos);
-
-					// if one step into this direction results in a
-					// invalid coordinate, all further ones do too
-					if(!tmpCoord)
-						break;
-
-					// the same is true for a piece blocking the way but when
-					// it's an opponents piece and it can be taken, then add
-					// the tile to the return vec before ending the loop
-					auto it = activePieces.find(*tmpCoord);
-					if(it != activePieces.end())
-					{
-						if(it->second->getType() != PieceType::MOUNTAIN &&
-						   it->second->getColor() != _color &&
-						   _match.getBearingTable().canTake(this, it->second.get()))
-						{
-							auto res = set.insert(*tmpCoord);
-							assert(res.second);
-						}
-						break;
-					}
-
-					auto res = set.insert(*tmpCoord);
+					auto res = set.insert(coord);
 					assert(res.second);
 				}
-			}
+			});
 
 			return set;
 		}
 
-		Tier Piece::getBaseTier() const
+		std::set<const Piece*> Piece::getReachableOpponentPieces(const MovementRange& range) const
 		{
-			static const std::map<PieceType, Tier> data {
-				{PieceType::RABBLE,      Tier::_1},
-				{PieceType::KING,        Tier::_1},
-				{PieceType::CROSSBOWS,   Tier::_2},
-				{PieceType::SPEARS,      Tier::_2},
-				{PieceType::LIGHT_HORSE, Tier::_2},
-				{PieceType::TREBUCHET,   Tier::_3},
-				{PieceType::ELEPHANT,    Tier::_3},
-				{PieceType::HEAVY_HORSE, Tier::_3},
-				{PieceType::DRAGON,      Tier::_4}
+			assert(_coord);
+
+			std::set<const Piece*> ret;
+
+			_match.forReachableCoords(*_coord, range, [&](Coordinate, Piece* piece) {
+				if(piece && piece->getColor() != _color &&
+				piece->getType() != PieceType::MOUNTAIN)
+				{
+					auto res = ret.insert(piece);
+					assert(res.second);
+				}
+			});
+
+			return ret;
+		}
+
+		bool Piece::moveToValid(Coordinate target) const
+		{
+			Piece* opPiece = _match.getPieceAt(target);
+
+			return canReach(target) &&
+				(!opPiece || _match.getBearingTable().canTake(this, opPiece));
+		}
+
+		uint_least8_t Piece::getBaseTier() const
+		{
+			static const std::map<PieceType, uint_least8_t> data {
+				{PieceType::RABBLE,      1},
+				{PieceType::KING,        1},
+				{PieceType::CROSSBOWS,   2},
+				{PieceType::SPEARS,      2},
+				{PieceType::LIGHT_HORSE, 2},
+				{PieceType::TREBUCHET,   3},
+				{PieceType::ELEPHANT,    3},
+				{PieceType::HEAVY_HORSE, 3},
+				{PieceType::DRAGON,      4}
 			};
 
 			auto it = data.find(_type);
 			if(it == data.end())
-				return Tier::UNDEFINED;
+				return 0;
 
 			return it->second;
 		}
 
-		Tier Piece::getEffectiveDefenseTier() const
+		uint_least8_t Piece::getEffectiveDefenseTier() const
 		{
-			static const std::map<Tier, Tier> nextTier {
-				{Tier::_1, Tier::_2},
-				{Tier::_2, Tier::_3},
-				{Tier::_3, Tier::_4}
-			};
-
 			assert(_coord);
 
-			Tier baseTier = getBaseTier();
+			auto baseTier = getBaseTier();
 
-			if(baseTier == Tier::UNDEFINED || baseTier == Tier::_4)
+			if(baseTier < 1 || baseTier >= 4)
 				return baseTier;
 
 			auto fortress = _match.getPlayer(_color)->getFortress();
 
 			if(fortress && fortress->getCoord() == *_coord)
-				return nextTier.at(baseTier);
+				return ++baseTier;
 
 			auto terrainIt = _match.getTerrain().find(*_coord);
 			if(terrainIt != _match.getTerrain().end() &&
 			   terrainIt->second->getType() == getHomeTerrain())
 			{
-				return nextTier.at(baseTier);
+				return ++baseTier;
 			}
 
 			return baseTier;
@@ -288,86 +226,7 @@ namespace cyvmath
 			return data.at(_type);
 		}
 
-		bool Piece::moveTo(Coordinate target, bool checkMoveValidity)
-		{
-			if(checkMoveValidity && !moveToValid(target))
-				return false;
-
-			PieceMap& activePieces = _match.getActivePieces();
-			Player& player = *_match.getPlayer(_color);
-
-			std::shared_ptr<Piece> selfSharedPtr;
-
-			if(_coord)
-			{
-				PieceMap::iterator it = activePieces.find(*_coord);
-				assert(it != activePieces.end());
-
-				selfSharedPtr = it->second;
-				activePieces.erase(it);
-
-				if(!checkMoveValidity)
-				{
-					if(_type == PieceType::KING)
-						player.getFortress()->setCoord(target);
-					else
-					{
-						TerrainType tType = getSetupTerrain();
-
-						if(tType != TerrainType::UNDEFINED)
-						{
-							auto it = _match.getTerrain().find(*_coord);
-							assert(it != _match.getTerrain().end());
-
-							it->second->setCoord(target);
-						}
-					}
-				}
-			}
-			else
-			{
-				// piece is not on the board
-				// this means either we move the dragon
-				// or there is a bug in the game
-				assert(_type == PieceType::DRAGON);
-				assert(player.dragonAliveInactive());
-
-				PieceVec::iterator it;
-				for(it = player.getInactivePieces().begin(); it != player.getInactivePieces().end(); ++it)
-				{
-					if(it->get() == this)
-					{
-						selfSharedPtr = *it;
-						break;
-					}
-				}
-
-				player.getInactivePieces().erase(it);
-				player.dragonBroughtOut();
-				_match.getBearingTable().add(this);
-			}
-
-			assert(selfSharedPtr.get() == this);
-
-			_coord = make_unique<Coordinate>(target);
-
-			auto it = activePieces.find(target);
-			if(it != activePieces.end())
-			{
-				assert(it->second->getColor() == !_color);
-				_match.removeFromBoard(it->second);
-			}
-
-			auto res = activePieces.emplace(target, selfSharedPtr);
-			assert(res.second);
-
-			if(checkMoveValidity)
-				_match.getBearingTable().update(this);
-
-			return true;
-		}
-
-		bool Piece::canReach(Coordinate coord) const
+		bool Piece::canReach(Coordinate target) const
 		{
 			auto scope = getMovementScope();
 			std::valarray<int_least8_t> step(2);
@@ -375,7 +234,7 @@ namespace cyvmath
 			switch(scope.first)
 			{
 				case MovementType::ORTHOGONAL:
-					switch(_coord->getDirectionOrthogonal(coord))
+					switch(_coord->getDirectionOrthogonal(target))
 					{
 						case DirectionOrthogonal::TOP_LEFT:     step = stepsOrthogonal.at(0); break;
 						case DirectionOrthogonal::TOP_RIGHT:    step = stepsOrthogonal.at(1); break;
@@ -386,7 +245,7 @@ namespace cyvmath
 					}
 					break;
 				case MovementType::DIAGONAL:
-					switch(_coord->getDirectionDiagonal(coord))
+					switch(_coord->getDirectionDiagonal(target))
 					{
 						case DirectionDiagonal::TOP:          step = stepsDiagonal.at(0); break;
 						case DirectionDiagonal::TOP_RIGHT:    step = stepsDiagonal.at(1); break;
@@ -396,16 +255,21 @@ namespace cyvmath
 						case DirectionDiagonal::TOP_LEFT:     step = stepsDiagonal.at(5); break;
 					}
 					break;
+				// TODO: add extra case for RANGE and maybe be HEXAGONAL
 				default:
-					for(const Piece* it : getReachableOpponentPieces())
-					{
-						assert(it->getCoord());
-						if(*it->getCoord() == coord)
+					for(const Coordinate it : getReachableTiles())
+						if(it == target)
 							return true;
-					}
+
+					return false;
+					break;
 			}
 
-			if(step.sum() != 0) // not the default values
+			assert(_coord);
+
+			bool ret = false;
+
+			if(step[0] != 0 || step[1] != 0) // not the default values
 			{
 				const PieceMap& activePieces = _match.getActivePieces();
 
@@ -418,35 +282,22 @@ namespace cyvmath
 						distance = Hexagon::edgeLength - 1;
 				}
 
-				std::valarray<int_least8_t> tmpPos = _coord->toValarray();
-				auto tmpCoord = make_unique(_coord);
-
-				for(auto i = 0; i < distance; i++)
-				{
-					assert(tmpCoord);
-
-					tmpPos += step;
-					tmpCoord = Coordinate::create(tmpPos);
-
-					// invalid coordinate
-					if(!tmpCoord)
-						break;
-
-					if(coord == *tmpCoord)
-						return true;
-
-					// a piece that is blocking the way
-					auto it = activePieces.find(*tmpCoord);
-					if(it != activePieces.end())
-						break;
-				}
+				_match.forReachableCoords(*_coord, {{step}, distance}, [&](Coordinate coord, Piece* piece) {
+					if(coord == target)
+					{
+						assert(!ret);
+						ret = true;
+					}
+				});
 			}
 
-			return false;
+			return ret;
 		}
 
-		TileStateVec Piece::getHexagonalLineTiles() const
+		TileStateMap Piece::getHexagonalLineTiles() const
 		{
+			typedef std::vector<std::pair<std::valarray<int_least8_t>, TileState>> TileStateVec;
+
 			auto scope = getMovementScope();
 			auto distance = scope.second;
 
@@ -457,7 +308,7 @@ namespace cyvmath
 
 			const PieceMap& activePieces = _match.getActivePieces();
 
-			TileStateVec ret;
+			TileStateMap ret;
 
 			size_t i = 0;
 			for(Coordinate centerCoord : _match.getHexagonMovementCenters())
@@ -541,7 +392,7 @@ namespace cyvmath
 							auto coord = Coordinate::create(tileIt->first);
 							assert(coord);
 
-							ret.push_back(*tileIt);
+							ret.emplace(*coord, tileIt->second);
 						}
 
 						if(tmpTileState != TileState::EMPTY)
@@ -557,8 +408,10 @@ namespace cyvmath
 			return ret;
 		}
 
-		std::set<const Piece*> Piece::getReachableOpponentPieces() const
+		std::set<Coordinate> Piece::getReachableTiles() const
 		{
+			std::set<Coordinate> ret;
+
 			auto scope = getMovementScope();
 			auto distance = scope.second;
 
@@ -568,28 +421,172 @@ namespace cyvmath
 					if(!distance)
 						distance = (Hexagon::edgeLength - 1) * 2;
 
-					return getReachableOpponentPieces(stepsOrthogonal, distance);
+					ret = getReachableTiles({stepsOrthogonal, distance});
 					break;
 				case MovementType::DIAGONAL:
 					if(!distance)
 						distance = Hexagon::edgeLength - 1;
 
-					return getReachableOpponentPieces(stepsDiagonal, distance);
+					ret = getReachableTiles({stepsDiagonal, distance});
 					break;
 				case MovementType::HEXAGONAL:
 				{
-					std::set<const Piece*> ret;
-
-					for(std::pair<std::valarray<int_least8_t>, TileState>& state : getHexagonalLineTiles())
+					for(const auto& tile : getHexagonalLineTiles())
 					{
-						if(state.second == TileState::OP_OCCUPIED)
-						{
-							auto coord = Coordinate::create(state.first);
-							assert(coord);
+						assert(tile.second != TileState::UNDEFINED);
+						assert(tile.second != TileState::START);
+						assert(tile.second != TileState::INACCESSIBLE);
 
+						ret.insert(tile.first);
+					}
+				}
+				case MovementType::RANGE:
+					if(_coord)
+					{
+						// completely unnecessary, and not perfect
+						// ... but would probably work! :)
+						if(!distance)
+							distance = Hexagon::tileCount / 2;
+
+						std::set<Coordinate> lastTiles {*_coord};
+						std::set<Coordinate> tiles;
+
+						// start with i = 1 because the first step is already done with
+						for(int i = 0; i < distance; ++i)
+						{
+							for(auto tile : lastTiles)
+							{
+								// adjacent tiles of tile
+								_match.forReachableCoords(tile, {stepsOrthogonal, 1}, [&](Coordinate coord, Piece* piece) {
+									if(!piece || piece->getColor() == !_color)
+									{
+										auto it = tiles.find(coord);
+										if(it != tiles.end())
+										{
+											tiles.insert(coord);
+
+											if(piece->getType() != PieceType::MOUNTAIN)
+												ret.insert(coord);
+										}
+									}
+								});
+							}
+
+							lastTiles = tiles;
+						}
+					}
+					else
+					{
+						// this is dependent on the piece being a dragon,
+						// we just assert that the MovementType RANGE and
+						// the PieceType DRAGON imply each another
+
+						auto fortress = _match.getPlayer(_color)->getFortress();
+
+						if(!fortress) // fortress ruined, dragon can't be brought out
+							return std::set<Coordinate>();
+
+						Coordinate fortressPos = fortress->getCoord();
+
+						// fortress is empty or has an opponents piece in it
+						Piece* tmpPiece = _match.getPieceAt(fortressPos);
+						if(!tmpPiece || tmpPiece->getColor() != _color)
+							ret.insert(fortressPos);
+
+						// check adjacent tiles of the fortress
+						_match.forReachableCoords(fortressPos, {stepsOrthogonal, 1}, [&](Coordinate coord, Piece* piece) {
+							if(!piece || piece->getColor() != _color)
+								ret.insert(coord);
+						});
+					}
+					break;
+			}
+
+			return ret;
+		}
+
+		std::set<Coordinate> Piece::getPossibleTargetTiles() const
+		{
+			if(_type != PieceType::DRAGON)
+				assert(_coord);
+
+			std::set<Coordinate> ret;
+
+			auto scope = getMovementScope();
+			auto distance = scope.second;
+
+			switch(scope.first)
+			{
+				case MovementType::ORTHOGONAL:
+					if(!distance)
+						distance = (Hexagon::edgeLength - 1) * 2;
+
+					ret = getPossibleTargetTiles({stepsOrthogonal, distance});
+					break;
+				case MovementType::DIAGONAL:
+					if(!distance)
+						distance = Hexagon::edgeLength - 1;
+
+					ret = getPossibleTargetTiles({stepsDiagonal, distance});
+					break;
+				case MovementType::HEXAGONAL:
+					for(const auto& tile : getHexagonalLineTiles())
+					{
+						if(tile.second == TileState::EMPTY)
+							ret.insert(tile.first);
+						else
+						{
+							assert(tile.second == TileState::OP_OCCUPIED);
+
+							Piece* opPiece = _match.getPieceAt(tile.first);
+							assert(opPiece);
+
+							if(_match.getBearingTable().canTake(this, opPiece))
+								ret.insert(tile.first);
+						}
+					}
+
+					break;
+				case MovementType::RANGE:
+					ret = getReachableTiles();
+					break;
+			}
+
+			return ret;
+		}
+
+		std::set<const Piece*> Piece::getReachableOpponentPieces() const
+		{
+			assert(_type != PieceType::DRAGON);
+			assert(_type != PieceType::MOUNTAIN);
+
+			std::set<const Piece*> ret;
+
+			auto scope = getMovementScope();
+			auto distance = scope.second;
+
+			switch(scope.first)
+			{
+				case MovementType::ORTHOGONAL:
+					if(!distance)
+						distance = (Hexagon::edgeLength - 1) * 2;
+
+					ret = getReachableOpponentPieces({stepsOrthogonal, distance});
+					break;
+				case MovementType::DIAGONAL:
+					if(!distance)
+						distance = Hexagon::edgeLength - 1;
+
+					ret = getReachableOpponentPieces({stepsDiagonal, distance});
+					break;
+				case MovementType::HEXAGONAL:
+					for(const auto& tile : getHexagonalLineTiles())
+					{
+						if(tile.second == TileState::OP_OCCUPIED)
+						{
 							const PieceMap& activePieces = _match.getActivePieces();
 
-							auto it = activePieces.find(*coord);
+							auto it = activePieces.find(tile.first);
 							assert(it != activePieces.end());
 							assert(it->second->getColor() == !_color);
 							assert(it->second->getType() != PieceType::MOUNTAIN);
@@ -598,110 +595,89 @@ namespace cyvmath
 							assert(res.second);
 						}
 					}
-
-					return ret;
-				}
-				case MovementType::RANGE:
-					// ...
 					break;
 			}
 
-			return std::set<const Piece*>();
+			return ret;
 		}
 
-		std::set<Coordinate> Piece::getPossibleTargetTiles() const
+		bool Piece::moveTo(Coordinate target, bool setup)
 		{
-			auto scope = getMovementScope();
-			auto distance = scope.second;
+			if(!(setup || moveToValid(target)))
+				return false;
 
-			if(_type != PieceType::DRAGON)
-				assert(_coord);
+			PieceMap& activePieces = _match.getActivePieces();
+			Player& player = *_match.getPlayer(_color);
 
-			switch(scope.first)
+			std::shared_ptr<Piece> selfSharedPtr;
+
+			if(_coord)
 			{
-				case MovementType::ORTHOGONAL:
-					if(!distance)
-						distance = (Hexagon::edgeLength - 1) * 2;
+				PieceMap::iterator it = activePieces.find(*_coord);
+				assert(it != activePieces.end());
 
-					return getPossibleTargetTiles(stepsOrthogonal, distance);
-				case MovementType::DIAGONAL:
-					if(!distance)
-						distance = Hexagon::edgeLength - 1;
+				selfSharedPtr = it->second;
+				activePieces.erase(it);
 
-					return getPossibleTargetTiles(stepsDiagonal, distance);
-				case MovementType::HEXAGONAL:
+				if(setup)
 				{
-					std::set<Coordinate> ret;
-
-					const PieceMap& activePieces = _match.getActivePieces();
-
-					for(const auto& state : getHexagonalLineTiles())
-					{
-						if(state.second == TileState::EMPTY)
-						{
-							auto coord = Coordinate::create(state.first);
-							assert(coord);
-
-							ret.insert(*coord);
-						}
-						else
-						{
-							assert(state.second == TileState::OP_OCCUPIED);
-
-							auto coord = Coordinate::create(state.first);
-							assert(coord);
-
-							auto opPieceIt = activePieces.find(*coord);
-							assert(opPieceIt != activePieces.end());
-
-							if(_match.getBearingTable().canTake(this, opPieceIt->second.get()))
-								ret.insert(*coord);
-						}
-					}
-
-					return ret;
-				}
-				case MovementType::RANGE:
-				{
-					std::set<Coordinate> ret;
-
-					if(_coord)
-					{
-						// TODO
-					}
+					if(_type == PieceType::KING)
+						player.getFortress()->setCoord(target);
 					else
 					{
-						auto fortress = _match.getPlayer(_color)->getFortress();
+						TerrainType tType = getSetupTerrain();
 
-						if(!fortress) // fortress ruined, dragon can't be brought out
-							return std::set<Coordinate>();
-
-						Coordinate fortressPos = fortress->getCoord();
-
-						auto it = _match.getActivePieces().find(fortressPos);
-						// fortress is empty or has an opponents piece in it
-						if(it == _match.getActivePieces().end() || it->second->getColor() != _color)
-							ret.insert(fortressPos);
-
-						// check adjacent tiles of the fortress
-						for(const auto& step : stepsOrthogonal)
+						if(tType != TerrainType::UNDEFINED)
 						{
-							auto tmpCoord = Coordinate::create(fortressPos.toValarray() + step);
+							auto it = _match.getTerrain().find(*_coord);
+							assert(it != _match.getTerrain().end());
 
-							if(tmpCoord)
-							{
-								auto it = _match.getActivePieces().find(*tmpCoord);
-								if(it == _match.getActivePieces().end() || it->second->getColor() != _color)
-									ret.insert(*tmpCoord);
-							}
+							it->second->setCoord(target);
 						}
 					}
-
-					return ret;
 				}
-				default:
-					return std::set<Coordinate>();
 			}
+			else
+			{
+				// piece is not on the board
+				// this means either we move the dragon
+				// or there is a bug in the game
+				assert(_type == PieceType::DRAGON);
+				assert(player.dragonAliveInactive());
+
+				auto& inactivePieces = player.getInactivePieces();
+				auto it = std::find_if(
+					inactivePieces.begin(),
+					inactivePieces.end(),
+					[this](std::shared_ptr<Piece> ptr) { return ptr.get() == this; }
+				);
+
+				assert(it != inactivePieces.end());
+				selfSharedPtr = *it;
+
+				player.getInactivePieces().erase(it);
+				player.dragonBroughtOut();
+				_match.getBearingTable().add(this);
+			}
+
+			assert(selfSharedPtr.get() == this);
+
+			_coord = make_unique<Coordinate>(target);
+
+			auto it = activePieces.find(target);
+			if(it != activePieces.end())
+			{
+				assert(it->second->getColor() == !_color);
+				_match.removeFromBoard(it->second);
+			}
+
+			auto res = activePieces.emplace(target, selfSharedPtr);
+			assert(res.second);
+
+			if(!setup)
+				_match.getBearingTable().update(this);
+
+			return true;
 		}
 	}
 }

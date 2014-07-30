@@ -19,8 +19,10 @@
 
 #include <cyvmath/match.hpp>
 
+#include <functional>
 #include "bearing_table.hpp"
 #include "coordinate.hpp"
+#include "piece.hpp"
 #include "player.hpp"
 #include "terrain.hpp"
 
@@ -66,6 +68,10 @@ namespace cyvmath
 				{ return _bearingTable; }
 
 				std::set<Coordinate> getHexagonMovementCenters();
+
+				Piece* getPieceAt(Coordinate);
+
+				void forReachableCoords(Coordinate start, const MovementRange&, std::function<void(Coordinate, Piece*)>);
 
 				virtual void removeFromBoard(std::shared_ptr<Piece>);
 		};
