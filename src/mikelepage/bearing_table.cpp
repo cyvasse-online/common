@@ -67,6 +67,7 @@ namespace cyvmath
                 Piece* opPiece = it.second.get();
 
                 if(opPiece->getColor() == piece->getColor() ||
+                   opPiece->getType() == PieceType::DRAGON ||
                    opPiece->getType() == PieceType::MOUNTAIN)
                     continue;
 

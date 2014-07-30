@@ -430,7 +430,6 @@ namespace cyvmath
 					ret = getReachableTiles({stepsDiagonal, distance});
 					break;
 				case MovementType::HEXAGONAL:
-				{
 					for(const auto& tile : getHexagonalLineTiles())
 					{
 						assert(tile.second != TileState::UNDEFINED);
@@ -439,7 +438,7 @@ namespace cyvmath
 
 						ret.insert(tile.first);
 					}
-				}
+					break;
 				case MovementType::RANGE:
 					if(_coord)
 					{
@@ -458,12 +457,13 @@ namespace cyvmath
 							{
 								// adjacent tiles of tile
 								_match.forReachableCoords(tile, {stepsOrthogonal, 1}, [&](Coordinate coord, Piece* piece) {
-									if(!piece || piece->getColor() == !_color)
+									if(!piece || piece->getType() == PieceType::MOUNTAIN || piece->getColor() == !_color)
 									{
 										auto it = tiles.find(coord);
-										if(it != tiles.end())
+										if(it == tiles.end())
 										{
-											tiles.insert(coord);
+											if(!piece || piece->getType() == PieceType::MOUNTAIN)
+												tiles.insert(coord);
 
 											if(piece->getType() != PieceType::MOUNTAIN)
 												ret.insert(coord);
@@ -473,6 +473,7 @@ namespace cyvmath
 							}
 
 							lastTiles = tiles;
+							tiles.clear();
 						}
 					}
 					else
@@ -499,6 +500,7 @@ namespace cyvmath
 								ret.insert(coord);
 						});
 					}
+
 					break;
 			}
 
