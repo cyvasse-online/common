@@ -1,0 +1,7 @@
+{
+	"messageType": "game update",
+	"update": "add fortress replacement tile",
+	"data": {
+		"coordinate": "A11"
+	}
+}
