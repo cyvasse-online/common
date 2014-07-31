@@ -176,7 +176,7 @@ namespace cyvmath
             addCanBeReachedBy(piece);
         }
 
-        void BearingTable::update(const Piece* piece)
+        void BearingTable::remove(const Piece* piece)
         {
             assert(piece);
 
@@ -212,7 +212,11 @@ namespace cyvmath
 
                 _canBeReachedBy.erase(it2);
             }
+        }
 
+        void BearingTable::update(const Piece* piece)
+        {
+            remove(piece);
             add(piece);
         }
 

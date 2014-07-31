@@ -35,19 +35,20 @@ namespace cyvmath
 			}
 
 			std::set<Coordinate>& replacementCenters = _fortressReplaceCorners;
-			assert(ret.size() + replacementCenters.size() == 2);
+			// TODO: would make sense to re-add somewhen
+			//assert(ret.size() + replacementCenters.size() == 2);
 			ret.insert(replacementCenters.begin(), replacementCenters.end());
 
 			return ret;
 		}
 
-		Piece* Match::getPieceAt(Coordinate coord)
+		std::shared_ptr<Piece> Match::getPieceAt(Coordinate coord)
 		{
-			Piece* ret = nullptr;
+			std::shared_ptr<Piece> ret;
 
 			auto it = _activePieces.find(coord);
 			if(it != _activePieces.end())
-				ret = it->second.get();
+				ret = it->second;
 
 			return ret;
 		}
@@ -74,9 +75,9 @@ namespace cyvmath
 					if(!tmpCoord)
 						break;
 
-					Piece* tmpPiece = getPieceAt(*tmpCoord);
+					std::shared_ptr<Piece> tmpPiece = getPieceAt(*tmpCoord);
 
-					func(*tmpCoord, tmpPiece);
+					func(*tmpCoord, tmpPiece.get());
 
 					// if there is a piece on the tile,
 					// we can't reach any tiles beyond it
@@ -84,6 +85,23 @@ namespace cyvmath
 						break;
 				}
 			}
+		}
+
+		void Match::addToBoard(PieceType type, PlayersColor color, Coordinate coord)
+		{
+			assert(type != PieceType::UNDEFINED);
+			assert(color != PlayersColor::UNDEFINED);
+
+			auto& inactivePieces = _players.at(color)->getInactivePieces();
+
+			auto it = inactivePieces.find(type);
+			assert(it != inactivePieces.end());
+
+			std::shared_ptr<Piece> piece = it->second;
+			inactivePieces.erase(it);
+
+			piece->setCoord(coord);
+			_activePieces.emplace(coord, piece);
 		}
 
 		void Match::removeFromBoard(std::shared_ptr<Piece> piece)
@@ -94,7 +112,12 @@ namespace cyvmath
 			assert(it != _activePieces.end());
 			_activePieces.erase(it);
 
-			_players.at(piece->getColor())->getInactivePieces().push_back(piece);
+			auto& player = _players.at(piece->getColor());
+
+			player->getInactivePieces().emplace(piece->getType(), piece);
+
+			if(piece->getType() == PieceType::KING)
+				player->setKingTaken(true);
 		}
 	}
 }

@@ -88,6 +88,10 @@ namespace cyvmath
 				std::unique_ptr<Coordinate> getCoord() const
 				{ return make_unique(_coord); }
 
+				// ugly hack for piece promotion
+				void setCoord(Coordinate coord)
+				{ _coord = make_unique<Coordinate>(coord); }
+
 				uint_least8_t getBaseTier() const;
 				uint_least8_t getEffectiveDefenseTier() const;
 				TerrainType getHomeTerrain() const;
@@ -102,10 +106,14 @@ namespace cyvmath
 				std::set<const Piece*> getReachableOpponentPieces() const;
 
 				virtual bool moveTo(Coordinate, bool setup);
+				virtual void promoteTo(PieceType);
+				// return false when there are multiple promotion options,
+				// true otherwise, even if no promotion was done
+				bool tryAutoPromote();
 		};
 
-		typedef std::map<Coordinate, std::shared_ptr<Piece>> PieceMap;
-		typedef std::vector<std::shared_ptr<Piece>> PieceVec;
+		typedef std::map<Coordinate, std::shared_ptr<Piece>> CoordPieceMap;
+		typedef std::multimap<PieceType, std::shared_ptr<Piece>> TypePieceMap;
 	}
 }
 

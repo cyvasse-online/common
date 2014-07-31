@@ -40,7 +40,7 @@ namespace cyvmath
 		{
 			auto& m = dynamic_cast<mikelepage::Match&>(match);
 
-			return make_unique<mikelepage::Player>(color, m.getActivePieces());
+			return make_unique<mikelepage::Player>(color, m);
 		}
 		else throw std::runtime_error("Match object not recognized");
 	}

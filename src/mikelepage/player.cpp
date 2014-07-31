@@ -17,6 +17,8 @@
 #include <cyvmath/mikelepage/player.hpp>
 
 #include <cassert>
+#include <cyvmath/mikelepage/fortress.hpp>
+#include <cyvmath/mikelepage/match.hpp>
 
 namespace cyvmath
 {
@@ -28,13 +30,33 @@ namespace cyvmath
 				? [](int8_t y) { return y >= (Hexagon::edgeLength - 1); }
 				: [](int8_t y) { return y <= (Hexagon::edgeLength - 1); };
 
-			for(auto& it : _activePieces)
+			for(auto& it : _match.getActivePieces())
 			{
 				if(it.second->getColor() == _color && outsideOwnSide(it.first.y()))
 					return false;
 			}
 
 			return true;
+		}
+
+		void Player::onTurnEnd()
+		{
+			if(_fortress)
+			{
+				auto piece = _match.getPieceAt(_fortress->getCoord());
+				if(piece)
+				{
+					if(piece->getColor() != _color)
+						removeFortress();
+					else if(_kingTaken && piece->getBaseTier() == 3)
+						assert(piece->tryAutoPromote());
+				}
+			}
+
+			if(_kingTaken)
+			{
+				_match.endGame(!_color);
+			}
 		}
 
 		void Player::setFortress(std::shared_ptr<Fortress> fortress)

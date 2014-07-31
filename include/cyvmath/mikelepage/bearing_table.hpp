@@ -30,7 +30,7 @@ namespace cyvmath
             private:
                 typedef std::map<const Piece*, std::set<const Piece*>> BearingMap;
 
-                PieceMap& _pieceMap;
+                CoordPieceMap& _pieceMap;
 
                 BearingMap _canReach;
                 BearingMap _canBeReachedBy;
@@ -39,7 +39,7 @@ namespace cyvmath
                 void addCanBeReachedBy(const Piece*);
 
             public:
-                BearingTable(PieceMap& pieceMap)
+                BearingTable(CoordPieceMap& pieceMap)
                     : _pieceMap(pieceMap)
                 { }
 
@@ -51,6 +51,7 @@ namespace cyvmath
 
                 void init();
                 void add(const Piece*);
+                void remove(const Piece*);
                 void update(const Piece*);
                 void clear();
         };

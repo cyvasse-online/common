@@ -41,6 +41,8 @@ enum class Update
 	UNDEFINED,
 	LEAVE_SETUP,
 	MOVE_PIECE,
+	PROMOTE_PIECE,
+	ADD_FORTRESS_REPLACEMENT_TILE,
 	RESIGN
 };
 
@@ -67,6 +69,8 @@ ENUM_STR(Update, ({
 		{Update::UNDEFINED, "undefined"},
 		{Update::LEAVE_SETUP, "leave setup"},
 		{Update::MOVE_PIECE, "move piece"},
+		{Update::PROMOTE_PIECE, "promote piece"},
+		{Update::ADD_FORTRESS_REPLACEMENT_TILE, "add fortress replacement tile"},
 		{Update::RESIGN, "resign"}
 	}),
 	Update::UNDEFINED

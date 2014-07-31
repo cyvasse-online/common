@@ -28,22 +28,26 @@ namespace cyvmath
 	namespace mikelepage
 	{
 		class Fortress;
+		class Match;
 
 		class Player : public cyvmath::Player
 		{
 			protected:
 				bool _dragonAliveInactive;
+				bool _kingTaken;
 
-				PieceMap& _activePieces;
-				PieceVec _inactivePieces;
+				Match& _match;
+
+				TypePieceMap _inactivePieces;
 
 				std::shared_ptr<Fortress> _fortress;
 
 			public:
-				Player(PlayersColor color, PieceMap& activePieces)
+				Player(PlayersColor color, Match& match)
 					: cyvmath::Player(color)
-					, _dragonAliveInactive(true)
-					, _activePieces(activePieces)
+					, _dragonAliveInactive{true}
+					, _kingTaken{false}
+					, _match{match}
 				{ }
 
 				virtual ~Player() = default;
@@ -51,7 +55,13 @@ namespace cyvmath
 				bool dragonAliveInactive() const
 				{ return _dragonAliveInactive; }
 
-				PieceVec& getInactivePieces()
+				bool kingTaken() const
+				{ return _kingTaken; }
+
+				void setKingTaken(bool kingTaken)
+				{ _kingTaken = kingTaken; }
+
+				TypePieceMap& getInactivePieces()
 				{ return _inactivePieces; }
 
 				std::shared_ptr<Fortress> getFortress()
@@ -61,11 +71,17 @@ namespace cyvmath
 
 				virtual bool setupComplete() override;
 
+				void onTurnEnd();
+
 				void dragonBroughtOut()
 				{ _dragonAliveInactive = false; }
 
-				void fortressRuined()
+				virtual void removeFortress()
 				{ _fortress.reset(); }
+
+				// very, very ugly hack to get piece promotions working asap
+				virtual void sendPromotePiece(PieceType /* from */, PieceType /* to */)
+				{ }
 		};
 
 		typedef std::array<std::shared_ptr<Player>, 2> PlayerArray;

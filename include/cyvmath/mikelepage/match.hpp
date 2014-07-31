@@ -35,7 +35,7 @@ namespace cyvmath
 			protected:
 				PlayerArray _players;
 
-				PieceMap _activePieces;
+				CoordPieceMap _activePieces;
 				TerrainMap _terrain;
 
 				BearingTable _bearingTable;
@@ -58,7 +58,7 @@ namespace cyvmath
 				std::shared_ptr<Player> getPlayer(PlayersColor color) const
 				{ return _players[color]; }
 
-				PieceMap& getActivePieces()
+				CoordPieceMap& getActivePieces()
 				{ return _activePieces; }
 
 				TerrainMap& getTerrain()
@@ -69,11 +69,14 @@ namespace cyvmath
 
 				std::set<Coordinate> getHexagonMovementCenters();
 
-				Piece* getPieceAt(Coordinate);
+				std::shared_ptr<Piece> getPieceAt(Coordinate);
 
 				void forReachableCoords(Coordinate start, const MovementRange&, std::function<void(Coordinate, Piece*)>);
 
+				virtual void addToBoard(PieceType, PlayersColor, Coordinate);
 				virtual void removeFromBoard(std::shared_ptr<Piece>);
+				virtual void endGame(PlayersColor /* winner */)
+				{ }
 		};
 	}
 }

@@ -122,10 +122,10 @@ namespace cyvmath
 
 		bool Piece::moveToValid(Coordinate target) const
 		{
-			Piece* opPiece = _match.getPieceAt(target);
+			std::shared_ptr<Piece> opPiece = _match.getPieceAt(target);
 
 			return canReach(target) &&
-				(!opPiece || _match.getBearingTable().canTake(this, opPiece));
+				(!opPiece || _match.getBearingTable().canTake(this, opPiece.get()));
 		}
 
 		uint_least8_t Piece::getBaseTier() const
@@ -271,7 +271,7 @@ namespace cyvmath
 
 			if(step[0] != 0 || step[1] != 0) // not the default values
 			{
-				const PieceMap& activePieces = _match.getActivePieces();
+				const CoordPieceMap& activePieces = _match.getActivePieces();
 
 				auto distance = scope.second;
 				if(!distance)
@@ -306,16 +306,18 @@ namespace cyvmath
 			if(!distance)
 				distance = (Hexagon::edgeLength - 1) * 6;
 
-			const PieceMap& activePieces = _match.getActivePieces();
+			const CoordPieceMap& activePieces = _match.getActivePieces();
 
 			TileStateMap ret;
 
-			size_t i = 0;
 			for(Coordinate centerCoord : _match.getHexagonMovementCenters())
 			{
 				TileStateVec tmpTileVec;
 
 				int_least8_t centerDistance = centerCoord.getDistance(*_coord);
+
+				if(!centerDistance) // standing on the movement center
+					continue;
 
 				// begin in top left of the hexagonal line
 				std::valarray<int_least8_t> tmpPos {
@@ -399,11 +401,7 @@ namespace cyvmath
 							break;
 					}
 				}
-
-				++i;
 			}
-
-			assert(i == 2);
 
 			return ret;
 		}
@@ -490,7 +488,7 @@ namespace cyvmath
 						Coordinate fortressPos = fortress->getCoord();
 
 						// fortress is empty or has an opponents piece in it
-						Piece* tmpPiece = _match.getPieceAt(fortressPos);
+						std::shared_ptr<Piece> tmpPiece = _match.getPieceAt(fortressPos);
 						if(!tmpPiece || tmpPiece->getColor() != _color)
 							ret.insert(fortressPos);
 
@@ -540,10 +538,10 @@ namespace cyvmath
 						{
 							assert(tile.second == TileState::OP_OCCUPIED);
 
-							Piece* opPiece = _match.getPieceAt(tile.first);
+							std::shared_ptr<Piece> opPiece = _match.getPieceAt(tile.first);
 							assert(opPiece);
 
-							if(_match.getBearingTable().canTake(this, opPiece))
+							if(_match.getBearingTable().canTake(this, opPiece.get()))
 								ret.insert(tile.first);
 						}
 					}
@@ -586,7 +584,7 @@ namespace cyvmath
 					{
 						if(tile.second == TileState::OP_OCCUPIED)
 						{
-							const PieceMap& activePieces = _match.getActivePieces();
+							const CoordPieceMap& activePieces = _match.getActivePieces();
 
 							auto it = activePieces.find(tile.first);
 							assert(it != activePieces.end());
@@ -608,14 +606,14 @@ namespace cyvmath
 			if(!(setup || moveToValid(target)))
 				return false;
 
-			PieceMap& activePieces = _match.getActivePieces();
+			CoordPieceMap& activePieces = _match.getActivePieces();
 			Player& player = *_match.getPlayer(_color);
 
 			std::shared_ptr<Piece> selfSharedPtr;
 
 			if(_coord)
 			{
-				PieceMap::iterator it = activePieces.find(*_coord);
+				CoordPieceMap::iterator it = activePieces.find(*_coord);
 				assert(it != activePieces.end());
 
 				selfSharedPtr = it->second;
@@ -642,24 +640,22 @@ namespace cyvmath
 			else
 			{
 				// piece is not on the board
-				// this means either we move the dragon
-				// or there is a bug in the game
-				assert(_type == PieceType::DRAGON);
-				assert(player.dragonAliveInactive());
 
 				auto& inactivePieces = player.getInactivePieces();
 				auto it = std::find_if(
 					inactivePieces.begin(),
 					inactivePieces.end(),
-					[this](std::shared_ptr<Piece> ptr) { return ptr.get() == this; }
+					[this](std::pair<const PieceType, std::shared_ptr<Piece>>& it) { return it.second.get() == this; }
 				);
 
 				assert(it != inactivePieces.end());
-				selfSharedPtr = *it;
+				selfSharedPtr = it->second;
 
 				player.getInactivePieces().erase(it);
-				player.dragonBroughtOut();
 				_match.getBearingTable().add(this);
+
+				if(_type == PieceType::DRAGON)
+					player.dragonBroughtOut();
 			}
 
 			assert(selfSharedPtr.get() == this);
@@ -678,6 +674,74 @@ namespace cyvmath
 
 			if(!setup)
 				_match.getBearingTable().update(this);
+
+			return true;
+		}
+
+		void Piece::promoteTo(PieceType type)
+		{
+			assert(_coord);
+
+			std::shared_ptr<Piece> selfSharedPtr = _match.getPieceAt(*_coord);
+
+			_match.removeFromBoard(selfSharedPtr);
+			_match.addToBoard(type, _color, *_coord);
+
+			_match.getPlayer(_color)->sendPromotePiece(_type, type);
+		}
+
+		bool Piece::tryAutoPromote()
+		{
+			auto player = _match.getPlayer(_color);
+			auto& inactivePieces = player->getInactivePieces();
+			auto baseTier = getBaseTier();
+
+			if(baseTier == 3)
+			{
+				if(player->kingTaken())
+				{
+					promoteTo(PieceType::KING);
+					player->setKingTaken(false);
+				}
+			}
+			else if(baseTier == 2)
+			{
+				switch(_type)
+				{
+					case PieceType::CROSSBOWS:
+						if(inactivePieces.count(PieceType::TREBUCHET) > 0)
+							promoteTo(PieceType::TREBUCHET);
+						break;
+					case PieceType::SPEARS:
+						if(inactivePieces.count(PieceType::ELEPHANT) > 0)
+							promoteTo(PieceType::ELEPHANT);
+						break;
+					case PieceType::LIGHT_HORSE:
+						if(inactivePieces.count(PieceType::HEAVY_HORSE) > 0)
+							promoteTo(PieceType::HEAVY_HORSE);
+						break;
+					default:
+						assert(0);
+						break;
+				}
+			}
+			else if(_type == PieceType::RABBLE) // can only promote rabble, not the king
+			{
+				PieceType tmp = PieceType::UNDEFINED;
+				for(PieceType type : {PieceType::CROSSBOWS, PieceType::SPEARS, PieceType::LIGHT_HORSE})
+				{
+					if(inactivePieces.count(type) > 0)
+					{
+						if(tmp != PieceType::UNDEFINED)
+							return false;
+
+						tmp = type;
+					}
+				}
+
+				if(tmp != PieceType::UNDEFINED)
+					promoteTo(tmp);
+			}
 
 			return true;
 		}
