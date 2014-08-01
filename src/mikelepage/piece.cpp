@@ -438,42 +438,11 @@ namespace cyvmath
 					}
 					break;
 				case MovementType::RANGE:
+				{
+					std::unique_ptr<Coordinate> startCoord;
+
 					if(_coord)
-					{
-						// completely unnecessary, and not perfect
-						// ... but would probably work! :)
-						if(!distance)
-							distance = Hexagon::tileCount / 2;
-
-						std::set<Coordinate> lastTiles {*_coord};
-						std::set<Coordinate> tiles;
-
-						// start with i = 1 because the first step is already done with
-						for(int i = 0; i < distance; ++i)
-						{
-							for(auto tile : lastTiles)
-							{
-								// adjacent tiles of tile
-								_match.forReachableCoords(tile, {stepsOrthogonal, 1}, [&](Coordinate coord, Piece* piece) {
-									if(!piece || piece->getType() == PieceType::MOUNTAIN || piece->getColor() == !_color)
-									{
-										auto it = tiles.find(coord);
-										if(it == tiles.end())
-										{
-											if(!piece || piece->getType() == PieceType::MOUNTAIN)
-												tiles.insert(coord);
-
-											if(piece->getType() != PieceType::MOUNTAIN)
-												ret.insert(coord);
-										}
-									}
-								});
-							}
-
-							lastTiles = tiles;
-							tiles.clear();
-						}
-					}
+						startCoord = make_unique(_coord);
 					else
 					{
 						// this is dependent on the piece being a dragon,
@@ -485,21 +454,47 @@ namespace cyvmath
 						if(!fortress) // fortress ruined, dragon can't be brought out
 							return std::set<Coordinate>();
 
-						Coordinate fortressPos = fortress->getCoord();
+						startCoord = make_unique<Coordinate>(fortress->getCoord());
+					}
 
-						// fortress is empty or has an opponents piece in it
-						std::shared_ptr<Piece> tmpPiece = _match.getPieceAt(fortressPos);
-						if(!tmpPiece || tmpPiece->getColor() != _color)
-							ret.insert(fortressPos);
+					assert(startCoord);
 
-						// check adjacent tiles of the fortress
-						_match.forReachableCoords(fortressPos, {stepsOrthogonal, 1}, [&](Coordinate coord, Piece* piece) {
-							if(!piece || piece->getColor() != _color)
-								ret.insert(coord);
-						});
+					// completely unnecessary, and not perfect
+					// ... but would probably work! :)
+					if(!distance)
+						distance = Hexagon::tileCount / 2;
+
+					std::set<Coordinate> lastTiles {*startCoord};
+					std::set<Coordinate> tiles;
+
+					// start with i = 1 because the first step is already done with
+					for(int i = 0; i < distance; ++i)
+					{
+						for(auto tile : lastTiles)
+						{
+							// adjacent tiles of tile
+							_match.forReachableCoords(tile, {stepsOrthogonal, 1}, [&](Coordinate coord, Piece* piece) {
+								if(!piece || piece->getType() == PieceType::MOUNTAIN || piece->getColor() == !_color)
+								{
+									auto it = tiles.find(coord);
+									if(it == tiles.end())
+									{
+										if(!piece || piece->getType() == PieceType::MOUNTAIN)
+											tiles.insert(coord);
+
+										if(piece->getType() != PieceType::MOUNTAIN)
+											ret.insert(coord);
+									}
+								}
+							});
+						}
+
+						lastTiles = tiles;
+						tiles.clear();
 					}
 
 					break;
+				}
 			}
 
 			return ret;
@@ -672,8 +667,8 @@ namespace cyvmath
 			auto res = activePieces.emplace(target, selfSharedPtr);
 			assert(res.second);
 
-			if(!setup)
-				_match.getBearingTable().update(this);
+			//if(!setup)
+			//	_match.getBearingTable().update(this);
 
 			return true;
 		}

@@ -57,6 +57,10 @@ namespace cyvmath
 			{
 				_match.endGame(!_color);
 			}
+
+			// workaround for bearing table bug
+			_match.getBearingTable().clear();
+			_match.getBearingTable().init();
 		}
 
 		void Player::setFortress(std::shared_ptr<Fortress> fortress)
