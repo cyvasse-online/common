@@ -242,6 +242,7 @@ namespace cyvmath
 						case DirectionOrthogonal::BOTTOM_RIGHT: step = stepsOrthogonal.at(3); break;
 						case DirectionOrthogonal::BOTTOM_LEFT:  step = stepsOrthogonal.at(4); break;
 						case DirectionOrthogonal::LEFT:         step = stepsOrthogonal.at(5); break;
+						default: break; // disable compiler warning about unhandled enum value
 					}
 					break;
 				case MovementType::DIAGONAL:
@@ -253,6 +254,7 @@ namespace cyvmath
 						case DirectionDiagonal::BOTTOM:       step = stepsDiagonal.at(3); break;
 						case DirectionDiagonal::BOTTOM_LEFT:  step = stepsDiagonal.at(4); break;
 						case DirectionDiagonal::TOP_LEFT:     step = stepsDiagonal.at(5); break;
+						default: break; // disable compiler warning about unhandled enum value
 					}
 					break;
 				// TODO: add extra case for RANGE and maybe be HEXAGONAL
@@ -282,7 +284,7 @@ namespace cyvmath
 						distance = Hexagon::edgeLength - 1;
 				}
 
-				_match.forReachableCoords(*_coord, {{step}, distance}, [&](Coordinate coord, Piece* piece) {
+				_match.forReachableCoords(*_coord, {{step}, distance}, [&](Coordinate coord, Piece*) {
 					if(coord == target)
 					{
 						assert(!ret);
@@ -495,6 +497,8 @@ namespace cyvmath
 
 					break;
 				}
+				default:
+					assert(0);
 			}
 
 			return ret;
@@ -545,6 +549,8 @@ namespace cyvmath
 				case MovementType::RANGE:
 					ret = getReachableTiles();
 					break;
+				default:
+					assert(0);
 			}
 
 			return ret;
@@ -591,6 +597,8 @@ namespace cyvmath
 						}
 					}
 					break;
+				default:
+					assert(0);
 			}
 
 			return ret;
@@ -608,11 +616,11 @@ namespace cyvmath
 
 			if(_coord)
 			{
-				CoordPieceMap::iterator it = activePieces.find(*_coord);
-				assert(it != activePieces.end());
+				auto pieceIt = activePieces.find(*_coord);
+				assert(pieceIt != activePieces.end());
 
-				selfSharedPtr = it->second;
-				activePieces.erase(it);
+				selfSharedPtr = pieceIt->second;
+				activePieces.erase(pieceIt);
 
 				if(setup)
 				{
@@ -624,10 +632,10 @@ namespace cyvmath
 
 						if(tType != TerrainType::UNDEFINED)
 						{
-							auto it = _match.getTerrain().find(*_coord);
-							assert(it != _match.getTerrain().end());
+							auto terrainIt = _match.getTerrain().find(*_coord);
+							assert(terrainIt != _match.getTerrain().end());
 
-							it->second->setCoord(target);
+							terrainIt->second->setCoord(target);
 						}
 					}
 				}
@@ -637,16 +645,16 @@ namespace cyvmath
 				// piece is not on the board
 
 				auto& inactivePieces = player.getInactivePieces();
-				auto it = std::find_if(
+				auto pieceIt = std::find_if(
 					inactivePieces.begin(),
 					inactivePieces.end(),
 					[this](std::pair<const PieceType, std::shared_ptr<Piece>>& it) { return it.second.get() == this; }
 				);
 
-				assert(it != inactivePieces.end());
-				selfSharedPtr = it->second;
+				assert(pieceIt != inactivePieces.end());
+				selfSharedPtr = pieceIt->second;
 
-				player.getInactivePieces().erase(it);
+				player.getInactivePieces().erase(pieceIt);
 
 				if(_type == PieceType::DRAGON)
 					player.dragonBroughtOut();

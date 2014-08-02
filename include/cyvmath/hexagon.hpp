@@ -64,7 +64,7 @@ namespace cyvmath
 	class Hexagon
 	{
 		/* The smallest possible hexagon has 7 tiles and an edge lenth of 2
-		   The largest possible hexagon in which the highest x and y can be represented
+		   The largest possible hexagon in which the highest X and Y can be represented
 		   using a signed 8 bit integer has an edge length of 64 (=> width and height 127)
 		 */
 		static_assert(l >= 2,  "The minimum size of the hexagon edge length is 2.");
@@ -78,25 +78,25 @@ namespace cyvmath
 			class Coordinate : public cyvmath::Coordinate
 			{
 				private:
-					int_least8_t _x;
-					int_least8_t _y;
+					int_least8_t m_x;
+					int_least8_t m_y;
 
-					constexpr Coordinate(int_least8_t x, int_least8_t y)
-						: _x(x)
-						, _y(y)
+					constexpr Coordinate(int_least8_t X, int_least8_t Y)
+						: m_x(X)
+						, m_y(Y)
 					{ }
 
-					static constexpr bool isValid(int_least8_t x, int_least8_t y)
+					static constexpr bool isValid(int_least8_t X, int_least8_t Y)
 					{
-						return x >= 0 && x < (l * 2 - 1) &&
-							   y >= 0 && y < (l * 2 - 1) &&
-							   (x + y) >= (l - 1) &&
-							   (x + y) <= (l - 1) * 3;
+						return X >= 0 && X < (l * 2 - 1) &&
+							   Y >= 0 && Y < (l * 2 - 1) &&
+							   (X + Y) >= (l - 1) &&
+							   (X + Y) <= (l - 1) * 3;
 					}
 
 					bool isValid() const
 					{
-						return isValid(_x, _y);
+						return isValid(m_x, m_y);
 					}
 
 				public:
@@ -104,22 +104,22 @@ namespace cyvmath
 
 					int_least8_t x() const final override
 					{
-						return _x;
+						return m_x;
 					}
 
 					int_least8_t y() const final override
 					{
-						return _y;
+						return m_y;
 					}
 
 					constexpr int_least8_t z() const
 					{
-						return -(_x + _y);
+						return -(m_x + m_y);
 					}
 
 					int_least16_t dump() const final override
 					{
-						return (_x << 8) | _y;
+						return (m_x << 8) | m_y;
 					}
 
 					/** Get the distance to another coordinate in form of the amount
@@ -130,27 +130,27 @@ namespace cyvmath
 						// Concept from http://keekerdc.com/2011/03/hexagon-grids-coordinate-systems-and-distance-calculations/
 						// I have no idea why the maximum of x-, y- and z-difference
 						// of the coordinates equals the distance between them...
-						return std::max(abs(_x - other._x), std::max(abs(_y - other._y), abs(z() - other.z())));
+						return std::max(abs(m_x - other.m_x), std::max(abs(m_y - other.m_y), abs(z() - other.z())));
 					}
 
 					/// Check if the given coordinate is reachable in one orthogonal move
 					constexpr bool isOrthogonal(Coordinate other) const
 					{
-						return _x == other._x || _y == other._y || z() == other.z();
+						return m_x == other.m_x || m_y == other.m_y || z() == other.z();
 					}
 
 					DirectionOrthogonal getDirectionOrthogonal(Coordinate other) const
 					{
 						if(*this == other) return DirectionOrthogonal::UNDEFINED;
 
-						if(_x == other._x)
-							return (_y > other._y) ? DirectionOrthogonal::BOTTOM_LEFT
+						if(m_x == other.m_x)
+							return (m_y > other.m_y) ? DirectionOrthogonal::BOTTOM_LEFT
 							                       : DirectionOrthogonal::TOP_RIGHT;
-						if(_y == other._y)
-							return (_x > other._x) ? DirectionOrthogonal::LEFT
+						if(m_y == other.m_y)
+							return (m_x > other.m_x) ? DirectionOrthogonal::LEFT
 							                       : DirectionOrthogonal::RIGHT;
 						if(z() == other.z())
-							return (_x > other._x) ? DirectionOrthogonal::TOP_LEFT
+							return (m_x > other.m_x) ? DirectionOrthogonal::TOP_LEFT
 							                       : DirectionOrthogonal::BOTTOM_RIGHT;
 
 						return DirectionOrthogonal::UNDEFINED;
@@ -173,8 +173,8 @@ namespace cyvmath
 						// until C++14, this has to be implemented using
 						// macros because C++11 doesn't allow constexpr
 						// functions to include variable declarations
-						#define dX _x - other._x
-						#define dY _y - other._y
+						#define dX m_x - other.m_x
+						#define dY m_y - other.m_y
 						#define dZ z() - other.z()
 
 						return dX == dY ||
@@ -190,8 +190,8 @@ namespace cyvmath
 					{
 						if(*this == other) return DirectionDiagonal::UNDEFINED;
 
-						int_least8_t dX = _x  - other._x;
-						int_least8_t dY = _y  - other._y;
+						int_least8_t dX = m_x  - other.m_x;
+						int_least8_t dY = m_y  - other.m_y;
 						int_least8_t dZ = z() - other.z();
 
 						if(dX == dY)
@@ -249,12 +249,12 @@ namespace cyvmath
 						return 0;
 					}
 
-					bool set(int_least8_t x, int_least8_t y)
+					bool set(int_least8_t X, int_least8_t Y)
 					{
-						if(isValid(x, y))
+						if(isValid(X, Y))
 						{
-							_x = x;
-							_y = y;
+							m_x = X;
+							m_y = Y;
 
 							return true;
 						}
@@ -265,23 +265,23 @@ namespace cyvmath
 					std::string toString() const
 					{
 						std::string ret;
-						ret.append(1, char(x()) + 'A');
-						ret.append(std::to_string(int(y() + 1)));
+						ret.append(1, char(m_x) + 'A');
+						ret.append(std::to_string(int(m_y + 1)));
 
 						return ret;
 					}
 
 					std::valarray<int_least8_t> toValarray() const
-					{ return {_x, _y}; }
+					{ return {m_x, m_y}; }
 
 					/// @{
-					/// Create a Coordinate object from an x and an y
+					/// Create a Coordinate object from an X and an Y
 					/// If the coordinte is invalid, return nullptr
-					static constexpr std::unique_ptr<Coordinate> create(int_least8_t x, int_least8_t y)
+					static constexpr std::unique_ptr<Coordinate> create(int_least8_t X, int_least8_t Y)
 					{
 						// can't use make_unique because private constructor has to be called directly
-						return isValid(x, y)
-							? std::unique_ptr<Coordinate>(new Coordinate(x, y))
+						return isValid(X, Y)
+							? std::unique_ptr<Coordinate>(new Coordinate(X, Y))
 							: nullptr;
 					}
 
@@ -303,11 +303,11 @@ namespace cyvmath
 						if(str.length() < 2)
 							return nullptr;
 
-						/* x: When using char's for calculations, their ASCII values are used,
+						/* X: When using char's for calculations, their ASCII values are used,
 							  and as the uppercase letters are consecutive in the ASCII table,
 							  this will result in 0 for 'A', 1 for 'B' and so on.
 							  We don't accept lowercase letters.
-						   y: Public coordinate notation starts with 1, we start with 0
+						   Y: Public coordinate notation starts with 1, we start with 0
 						 */
 						return std::unique_ptr<Coordinate>(
 							new Coordinate(str.at(0) - 'A', std::stoi(str.substr(1)) - 1)
@@ -328,14 +328,14 @@ namespace cyvmath
 
 				if(set.empty())
 				{
-					for(auto x = 0; x < (2 * l) - 1; x++)
+					for(auto X = 0; X < (2 * l) - 1; X++)
 					{
-						auto yBegin = (x < (l - 1)) ? (l - 1 - x) : 0;
-						auto yEnd   = (x < (l - 1)) ? (2 * l - 1) : (2 * l - 1) + (l - 1 - x);
+						auto yBegin = (X < (l - 1)) ? (l - 1 - X) : 0;
+						auto yEnd   = (X < (l - 1)) ? (2 * l - 1) : (2 * l - 1) + (l - 1 - X);
 
-						for(auto y = yBegin; y < yEnd; y++)
+						for(auto Y = yBegin; Y < yEnd; Y++)
 						{
-							std::unique_ptr<Coordinate> c = Coordinate::create(x, y);
+							std::unique_ptr<Coordinate> c = Coordinate::create(X, Y);
 							assert(c);
 
 							auto res = set.insert(*c);
