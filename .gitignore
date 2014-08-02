@@ -24,5 +24,7 @@ libcyvmath.a
 
 # Other
 
+.dirstamp
+
 *~
 *.bak
