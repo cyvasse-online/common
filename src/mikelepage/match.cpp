@@ -26,7 +26,7 @@ namespace cyvmath
 		{
 			std::set<Coordinate> ret;
 
-			for(auto player : _players)
+			for(auto player : m_players)
 			{
 				auto fortress = player->getFortress();
 
@@ -34,7 +34,7 @@ namespace cyvmath
 					ret.insert(fortress->getCoord());
 			}
 
-			std::set<Coordinate>& replacementCenters = _fortressReplaceCorners;
+			std::set<Coordinate>& replacementCenters = m_fortressReplaceCorners;
 			// TODO: would make sense to re-add somewhen
 			//assert(ret.size() + replacementCenters.size() == 2);
 			ret.insert(replacementCenters.begin(), replacementCenters.end());
@@ -46,8 +46,8 @@ namespace cyvmath
 		{
 			std::shared_ptr<Piece> ret;
 
-			auto it = _activePieces.find(coord);
-			if(it != _activePieces.end())
+			auto it = m_activePieces.find(coord);
+			if(it != m_activePieces.end())
 				ret = it->second;
 
 			return ret;
@@ -92,7 +92,7 @@ namespace cyvmath
 			assert(type != PieceType::UNDEFINED);
 			assert(color != PlayersColor::UNDEFINED);
 
-			auto& inactivePieces = _players.at(color)->getInactivePieces();
+			auto& inactivePieces = m_players.at(color)->getInactivePieces();
 
 			auto it = inactivePieces.find(type);
 			assert(it != inactivePieces.end());
@@ -101,18 +101,18 @@ namespace cyvmath
 			inactivePieces.erase(it);
 
 			piece->setCoord(coord);
-			_activePieces.emplace(coord, piece);
+			m_activePieces.emplace(coord, piece);
 		}
 
 		void Match::removeFromBoard(std::shared_ptr<Piece> piece)
 		{
 			assert(piece->getCoord());
 
-			auto it = _activePieces.find(*piece->getCoord());
-			assert(it != _activePieces.end());
-			_activePieces.erase(it);
+			auto it = m_activePieces.find(*piece->getCoord());
+			assert(it != m_activePieces.end());
+			m_activePieces.erase(it);
 
-			auto& player = _players.at(piece->getColor());
+			auto& player = m_players.at(piece->getColor());
 
 			player->getInactivePieces().emplace(piece->getType(), piece);
 

@@ -67,8 +67,8 @@ namespace cyvmath
 
 			protected:
 				// can be none, so this is a pointer
-				std::unique_ptr<Coordinate> _coord;
-				Match& _match;
+				std::unique_ptr<Coordinate> m_coord;
+				Match& m_match;
 
 				bool moveToValid(Coordinate) const;
 
@@ -79,18 +79,18 @@ namespace cyvmath
 			public:
 				Piece(PlayersColor color, PieceType type, std::unique_ptr<Coordinate> coord, Match& match)
 					: cyvmath::Piece(color, type)
-					, _coord(std::move(coord))
-					, _match(match)
+					, m_coord(std::move(coord))
+					, m_match(match)
 				{ }
 
 				virtual ~Piece() = default;
 
 				std::unique_ptr<Coordinate> getCoord() const
-				{ return make_unique(_coord); }
+				{ return make_unique(m_coord); }
 
 				// ugly hack for piece promotion
 				void setCoord(Coordinate coord)
-				{ _coord = make_unique<Coordinate>(coord); }
+				{ m_coord = make_unique<Coordinate>(coord); }
 
 				uint_least8_t getBaseTier() const;
 				uint_least8_t getEffectiveDefenseTier() const;

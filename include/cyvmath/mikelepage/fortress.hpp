@@ -27,23 +27,23 @@ namespace cyvmath
 		class Fortress
 		{
 			protected:
-				const PlayersColor _color;
-				Coordinate _coord;
+				const PlayersColor m_color;
+				Coordinate m_coord;
 
 			public:
 				Fortress(PlayersColor color, Coordinate coord)
-					: _color(color)
-					, _coord(coord)
+					: m_color(color)
+					, m_coord(coord)
 				{ }
 
 				PlayersColor getColor()
-				{ return _color; }
+				{ return m_color; }
 
 				Coordinate getCoord()
-				{ return _coord; }
+				{ return m_coord; }
 
 				virtual void setCoord(Coordinate coord)
-				{ _coord = coord; }
+				{ m_coord = coord; }
 		};
 	}
 }

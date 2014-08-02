@@ -26,13 +26,13 @@ namespace cyvmath
 	{
 		bool Player::setupComplete()
 		{
-			auto outsideOwnSide = (_color == PlayersColor::WHITE)
+			auto outsideOwnSide = (m_color == PlayersColor::WHITE)
 				? [](int8_t y) { return y >= (Hexagon::edgeLength - 1); }
 				: [](int8_t y) { return y <= (Hexagon::edgeLength - 1); };
 
-			for(auto& it : _match.getActivePieces())
+			for(auto& it : m_match.getActivePieces())
 			{
-				if(it.second->getColor() == _color && outsideOwnSide(it.first.y()))
+				if(it.second->getColor() == m_color && outsideOwnSide(it.first.y()))
 					return false;
 			}
 
@@ -41,32 +41,32 @@ namespace cyvmath
 
 		void Player::onTurnEnd()
 		{
-			if(_fortress)
+			if(m_fortress)
 			{
-				auto piece = _match.getPieceAt(_fortress->getCoord());
+				auto piece = m_match.getPieceAt(m_fortress->getCoord());
 				if(piece)
 				{
-					if(piece->getColor() != _color)
+					if(piece->getColor() != m_color)
 						removeFortress();
-					else if(_kingTaken && piece->getBaseTier() == 3)
+					else if(m_kingTaken && piece->getBaseTier() == 3)
 					{
 						piece->promoteTo(PieceType::KING);
-						_kingTaken = false;
+						m_kingTaken = false;
 					}
 				}
 			}
 
-			if(_kingTaken)
-				_match.endGame(!_color);
+			if(m_kingTaken)
+				m_match.endGame(!m_color);
 
-			_match.getBearingTable().update();
+			m_match.getBearingTable().update();
 		}
 
 		void Player::setFortress(std::shared_ptr<Fortress> fortress)
 		{
 			assert(fortress);
 
-			_fortress = fortress;
+			m_fortress = fortress;
 		}
 	}
 }

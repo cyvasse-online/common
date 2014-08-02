@@ -26,16 +26,16 @@ namespace cyvmath
 
 	PlayersColor PlayersColor::operator!() const
 	{
-		assert(_val != -1);
+		assert(m_val != -1);
 
 		// int-to-bool, operator!(bool), bool-to-int
-		return PlayersColor(!_val);
+		return PlayersColor(!m_val);
 	}
 
 	PlayersColor::operator unsigned() const
 	{
-		assert(_val != -1);
+		assert(m_val != -1);
 
-		return _val;
+		return m_val;
 	}
 }

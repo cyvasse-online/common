@@ -31,20 +31,20 @@ namespace cyvmath
 		class Terrain
 		{
 			protected:
-				const TerrainType _type;
-				Coordinate _coord;
+				const TerrainType m_type;
+				Coordinate m_coord;
 
 			public:
 				Terrain(TerrainType type, Coordinate coord)
-					: _type(type)
-					, _coord(coord)
+					: m_type(type)
+					, m_coord(coord)
 				{ }
 
 				TerrainType getType()
-				{ return _type; }
+				{ return m_type; }
 
 				virtual void setCoord(Coordinate coord)
-				{ _coord = coord; }
+				{ m_coord = coord; }
 		};
 
 		typedef std::map<Coordinate, std::shared_ptr<Terrain>> TerrainMap;

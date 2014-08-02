@@ -27,15 +27,15 @@ namespace cyvmath
 	class PlayersColor
 	{
 		private:
-			int _val;
+			int m_val;
 
 			explicit PlayersColor(int val)
-				: _val(val)
+				: m_val(val)
 			{ }
 
 		public:
 			PlayersColor(const PlayersColor& other)
-				: _val(other._val)
+				: m_val(other.m_val)
 			{ }
 
 			static const PlayersColor UNDEFINED;
@@ -45,16 +45,16 @@ namespace cyvmath
 			PlayersColor operator!() const;
 
 			bool operator==(PlayersColor other) const
-			{ return _val == other._val; }
+			{ return m_val == other.m_val; }
 
 			bool operator!=(PlayersColor other) const
-			{ return _val != other._val; }
+			{ return m_val != other.m_val; }
 
 			bool operator<(PlayersColor other) const
-			{ return _val < other._val; }
+			{ return m_val < other.m_val; }
 
 			bool operator>(PlayersColor other) const
-			{ return _val > other._val; }
+			{ return m_val > other.m_val; }
 
 			operator unsigned() const;
 

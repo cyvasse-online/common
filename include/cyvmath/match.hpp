@@ -26,13 +26,13 @@ namespace cyvmath
 	class Match
 	{
 		protected:
-			PlayersColor _activePlayer;
+			PlayersColor m_activePlayer;
 
-			bool _setup;
+			bool m_setup;
 
 			Match(PlayersColor firstPlayer)
-				: _activePlayer(firstPlayer)
-				, _setup(true)
+				: m_activePlayer(firstPlayer)
+				, m_setup(true)
 			{ }
 
 		public:

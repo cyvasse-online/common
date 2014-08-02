@@ -33,39 +33,39 @@ namespace cyvmath
 		class Match : public cyvmath::Match
 		{
 			protected:
-				PlayerArray _players;
+				PlayerArray m_players;
 
-				CoordPieceMap _activePieces;
-				TerrainMap _terrain;
+				CoordPieceMap m_activePieces;
+				TerrainMap m_terrain;
 
-				BearingTable _bearingTable;
+				BearingTable m_bearingTable;
 
 				// alternative centers for horse movement;
 				// one replacement coord per ruined fortress
-				std::set<Coordinate> _fortressReplaceCorners;
+				std::set<Coordinate> m_fortressReplaceCorners;
 
 			public:
 				Match()
 					: cyvmath::Match(PlayersColor::WHITE)
-					, _bearingTable(_activePieces)
+					, m_bearingTable(m_activePieces)
 				{ }
 
 				virtual ~Match() = default;
 
 				PlayerArray& getPlayers()
-				{ return _players; }
+				{ return m_players; }
 
 				std::shared_ptr<Player> getPlayer(PlayersColor color) const
-				{ return _players[color]; }
+				{ return m_players[color]; }
 
 				CoordPieceMap& getActivePieces()
-				{ return _activePieces; }
+				{ return m_activePieces; }
 
 				TerrainMap& getTerrain()
-				{ return _terrain; }
+				{ return m_terrain; }
 
 				BearingTable& getBearingTable()
-				{ return _bearingTable; }
+				{ return m_bearingTable; }
 
 				std::set<Coordinate> getHexagonMovementCenters();
 

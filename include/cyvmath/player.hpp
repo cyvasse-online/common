@@ -24,17 +24,17 @@ namespace cyvmath
 	class Player
 	{
 		protected:
-			const PlayersColor _color;
+			const PlayersColor m_color;
 
 			Player(PlayersColor color)
-				: _color(color)
+				: m_color(color)
 			{ }
 
 		public:
 			virtual ~Player() = default;
 
 			PlayersColor getColor() const
-			{ return _color; }
+			{ return m_color; }
 
 			virtual bool setupComplete() = 0;
 	};

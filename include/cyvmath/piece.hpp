@@ -41,22 +41,22 @@ namespace cyvmath
 	class Piece
 	{
 		protected:
-			const PlayersColor _color;
-			const PieceType _type;
+			const PlayersColor m_color;
+			const PieceType m_type;
 
 		public:
 			Piece(PlayersColor color, PieceType type)
-				: _color(color)
-				, _type(type)
+				: m_color(color)
+				, m_type(type)
 			{ }
 
 			virtual ~Piece() = default;
 
 			PlayersColor getColor() const
-			{ return _color; }
+			{ return m_color; }
 
 			PieceType getType() const
-			{ return _type; }
+			{ return m_type; }
 
 			virtual const MovementScope& getMovementScope() const = 0;
 	};

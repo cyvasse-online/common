@@ -33,36 +33,36 @@ namespace cyvmath
 		class Player : public cyvmath::Player
 		{
 			protected:
-				bool _dragonAliveInactive;
-				bool _kingTaken;
+				bool m_dragonAliveInactive;
+				bool m_kingTaken;
 
-				Match& _match;
+				Match& m_match;
 
-				TypePieceMap _inactivePieces;
+				TypePieceMap m_inactivePieces;
 
-				std::shared_ptr<Fortress> _fortress;
+				std::shared_ptr<Fortress> m_fortress;
 
 			public:
 				Player(PlayersColor color, Match& match)
 					: cyvmath::Player(color)
-					, _dragonAliveInactive{true}
-					, _kingTaken{false}
-					, _match{match}
+					, m_dragonAliveInactive{true}
+					, m_kingTaken{false}
+					, m_match{match}
 				{ }
 
 				virtual ~Player() = default;
 
 				bool dragonAliveInactive() const
-				{ return _dragonAliveInactive; }
+				{ return m_dragonAliveInactive; }
 
 				void kingTaken()
-				{ _kingTaken = true; }
+				{ m_kingTaken = true; }
 
 				TypePieceMap& getInactivePieces()
-				{ return _inactivePieces; }
+				{ return m_inactivePieces; }
 
 				std::shared_ptr<Fortress> getFortress()
-				{ return _fortress; }
+				{ return m_fortress; }
 
 				void setFortress(std::shared_ptr<Fortress>);
 
@@ -71,10 +71,10 @@ namespace cyvmath
 				void onTurnEnd();
 
 				void dragonBroughtOut()
-				{ _dragonAliveInactive = false; }
+				{ m_dragonAliveInactive = false; }
 
 				virtual void removeFortress()
-				{ _fortress.reset(); }
+				{ m_fortress.reset(); }
 		};
 
 		typedef std::array<std::shared_ptr<Player>, 2> PlayerArray;
