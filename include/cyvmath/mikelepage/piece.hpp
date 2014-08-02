@@ -107,9 +107,6 @@ namespace cyvmath
 
 				virtual bool moveTo(Coordinate, bool setup);
 				virtual void promoteTo(PieceType);
-				// return false when there are multiple promotion options,
-				// true otherwise, even if no promotion was done
-				bool tryAutoPromote();
 		};
 
 		typedef std::map<Coordinate, std::shared_ptr<Piece>> CoordPieceMap;

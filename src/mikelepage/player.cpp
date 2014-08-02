@@ -49,14 +49,15 @@ namespace cyvmath
 					if(piece->getColor() != _color)
 						removeFortress();
 					else if(_kingTaken && piece->getBaseTier() == 3)
-						assert(piece->tryAutoPromote());
+					{
+						piece->promoteTo(PieceType::KING);
+						_kingTaken = false;
+					}
 				}
 			}
 
 			if(_kingTaken)
-			{
 				_match.endGame(!_color);
-			}
 
 			// workaround for bearing table bug
 			_match.getBearingTable().clear();

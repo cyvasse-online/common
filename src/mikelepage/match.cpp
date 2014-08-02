@@ -117,7 +117,7 @@ namespace cyvmath
 			player->getInactivePieces().emplace(piece->getType(), piece);
 
 			if(piece->getType() == PieceType::KING)
-				player->setKingTaken(true);
+				player->kingTaken();
 		}
 	}
 }

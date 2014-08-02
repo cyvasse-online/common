@@ -55,11 +55,8 @@ namespace cyvmath
 				bool dragonAliveInactive() const
 				{ return _dragonAliveInactive; }
 
-				bool kingTaken() const
-				{ return _kingTaken; }
-
-				void setKingTaken(bool kingTaken)
-				{ _kingTaken = kingTaken; }
+				void kingTaken()
+				{ _kingTaken = true; }
 
 				TypePieceMap& getInactivePieces()
 				{ return _inactivePieces; }
@@ -78,10 +75,6 @@ namespace cyvmath
 
 				virtual void removeFortress()
 				{ _fortress.reset(); }
-
-				// very, very ugly hack to get piece promotions working asap
-				virtual void sendPromotePiece(PieceType /* from */, PieceType /* to */)
-				{ }
 		};
 
 		typedef std::array<std::shared_ptr<Player>, 2> PlayerArray;

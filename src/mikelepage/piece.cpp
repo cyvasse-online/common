@@ -681,64 +681,6 @@ namespace cyvmath
 
 			_match.removeFromBoard(selfSharedPtr);
 			_match.addToBoard(type, _color, *_coord);
-
-			_match.getPlayer(_color)->sendPromotePiece(_type, type);
-		}
-
-		bool Piece::tryAutoPromote()
-		{
-			auto player = _match.getPlayer(_color);
-			auto& inactivePieces = player->getInactivePieces();
-			auto baseTier = getBaseTier();
-
-			if(baseTier == 3)
-			{
-				if(player->kingTaken())
-				{
-					promoteTo(PieceType::KING);
-					player->setKingTaken(false);
-				}
-			}
-			else if(baseTier == 2)
-			{
-				switch(_type)
-				{
-					case PieceType::CROSSBOWS:
-						if(inactivePieces.count(PieceType::TREBUCHET) > 0)
-							promoteTo(PieceType::TREBUCHET);
-						break;
-					case PieceType::SPEARS:
-						if(inactivePieces.count(PieceType::ELEPHANT) > 0)
-							promoteTo(PieceType::ELEPHANT);
-						break;
-					case PieceType::LIGHT_HORSE:
-						if(inactivePieces.count(PieceType::HEAVY_HORSE) > 0)
-							promoteTo(PieceType::HEAVY_HORSE);
-						break;
-					default:
-						assert(0);
-						break;
-				}
-			}
-			else if(_type == PieceType::RABBLE) // can only promote rabble, not the king
-			{
-				PieceType tmp = PieceType::UNDEFINED;
-				for(PieceType type : {PieceType::CROSSBOWS, PieceType::SPEARS, PieceType::LIGHT_HORSE})
-				{
-					if(inactivePieces.count(type) > 0)
-					{
-						if(tmp != PieceType::UNDEFINED)
-							return false;
-
-						tmp = type;
-					}
-				}
-
-				if(tmp != PieceType::UNDEFINED)
-					promoteTo(tmp);
-			}
-
-			return true;
 		}
 	}
 }
