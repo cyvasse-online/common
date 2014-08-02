@@ -22,84 +22,6 @@ namespace cyvmath
 {
     namespace mikelepage
     {
-        void BearingTable::addCanReach(const Piece* piece)
-        {
-            assert(piece);
-            assert(piece->getType() != PieceType::DRAGON);
-            assert(piece->getType() != PieceType::MOUNTAIN);
-
-            auto reachableOpPieces = piece->getReachableOpponentPieces();
-
-            if(!reachableOpPieces.empty())
-            {
-                auto res = _canReach.emplace(piece, std::set<const Piece*>());
-                assert(res.second);
-
-                std::set<const Piece*>& selfCanReach = res.first->second;
-
-                for(const Piece* opPiece : reachableOpPieces)
-                {
-                    auto res = selfCanReach.insert(opPiece);
-                    assert(res.second);
-
-                    auto opPieceIt = _canBeReachedBy.find(opPiece);
-                    if(opPieceIt == _canBeReachedBy.end())
-                    {
-                        auto res = _canBeReachedBy.emplace(opPiece, std::set<const Piece*>{piece});
-                        assert(res.second);
-                    }
-                    else
-                    {
-                        auto res = opPieceIt->second.insert(piece);
-                        assert(res.second);
-                    }
-                }
-            }
-        }
-
-        void BearingTable::addCanBeReachedBy(const Piece* piece)
-        {
-            assert(piece);
-            assert(piece->getType() != PieceType::MOUNTAIN);
-
-            for(auto it : _pieceMap)
-            {
-                Piece* opPiece = it.second.get();
-
-                if(opPiece->getColor() == piece->getColor() ||
-                   opPiece->getType() == PieceType::DRAGON ||
-                   opPiece->getType() == PieceType::MOUNTAIN)
-                    continue;
-
-                if(opPiece->canReach(*piece->getCoord()))
-                {
-                    auto otherPieceIt = _canReach.find(opPiece);
-                    if(otherPieceIt == _canReach.end())
-                    {
-                        auto res = _canReach.emplace(opPiece, std::set<const Piece*>{piece});
-                        assert(res.second);
-                    }
-                    else
-                    {
-                        auto res = otherPieceIt->second.insert(piece);
-                        assert(res.second);
-                    }
-
-                    auto pieceIt = _canBeReachedBy.find(piece);
-                    if(pieceIt == _canBeReachedBy.end())
-                    {
-                        auto res = _canBeReachedBy.emplace(piece, std::set<const Piece*>{opPiece});
-                        assert(res.second);
-                    }
-                    else
-                    {
-                        auto res = pieceIt->second.insert(opPiece);
-                        assert(res.second);
-                    }
-                }
-            }
-        }
-
         bool BearingTable::canTake(const Piece* atkPiece, const Piece* defPiece) const
         {
             assert(atkPiece);
@@ -116,9 +38,9 @@ namespace cyvmath
             uint_least8_t maxAllowedTier = haveKing ? 3 : atkPiece->getBaseTier();
             uint_least8_t maxTier = 1;
 
-            auto defPieceIt = _canBeReachedBy.find(defPiece);
+            auto defPieceIt = m_canBeReachedBy.find(defPiece);
 
-            if(defPieceIt == _canBeReachedBy.end())
+            if(defPieceIt == m_canBeReachedBy.end())
                 return false;
 
             std::map<uint_least8_t, uint_least8_t> flankingTiers {
@@ -160,70 +82,34 @@ namespace cyvmath
 
         void BearingTable::init()
         {
-            for(auto it : _pieceMap)
+            for(auto it : m_pieceMap)
             {
-                if(it.second->getType() != PieceType::MOUNTAIN &&
-                   it.second->getType() != PieceType::DRAGON)
-                    addCanReach(it.second.get());
-            }
-        }
+                auto piece = it.second.get();
 
-        void BearingTable::add(const Piece* piece)
-        {
-            if(piece->getType() != PieceType::DRAGON)
-                addCanReach(piece);
-
-            addCanBeReachedBy(piece);
-        }
-
-        void BearingTable::remove(const Piece* piece)
-        {
-            assert(piece);
-
-            auto it1 = _canReach.find(piece);
-            auto it2 = _canBeReachedBy.find(piece);
-
-            if(it1 != _canReach.end())
-            {
-                for(auto it1Piece : it1->second)
+                if(piece->getType() != PieceType::MOUNTAIN &&
+                   piece->getType() != PieceType::DRAGON)
                 {
-                    auto it = _canBeReachedBy.find(it1Piece);
-                    assert(it != _canBeReachedBy.end());
+                    auto reachableOpPieces = piece->getReachableOpponentPieces();
 
-                    auto pieceRefIt = it->second.find(piece);
-                    assert(pieceRefIt != it->second.end());
-                    it->second.erase(pieceRefIt);
+                    if(!reachableOpPieces.empty())
+                    {
+                        for(const Piece* opPiece : reachableOpPieces)
+                        {
+                            auto opPieceIt = m_canBeReachedBy.find(opPiece);
+                            if(opPieceIt == m_canBeReachedBy.end())
+                            {
+                                auto res = m_canBeReachedBy.emplace(opPiece, std::set<const Piece*>{piece});
+                                assert(res.second);
+                            }
+                            else
+                            {
+                                auto res = opPieceIt->second.insert(piece);
+                                assert(res.second);
+                            }
+                        }
+                    }
                 }
-
-                _canReach.erase(it1);
             }
-
-            if(it2 != _canBeReachedBy.end())
-            {
-                for(auto it2Piece : it2->second)
-                {
-                    auto it = _canReach.find(it2Piece);
-                    assert(it != _canReach.end());
-
-                    auto pieceRefIt = it->second.find(piece);
-                    assert(pieceRefIt != it->second.end());
-                    it->second.erase(pieceRefIt);
-                }
-
-                _canBeReachedBy.erase(it2);
-            }
-        }
-
-        void BearingTable::update(const Piece* piece)
-        {
-            remove(piece);
-            add(piece);
-        }
-
-        void BearingTable::clear()
-        {
-            _canReach.clear();
-            _canBeReachedBy.clear();
         }
     }
 }

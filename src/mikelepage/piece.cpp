@@ -83,7 +83,7 @@ namespace cyvmath
 
 			auto& bearingTable = _match.getBearingTable();
 
-			std::set<Coordinate> set;
+			std::set<Coordinate> ret;
 
 			_match.forReachableCoords(*_coord, range, [&](Coordinate coord, Piece* piece) {
 				if(!piece ||
@@ -94,12 +94,12 @@ namespace cyvmath
 					)
 				   )
 				{
-					auto res = set.insert(coord);
+					auto res = ret.insert(coord);
 					assert(res.second);
 				}
 			});
 
-			return set;
+			return ret;
 		}
 
 		std::set<const Piece*> Piece::getReachableOpponentPieces(const MovementRange& range) const
@@ -647,7 +647,6 @@ namespace cyvmath
 				selfSharedPtr = it->second;
 
 				player.getInactivePieces().erase(it);
-				_match.getBearingTable().add(this);
 
 				if(_type == PieceType::DRAGON)
 					player.dragonBroughtOut();
@@ -666,9 +665,6 @@ namespace cyvmath
 
 			auto res = activePieces.emplace(target, selfSharedPtr);
 			assert(res.second);
-
-			//if(!setup)
-			//	_match.getBearingTable().update(this);
 
 			return true;
 		}
