@@ -24,7 +24,7 @@ namespace cyvmath
 	enum class PieceType
 	{
 		UNDEFINED,
-		MOUNTAIN,
+		MOUNTAINS,
 		RABBLE,
 		CROSSBOWS,
 		SPEARS,
@@ -40,7 +40,7 @@ namespace cyvmath
 	// symbols although I made sure the cpp would be compiled
 	ENUM_STR(PieceType, ({
 			{PieceType::UNDEFINED, "undefined"},
-			{PieceType::MOUNTAIN, "mountain"},
+			{PieceType::MOUNTAINS, "mountains"},
 			{PieceType::RABBLE, "rabble"},
 			{PieceType::CROSSBOWS, "crossbows"},
 			{PieceType::SPEARS, "spears"},

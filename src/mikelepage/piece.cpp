@@ -65,7 +65,7 @@ namespace cyvmath
 				if(!piece ||
 					(
 						piece->getColor() != m_color &&
-						piece->getType() != PieceType::MOUNTAIN
+						piece->getType() != PieceType::MOUNTAINS
 					)
 				   )
 				{
@@ -89,7 +89,7 @@ namespace cyvmath
 				if(!piece ||
 					(
 						piece->getColor() != m_color &&
-						piece->getType() != PieceType::MOUNTAIN &&
+						piece->getType() != PieceType::MOUNTAINS &&
 						bearingTable.canTake(this, piece)
 					)
 				   )
@@ -110,7 +110,7 @@ namespace cyvmath
 
 			m_match.forReachableCoords(*m_coord, range, [&](Coordinate, Piece* piece) {
 				if(piece && piece->getColor() != m_color &&
-				piece->getType() != PieceType::MOUNTAIN)
+				piece->getType() != PieceType::MOUNTAINS)
 				{
 					auto res = ret.insert(piece);
 					assert(res.second);
@@ -209,7 +209,7 @@ namespace cyvmath
 		const MovementScope& Piece::getMovementScope() const
 		{
 			static const std::map<PieceType, MovementScope> data {
-					{PieceType::MOUNTAIN,    MovementScope(MovementType::NONE,       0)},
+					{PieceType::MOUNTAINS,    MovementScope(MovementType::NONE,       0)},
 					{PieceType::RABBLE,      MovementScope(MovementType::ORTHOGONAL, 1)},
 					{PieceType::CROSSBOWS,   MovementScope(MovementType::ORTHOGONAL, 3)},
 					{PieceType::SPEARS,      MovementScope(MovementType::DIAGONAL,   2)},
@@ -348,7 +348,7 @@ namespace cyvmath
 								auto it = activePieces.find(*tmpCoord);
 								if(it != activePieces.end())
 								{
-									if(it->second->getType() == PieceType::MOUNTAIN ||
+									if(it->second->getType() == PieceType::MOUNTAINS ||
 									   it->second->getColor() == m_color)
 										tileState = TileState::INACCESSIBLE;
 									else
@@ -474,15 +474,15 @@ namespace cyvmath
 						{
 							// adjacent tiles of tile
 							m_match.forReachableCoords(tile, {stepsOrthogonal, 1}, [&](Coordinate coord, Piece* piece) {
-								if(!piece || piece->getType() == PieceType::MOUNTAIN || piece->getColor() == !m_color)
+								if(!piece || piece->getType() == PieceType::MOUNTAINS || piece->getColor() == !m_color)
 								{
 									auto it = tiles.find(coord);
 									if(it == tiles.end())
 									{
-										if(!piece || piece->getType() == PieceType::MOUNTAIN)
+										if(!piece || piece->getType() == PieceType::MOUNTAINS)
 											tiles.insert(coord);
 
-										if(piece->getType() != PieceType::MOUNTAIN)
+										if(piece->getType() != PieceType::MOUNTAINS)
 											ret.insert(coord);
 									}
 								}
@@ -557,7 +557,7 @@ namespace cyvmath
 		std::set<const Piece*> Piece::getReachableOpponentPieces() const
 		{
 			assert(m_type != PieceType::DRAGON);
-			assert(m_type != PieceType::MOUNTAIN);
+			assert(m_type != PieceType::MOUNTAINS);
 
 			std::set<const Piece*> ret;
 
@@ -588,7 +588,7 @@ namespace cyvmath
 							auto it = activePieces.find(tile.first);
 							assert(it != activePieces.end());
 							assert(it->second->getColor() == !m_color);
-							assert(it->second->getType() != PieceType::MOUNTAIN);
+							assert(it->second->getType() != PieceType::MOUNTAINS);
 
 							auto res = ret.insert(it->second.get());
 							assert(res.second);

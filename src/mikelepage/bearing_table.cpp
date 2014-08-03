@@ -26,7 +26,7 @@ namespace cyvmath
         {
             assert(atkPiece);
             assert(defPiece);
-            assert(defPiece->getType() != PieceType::MOUNTAIN);
+            assert(defPiece->getType() != PieceType::MOUNTAINS);
 
             uint_least8_t defenseTier = defPiece->getEffectiveDefenseTier();
 
@@ -86,7 +86,7 @@ namespace cyvmath
             {
                 auto piece = it.second.get();
 
-                if(piece->getType() != PieceType::MOUNTAIN &&
+                if(piece->getType() != PieceType::MOUNTAINS &&
                    piece->getType() != PieceType::DRAGON)
                 {
                     auto reachableOpPieces = piece->getReachableOpponentPieces();
