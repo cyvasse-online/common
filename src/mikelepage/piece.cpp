@@ -273,8 +273,6 @@ namespace cyvmath
 
 			if(step[0] != 0 || step[1] != 0) // not the default values
 			{
-				const CoordPieceMap& activePieces = m_match.getActivePieces();
-
 				auto distance = scope.second;
 				if(!distance)
 				{
