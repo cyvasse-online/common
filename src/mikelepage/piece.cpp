@@ -455,6 +455,10 @@ namespace cyvmath
 							return std::set<Coordinate>();
 
 						startCoord = make_unique<Coordinate>(fortress->getCoord());
+
+						auto piece = m_match.getPieceAt(fortress->getCoord());
+						if(!piece || (piece->getColor() != m_color && piece->getType() != PieceType::MOUNTAINS))
+							ret.insert(fortress->getCoord());
 					}
 
 					assert(startCoord);
