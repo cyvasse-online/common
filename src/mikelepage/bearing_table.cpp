@@ -73,7 +73,7 @@ namespace cyvmath
                 ++flankingTiers[maxTier];
 
             for(uint_least8_t i = 1; i < maxTier; ++i)
-                flankingTiers[i+1] += flankingTiers[i] / 2;
+                flankingTiers[i+1] += (flankingTiers[i] > 0 ? flankingTiers[i] - 1 : 0);
 
             uint_least8_t attackTier = maxTier + flankingTiers[maxTier] - 1;
 
