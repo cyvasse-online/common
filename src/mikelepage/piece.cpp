@@ -441,6 +441,8 @@ namespace cyvmath
 				{
 					std::unique_ptr<Coordinate> startCoord;
 
+					bool noMovementInterference = false;
+
 					if(m_coord)
 						startCoord = make_unique(m_coord);
 					else
@@ -459,6 +461,8 @@ namespace cyvmath
 						auto piece = m_match.getPieceAt(fortress->getCoord());
 						if(!piece || (piece->getColor() != m_color && piece->getType() != PieceType::MOUNTAINS))
 							ret.insert(fortress->getCoord());
+
+						noMovementInterference = true;
 					}
 
 					assert(startCoord);
@@ -478,17 +482,14 @@ namespace cyvmath
 						{
 							// adjacent tiles of tile
 							m_match.forReachableCoords(tile, {stepsOrthogonal, 1}, [&](Coordinate coord, Piece* piece) {
-								if(!piece || piece->getType() == PieceType::MOUNTAINS || piece->getColor() == !m_color)
+								auto it = tiles.find(coord);
+								if(it == tiles.end()) // if the tile wasn't already checked
 								{
-									auto it = tiles.find(coord);
-									if(it == tiles.end())
-									{
-										if(!piece || piece->getType() == PieceType::MOUNTAINS)
-											tiles.insert(coord);
+									if(noMovementInterference || !piece || piece->getType() == PieceType::MOUNTAINS)
+										tiles.insert(coord);
 
-										if(piece->getType() != PieceType::MOUNTAINS)
-											ret.insert(coord);
-									}
+									if(!piece || (piece->getColor() == !m_color && piece->getType() != PieceType::MOUNTAINS))
+										ret.insert(coord);
 								}
 							});
 						}
