@@ -78,10 +78,10 @@ namespace cyvmath
 			class Coordinate : public cyvmath::Coordinate
 			{
 				private:
-					int_least8_t m_x;
-					int_least8_t m_y;
+					uint_least8_t m_x;
+					uint_least8_t m_y;
 
-					constexpr Coordinate(int_least8_t X, int_least8_t Y)
+					constexpr Coordinate(uint_least8_t X, uint_least8_t Y)
 						: m_x(X)
 						, m_y(Y)
 					{ }
@@ -271,8 +271,12 @@ namespace cyvmath
 						return ret;
 					}
 
-					std::valarray<int_least8_t> toValarray() const
-					{ return {m_x, m_y}; }
+					template<class T = uint_least8_t>
+					std::valarray<T> toValarray() const
+					{
+						static_assert(std::is_integral<T>::value, "T has to be an integral type");
+						return {static_cast<T>(m_x), static_cast<T>(m_y)};
+					}
 
 					/// @{
 					/// Create a Coordinate object from an X and an Y
@@ -285,7 +289,8 @@ namespace cyvmath
 							: nullptr;
 					}
 
-					static std::unique_ptr<Coordinate> create(std::valarray<int_least8_t> a)
+					template<class T>
+					static std::unique_ptr<Coordinate> create(typename std::valarray<T> a)
 					{
 						assert(a.size() == 2);
 						return create(a[0], a[1]);

@@ -60,7 +60,7 @@ namespace cyvmath
 			{
 				assert(step.size() == 2);
 
-				std::valarray<int_least8_t> tmpPos = start.toValarray();
+				auto tmpPos = start.toValarray<int_least8_t>();
 				auto tmpCoord = make_unique<Coordinate>(start);
 
 				for(auto i = 0; i < range.second; i++)
