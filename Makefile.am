@@ -9,12 +9,24 @@ AUTOMAKE_OPTIONS = subdir-objects
 AM_CXXFLAGS = \
 	-std=c++11
 
-noinst_LIBRARIES = libcyvmath.a
+noinst_LIBRARIES = \
+	libcyvdb.a \
+	libcyvmath.a
+
+libcyvdb_a_SOURCES = \
+	include/cyvdb/config.hpp \
+	include/cyvdb/match.hpp \
+	include/cyvdb/match_manager.hpp \
+	include/cyvdb/player.hpp \
+	include/cyvdb/player_manager.hpp \
+	src/cyvdb/match_manager.cpp \
+	src/cyvdb/player_manager.cpp
+
+libcyvdb_a_CPPFLAGS = \
+	-I$(top_srcdir)/include
+
 
 libcyvmath_a_SOURCES = \
-	include/enum_str.hpp \
-	include/make_unique.hpp \
-	include/server_message.hpp \
 	include/cyvmath/coordinate.hpp \
 	include/cyvmath/hexagon.hpp \
 	include/cyvmath/match.hpp \
@@ -31,12 +43,12 @@ libcyvmath_a_SOURCES = \
 	include/cyvmath/mikelepage/player.hpp \
 	include/cyvmath/terrain_type.hpp \
 	include/cyvmath/terrain.hpp \
-	src/players_color.cpp \
-	src/rule_set_create.cpp \
-	src/mikelepage/bearing_table.cpp \
-	src/mikelepage/match.cpp \
-	src/mikelepage/piece.cpp \
-	src/mikelepage/player.cpp
+	src/cyvmath/players_color.cpp \
+	src/cyvmath/rule_set_create.cpp \
+	src/cyvmath/mikelepage/bearing_table.cpp \
+	src/cyvmath/mikelepage/match.cpp \
+	src/cyvmath/mikelepage/piece.cpp \
+	src/cyvmath/mikelepage/player.cpp
 
 libcyvmath_a_CPPFLAGS = \
 	-I$(top_srcdir)/include
