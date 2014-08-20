@@ -14,8 +14,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MATCH_MANAGER_HPP_
-#define _MATCH_MANAGER_HPP_
+#ifndef _CYVDB_MATCH_MANAGER_HPP_
+#define _CYVDB_MATCH_MANAGER_HPP_
 
 #include <tntdb/connection.h>
 
@@ -30,7 +30,6 @@ namespace cyvdb
 
 		public:
 			explicit MatchManager(tntdb::Connection& conn);
-
 			MatchManager();
 
 			// queries
@@ -38,7 +37,9 @@ namespace cyvdb
 
 			// modifications
 			void addMatch(Match&);
+			void addMatch(Match&& match)
+			{ addMatch(match); }
 	};
 }
 
-#endif // _MATCH_MANAGER_HPP_
+#endif // _CYVDB_MATCH_MANAGER_HPP_

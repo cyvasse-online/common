@@ -1,5 +1,5 @@
-#ifndef _DB_CONFIG_HPP_
-#define _DB_CONFIG_HPP_
+#ifndef _CYVDB_CONFIG_HPP_
+#define _CYVDB_CONFIG_HPP_
 
 #include <string>
 
@@ -8,7 +8,7 @@ namespace cyvdb
 	class DBConfig
 	{
 		private:
-			std::string _matchDataUrl;
+			std::string m_matchDataUrl;
 
 			DBConfig()
 			{ }
@@ -19,20 +19,16 @@ namespace cyvdb
 		public:
 			static DBConfig& glob()
 			{
-				static DBConfig _glob;
-				return _glob;
+				static DBConfig s_glob;
+				return s_glob;
 			}
 
 			const std::string& getMatchDataUrl() const
-			{
-				return _matchDataUrl;
-			}
+			{ return m_matchDataUrl; }
 
 			void setMatchDataUrl(const std::string& url)
-			{
-				_matchDataUrl = url;
-			}
+			{ m_matchDataUrl = url; }
 	};
 }
 
-#endif // _DB_CONFIG_HPP_
+#endif // _CYVDB_CONFIG_HPP_

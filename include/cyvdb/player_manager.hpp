@@ -14,8 +14,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _PLAYER_MANAGER_HPP_
-#define _PLAYER_MANAGER_HPP_
+#ifndef _CYVDB_PLAYER_MANAGER_HPP_
+#define _CYVDB_PLAYER_MANAGER_HPP_
 
 #include <tntdb/connection.h>
 
@@ -30,7 +30,6 @@ namespace cyvdb
 
 		public:
 			explicit PlayerManager(tntdb::Connection& conn);
-
 			PlayerManager();
 
 			// queries
@@ -41,4 +40,4 @@ namespace cyvdb
 	};
 }
 
-#endif // _PLAYER_MANAGER_HPP_
+#endif // _CYVDB_PLAYER_MANAGER_HPP_

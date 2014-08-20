@@ -46,6 +46,15 @@ enum class Update
 	RESIGN
 };
 
+enum class GameMode
+{
+	UNDEFINED,
+	DIRECT,
+	RANDOM,
+	BOT,
+	LOCAL
+};
+
 ENUM_STR(Message, ({
 		{Message::UNDEFINED, "undefined"},
 		{Message::REQUEST, "request"},
@@ -74,6 +83,16 @@ ENUM_STR(Update, ({
 		{Update::RESIGN, "resign"}
 	}),
 	Update::UNDEFINED
+)
+
+ENUM_STR(GameMode, ({
+		{GameMode::UNDEFINED, "undefined"},
+		{GameMode::DIRECT, "direct"},
+		{GameMode::RANDOM, "random"},
+		{GameMode::BOT, "bot"},
+		{GameMode::LOCAL, "local"}
+	}),
+	GameMode::UNDEFINED
 )
 
 #endif // _SERVER_MESSAGE_HPP_

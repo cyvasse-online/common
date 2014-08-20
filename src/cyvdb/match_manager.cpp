@@ -47,7 +47,7 @@ namespace cyvdb
 				.set("id", matchID)
 				.selectRow();
 
-			return Match(matchID, StrToRuleSet(row.getString(0)), row.getBool(1));
+			return {matchID, StrToRuleSet(row.getString(0)), row.getBool(1)};
 		}
 		catch(tntdb::NotFound&)
 		{

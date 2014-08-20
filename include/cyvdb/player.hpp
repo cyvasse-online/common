@@ -14,8 +14,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _PLAYER_HPP_
-#define _PLAYER_HPP_
+#ifndef _CYVDB_PLAYER_HPP_
+#define _CYVDB_PLAYER_HPP_
 
 #include <string>
 #include <cyvmath/player.hpp>
@@ -50,4 +50,4 @@ namespace cyvdb
 	};
 }
 
-#endif // _PLAYER_HPP_
+#endif // _CYVDB_PLAYER_HPP_

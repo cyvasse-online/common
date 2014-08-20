@@ -14,8 +14,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MATCH_HPP_
-#define _MATCH_HPP_
+#ifndef _CYVDB_MATCH_HPP_
+#define _CYVDB_MATCH_HPP_
 
 #include <string>
 #include <cyvmath/rule_sets.hpp>
@@ -48,4 +48,4 @@ namespace cyvdb
 	};
 }
 
-#endif // _MATCH_HPP_
+#endif // _CYVDB_MATCH_HPP_
