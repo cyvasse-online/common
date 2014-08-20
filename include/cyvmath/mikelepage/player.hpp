@@ -47,7 +47,7 @@ namespace cyvmath
 					: cyvmath::Player(color)
 					, m_dragonAliveInactive{true}
 					, m_kingTaken{false}
-					, m_match{match}
+					, m_match(match)
 				{ }
 
 				virtual ~Player() = default;
