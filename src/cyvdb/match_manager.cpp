@@ -17,6 +17,7 @@
 #include <cyvdb/match_manager.hpp>
 
 #include <stdexcept>
+#include <thread>
 #include <tntdb/connect.h>
 #include <tntdb/error.h>
 #include <tntdb/statement.h>
@@ -27,6 +28,8 @@ using namespace cyvmath;
 
 namespace cyvdb
 {
+	std::mutex MatchManager::randomMatchesMtx;
+
 	MatchManager::MatchManager(tntdb::Connection& conn)
 		: m_conn(conn)
 	{ }
@@ -40,14 +43,11 @@ namespace cyvdb
 		try
 		{
 			tntdb::Row row =
-				m_conn.prepare(
-					"SELECT rule_set, searching_for_player FROM matches "
-					"WHERE match_id = :id"
-				)
+				m_conn.prepareCached("SELECT rule_set FROM matches WHERE match_id = :id", "getMatch")
 				.set("id", matchID)
 				.selectRow();
 
-			return {matchID, StrToRuleSet(row.getString(0)), row.getBool(1)};
+			return {matchID, StrToRuleSet(row.getString(0))};
 		}
 		catch(tntdb::NotFound&)
 		{
@@ -55,22 +55,83 @@ namespace cyvdb
 		}
 	}
 
-	void MatchManager::addMatch(Match& match)
+	void MatchManager::addMatch(const Match& match)
 	{
 		if(!match.valid())
 			throw std::invalid_argument("The given Match object is invalid");
 
-		int ruleSetID;
+		m_conn.prepareCached(
+			"INSERT INTO matches (match_id, rule_set) "
+			"VALUES (:id, :ruleSetID)",
+			"addMatch" // cache key
+			)
+			.set("id", match.id)
+			.set("ruleSetID", getRuleSetID(match.ruleSet))
+			.execute();
+
+		if(match.random)
+		{
+			m_conn.prepareCached("INSERT INTO random_matches (match_id) VALUES (:id)", "addRandomModeMatch")
+				.set("id", match.id)
+				.execute();
+		}
+	}
+
+	Match MatchManager::getOldestRandomModeMatch(RuleSet ruleSet)
+	{
+		try
+		{
+			std::unique_lock<std::mutex> randomMatchesLock(randomMatchesMtx);
+
+			auto matchID =
+				m_conn.prepareCached(
+					"SELECT match_id FROM random_matches WHERE created = "
+					"(SELECT MIN(created) FROM random_matches "
+					" INNER JOIN matches ON random_matches.match_id = matches.match_id "
+					" WHERE rule_set = :ruleSetID)",
+					"getOldestRandomModeMatch" // cache key
+				)
+				.set("ruleSetID", getRuleSetID(ruleSet))
+				.selectValue()
+				.getString();
+
+			// TODO: change argument workaround to move capture when using C++14
+			std::thread([this, matchID](std::unique_lock<std::mutex> lock) {
+				m_conn.prepareCached("DELETE FROM random_matches WHERE match_id = :id", "removeRandomModeMatch")
+					.set("id", matchID)
+					.execute();
+
+				lock.unlock();
+			}, std::move(randomMatchesLock)).detach();
+
+			return {matchID, ruleSet, true};
+		}
+		catch(tntdb::NotFound&)
+		{
+			return Match();
+		}
+	}
+
+	void MatchManager::removeMatch(const std::string& id)
+	{
+		m_conn.prepareCached("DELETE FROM matches WHERE match_id = :id", "removeMatch")
+			.set("id", id)
+			.execute();
+	}
+
+	int MatchManager::getRuleSetID(RuleSet ruleSet)
+	{
+		std::string ruleSetStr = RuleSetToStr(ruleSet);
 
 		try
 		{
-			ruleSetID = m_conn.prepareCached(
+			return m_conn.prepareCached(
 				"SELECT rule_set_id "
 				"FROM rule_sets "
 				"WHERE rule_set_str = :ruleSetStr",
 				"getRuleSetID" // cache key
 				)
-				.set("ruleSetStr", RuleSetToStr(match.ruleSet))
+				.set("ruleSetStr", ruleSetStr)
 				.selectValue()
 				.getInt();
 		}
@@ -81,20 +142,10 @@ namespace cyvdb
 				"VALUES (:ruleSetStr)",
 				"addRuleSet" // cache key
 				)
-				.set("ruleSetStr", RuleSetToStr(match.ruleSet))
+				.set("ruleSetStr", ruleSetStr)
 				.execute();
 
-			ruleSetID = m_conn.lastInsertId();
+			return m_conn.lastInsertId();
 		}
-
-		m_conn.prepareCached(
-			"INSERT INTO matches (match_id, rule_set, searching_for_player) "
-			"VALUES (:id, :ruleSetID, :searchingForPlayer)",
-			"addMatch" // cache key
-			)
-			.set("id", match.id)
-			.set("ruleSetID", ruleSetID)
-			.set("searchingForPlayer", match.searchingForPlayer)
-			.execute();
 	}
 }

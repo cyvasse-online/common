@@ -29,15 +29,15 @@ namespace cyvdb
 		const std::string id;
 
 		const RuleSet ruleSet;
-		bool searchingForPlayer;
+		bool random;
 
 
 		Match(const std::string& argID = std::string(),
 		      RuleSet argRuleSet = RuleSet::UNDEFINED,
-		      bool argSearchingForPlayer = true)
+		      bool argRandom = true)
 			: id{argID}
 			, ruleSet{argRuleSet}
-			, searchingForPlayer{argSearchingForPlayer}
+			, random{argRandom}
 		{ }
 
 		bool valid() const
