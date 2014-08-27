@@ -40,13 +40,15 @@ namespace cyvdb
 
 			// queries
 			Match getMatch(const std::string& matchID);
+			std::vector<Match> getRandomModeMatches();
 
 			// modifications
 			void addMatch(const Match&);
 
-			Match getOldestRandomModeMatch(RuleSet);
+			//Match getOldestRandomModeMatch(RuleSet);
 
 			void removeMatch(const std::string& id);
+			void removeRandomModeMatch(const std::string& id);
 
 			int getRuleSetID(RuleSet);
 	};

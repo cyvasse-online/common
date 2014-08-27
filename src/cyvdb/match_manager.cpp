@@ -55,6 +55,25 @@ namespace cyvdb
 		}
 	}
 
+	std::vector<Match> MatchManager::getRandomModeMatches()
+	{
+		std::vector<Match> ret;
+
+		for(const auto& row : m_conn.prepareCached(
+			"SELECT matches.match_id, rule_sets.rule_set_str "
+			"FROM random_matches "
+			"INNER JOIN matches ON random_matches.match_id = matches.match_id "
+			"INNER JOIN rule_sets ON matches.rule_set = rule_sets.rule_set_id "
+			"ORDER BY random_matches.created ASC",
+			"getRandomModeMatches" // cache key
+			))
+		{
+			ret.emplace_back(row.getString(0), StrToRuleSet(row.getString(1)), true);
+		}
+
+		return ret;
+	}
+
 	void MatchManager::addMatch(const Match& match)
 	{
 		if(!match.valid())
@@ -77,7 +96,7 @@ namespace cyvdb
 		}
 	}
 
-	Match MatchManager::getOldestRandomModeMatch(RuleSet ruleSet)
+	/*Match MatchManager::getOldestRandomModeMatch(RuleSet ruleSet)
 	{
 		try
 		{
@@ -110,11 +129,18 @@ namespace cyvdb
 		{
 			return Match();
 		}
-	}
+	}*/
 
 	void MatchManager::removeMatch(const std::string& id)
 	{
 		m_conn.prepareCached("DELETE FROM matches WHERE match_id = :id", "removeMatch")
+			.set("id", id)
+			.execute();
+	}
+
+	void MatchManager::removeRandomModeMatch(const std::string& id)
+	{
+		m_conn.prepareCached("DELETE FROM random_matches WHERE match_id = :id", "removeRandomModeMatch")
 			.set("id", id)
 			.execute();
 	}
