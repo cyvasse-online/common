@@ -54,7 +54,7 @@ namespace cyvdb
 		}
 	}
 
-	void PlayerManager::addPlayer(Player& player)
+	void PlayerManager::addPlayer(const Player& player)
 	{
 		if(!player.valid())
 			throw std::invalid_argument("The given Player object is invalid");

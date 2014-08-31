@@ -36,7 +36,7 @@ namespace cyvdb
 			Player getPlayer(const std::string& playerID);
 
 			// modifications
-			void addPlayer(Player&);
+			void addPlayer(const Player&);
 	};
 }
 
