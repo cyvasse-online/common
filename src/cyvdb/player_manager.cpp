@@ -39,9 +39,10 @@ namespace cyvdb
 		try
 		{
 			tntdb::Row row =
-				m_conn.prepare(
+				m_conn.prepareCached(
 					"SELECT match, color FROM players "
-					"WHERE player_id = :id"
+					"WHERE player_id = :id",
+					"getPlayer" // cache key
 				)
 				.set("id", playerID)
 				.selectRow();
@@ -52,6 +53,21 @@ namespace cyvdb
 		{
 			return Player();
 		}
+	}
+
+	std::vector<Player> PlayerManager::getPlayers(const std::string& matchID)
+	{
+		std::vector<Player> ret;
+
+		for(const auto& row : m_conn.prepareCached(
+				"SELECT player_id, color FROM players WHERE match = :id", "getPlayers")
+			.set("id", matchID)
+			)
+		{
+			ret.emplace_back(row.getString(0), matchID, StrToPlayersColor(row.getString(1)));
+		}
+
+		return ret;
 	}
 
 	void PlayerManager::addPlayer(const Player& player)

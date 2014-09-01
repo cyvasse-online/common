@@ -17,6 +17,7 @@
 #ifndef _CYVDB_PLAYER_MANAGER_HPP_
 #define _CYVDB_PLAYER_MANAGER_HPP_
 
+#include <vector>
 #include <tntdb/connection.h>
 
 namespace cyvdb
@@ -34,6 +35,7 @@ namespace cyvdb
 
 			// queries
 			Player getPlayer(const std::string& playerID);
+			std::vector<Player> getPlayers(const std::string& matchID);
 
 			// modifications
 			void addPlayer(const Player&);
