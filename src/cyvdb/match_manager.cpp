@@ -43,7 +43,7 @@ namespace cyvdb
 		try
 		{
 			tntdb::Row row =
-				m_conn.prepareCached("SELECT rule_set FROM matches WHERE match_id = :id", "getMatch")
+				m_conn.prepareCached("SELECT rule_set_id FROM matches WHERE match_id = :id", "getMatch")
 				.set("id", matchID)
 				.selectRow();
 
@@ -63,7 +63,7 @@ namespace cyvdb
 			"SELECT matches.match_id, rule_sets.rule_set_str "
 			"FROM random_matches "
 			"INNER JOIN matches ON random_matches.match_id = matches.match_id "
-			"INNER JOIN rule_sets ON matches.rule_set = rule_sets.rule_set_id "
+			"INNER JOIN rule_sets ON matches.rule_set_id = rule_sets.rule_set_id "
 			"ORDER BY random_matches.created ASC",
 			"getRandomModeMatches" // cache key
 			))
@@ -80,7 +80,7 @@ namespace cyvdb
 			throw std::invalid_argument("The given Match object is invalid");
 
 		m_conn.prepareCached(
-			"INSERT INTO matches (match_id, rule_set) "
+			"INSERT INTO matches (match_id, rule_set_id) "
 			"VALUES (:id, :ruleSetID)",
 			"addMatch" // cache key
 			)
@@ -107,7 +107,7 @@ namespace cyvdb
 					"SELECT match_id FROM random_matches WHERE created = "
 					"(SELECT MIN(created) FROM random_matches "
 					" INNER JOIN matches ON random_matches.match_id = matches.match_id "
-					" WHERE rule_set = :ruleSetID)",
+					" WHERE rule_set_id = :ruleSetID)",
 					"getOldestRandomModeMatch" // cache key
 				)
 				.set("ruleSetID", getRuleSetID(ruleSet))

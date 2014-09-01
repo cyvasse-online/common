@@ -40,7 +40,7 @@ namespace cyvdb
 		{
 			tntdb::Row row =
 				m_conn.prepareCached(
-					"SELECT match, color FROM players "
+					"SELECT match_id, color FROM players "
 					"WHERE player_id = :id",
 					"getPlayer" // cache key
 				)
@@ -60,8 +60,8 @@ namespace cyvdb
 		std::vector<Player> ret;
 
 		for(const auto& row : m_conn.prepareCached(
-				"SELECT player_id, color FROM players WHERE match = :id", "getPlayers")
-			.set("id", matchID)
+				"SELECT player_id, color FROM players WHERE match_id = :matchID", "getPlayers")
+			.set("matchID", matchID)
 			)
 		{
 			ret.emplace_back(row.getString(0), matchID, StrToPlayersColor(row.getString(1)));
@@ -76,12 +76,12 @@ namespace cyvdb
 			throw std::invalid_argument("The given Player object is invalid");
 
 		m_conn.prepareCached(
-			"INSERT INTO players (player_id, match, color) "
-			"VALUES (:id, :match, :color)",
+			"INSERT INTO players (player_id, match_id, color) "
+			"VALUES (:id, :matchID, :color)",
 			"addPlayer" // statement cache key
 			)
 			.set("id", player.id)
-			.set("match", player.matchID)
+			.set("matchID", player.matchID)
 			.set("color", PlayersColorToStr(player.getColor()))
 			.execute();
 	}
