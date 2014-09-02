@@ -17,6 +17,8 @@
 #ifndef _CYVMATH_RULESETS_HPP_
 #define _CYVMATH_RULESETS_HPP_
 
+#include <map>
+#include <vector>
 #include <enum_str.hpp>
 
 namespace cyvmath
@@ -28,11 +30,30 @@ namespace cyvmath
 	};
 
 	ENUM_STR(RuleSet, ({
-			{RuleSet::UNDEFINED, "undefined"},
+			{RuleSet::UNDEFINED,  "undefined"},
 			{RuleSet::MIKELEPAGE, "mikelepage"}
 		}),
 		RuleSet::UNDEFINED
 	)
+
+	inline const std::vector<RuleSet>& allRuleSets()
+	{
+		static const std::vector<RuleSet> data {
+			RuleSet::MIKELEPAGE
+		};
+
+		return data;
+	}
+
+	inline const std::string& RuleSetToPrettyStr(RuleSet r)
+	{
+		static const std::map<RuleSet, std::string> data {
+			{RuleSet::UNDEFINED,  "[undefined]"},
+			{RuleSet::MIKELEPAGE, "Mike Le Page's rule set"}
+		};
+
+		return data.at(r);
+	}
 }
 
 #endif // _CYVMATH_RULESETS_HPP_
