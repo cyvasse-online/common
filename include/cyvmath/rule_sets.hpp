@@ -36,24 +36,8 @@ namespace cyvmath
 		RuleSet::UNDEFINED
 	)
 
-	inline const std::vector<RuleSet>& allRuleSets()
-	{
-		static const std::vector<RuleSet> data {
-			RuleSet::MIKELEPAGE
-		};
-
-		return data;
-	}
-
-	inline const std::string& RuleSetToPrettyStr(RuleSet r)
-	{
-		static const std::map<RuleSet, std::string> data {
-			{RuleSet::UNDEFINED,  "[undefined]"},
-			{RuleSet::MIKELEPAGE, "Mike Le Page's rule set"}
-		};
-
-		return data.at(r);
-	}
+	const std::vector<RuleSet>& allRuleSets();
+	const std::string& RuleSetToPrettyStr(RuleSet);
 }
 
 #endif // _CYVMATH_RULESETS_HPP_

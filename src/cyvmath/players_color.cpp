@@ -38,4 +38,25 @@ namespace cyvmath
 
 		return m_val;
 	}
+
+	const std::vector<PlayersColor> allPlayersColors()
+	{
+		static const std::vector<PlayersColor> data {
+			PlayersColor::WHITE,
+			PlayersColor::BLACK
+		};
+
+		return data;
+	}
+
+	const std::string& PlayersColorToPrettyStr(PlayersColor c)
+	{
+		static const std::map<PlayersColor, std::string> data {
+			{PlayersColor::UNDEFINED, "[undefined]"},
+			{PlayersColor::WHITE,     "White player"},
+			{PlayersColor::BLACK,     "Black player"}
+		};
+
+		return data.at(c);
+	}
 }

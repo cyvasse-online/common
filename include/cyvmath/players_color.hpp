@@ -17,6 +17,7 @@
 #ifndef _CYVMATH_PLAYERS_COLOR_HPP_
 #define _CYVMATH_PLAYERS_COLOR_HPP_
 
+#include <vector>
 #include <enum_str.hpp>
 
 namespace cyvmath
@@ -83,6 +84,9 @@ namespace cyvmath
 		}),
 		PlayersColor::UNDEFINED
 	)
+
+	const std::vector<PlayersColor> allPlayersColors();
+	const std::string& PlayersColorToPrettyStr(PlayersColor);
 }
 
 #endif // _CYVMATH_PLAYERS_COLOR_HPP_
