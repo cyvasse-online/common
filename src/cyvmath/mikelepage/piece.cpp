@@ -408,6 +408,8 @@ namespace cyvmath
 
 		std::set<Coordinate> Piece::getReachableTiles() const
 		{
+			assert(m_coord);
+
 			std::set<Coordinate> ret;
 
 			auto scope = getMovementScope();
@@ -439,40 +441,14 @@ namespace cyvmath
 					break;
 				case MovementType::RANGE:
 				{
-					std::unique_ptr<Coordinate> startCoord;
-
 					bool noMovementInterference = false;
-
-					if(m_coord)
-						startCoord = make_unique(m_coord);
-					else
-					{
-						// this is dependent on the piece being a dragon,
-						// we just assert that the MovementType RANGE and
-						// the PieceType DRAGON imply each another
-
-						auto fortress = m_match.getPlayer(m_color)->getFortress();
-
-						if(!fortress) // fortress ruined, dragon can't be brought out
-							return std::set<Coordinate>();
-
-						startCoord = make_unique<Coordinate>(fortress->getCoord());
-
-						auto piece = m_match.getPieceAt(fortress->getCoord());
-						if(!piece || (piece->getColor() != m_color && piece->getType() != PieceType::MOUNTAINS))
-							ret.insert(fortress->getCoord());
-
-						noMovementInterference = true;
-					}
-
-					assert(startCoord);
 
 					// completely unnecessary, and not perfect
 					// ... but would probably work! :)
 					if(!distance)
 						distance = Hexagon::tileCount / 2;
 
-					std::set<Coordinate> lastTiles {*startCoord};
+					std::set<Coordinate> lastTiles {*m_coord};
 					std::set<Coordinate> tiles;
 
 					// start with i = 1 because the first step is already done with
@@ -509,8 +485,7 @@ namespace cyvmath
 
 		std::set<Coordinate> Piece::getPossibleTargetTiles() const
 		{
-			if(m_type != PieceType::DRAGON)
-				assert(m_coord);
+			assert(m_coord);
 
 			std::set<Coordinate> ret;
 
@@ -561,6 +536,8 @@ namespace cyvmath
 
 		std::set<const Piece*> Piece::getReachableOpponentPieces() const
 		{
+			// this function is intended for flanking, but dragons
+			// as well as mountains obviously don't have part in that
 			assert(m_type != PieceType::DRAGON);
 			assert(m_type != PieceType::MOUNTAINS);
 
@@ -658,9 +635,6 @@ namespace cyvmath
 				selfSharedPtr = pieceIt->second;
 
 				player.getInactivePieces().erase(pieceIt);
-
-				if(m_type == PieceType::DRAGON)
-					player.dragonBroughtOut();
 			}
 
 			assert(selfSharedPtr.get() == this);

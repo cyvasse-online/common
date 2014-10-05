@@ -33,7 +33,6 @@ namespace cyvmath
 		class Player : public cyvmath::Player
 		{
 			protected:
-				bool m_dragonAliveInactive;
 				bool m_kingTaken;
 
 				Match& m_match;
@@ -45,15 +44,11 @@ namespace cyvmath
 			public:
 				Player(PlayersColor color, Match& match)
 					: cyvmath::Player(color)
-					, m_dragonAliveInactive{true}
 					, m_kingTaken{false}
 					, m_match(match)
 				{ }
 
 				virtual ~Player() = default;
-
-				bool dragonAliveInactive() const
-				{ return m_dragonAliveInactive; }
 
 				void kingTaken()
 				{ m_kingTaken = true; }
@@ -69,9 +64,6 @@ namespace cyvmath
 				virtual bool setupComplete() override;
 
 				void onTurnEnd();
-
-				void dragonBroughtOut()
-				{ m_dragonAliveInactive = false; }
 
 				virtual void removeFortress()
 				{ m_fortress.reset(); }

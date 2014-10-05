@@ -77,9 +77,9 @@ namespace cyvmath
 				std::set<const Piece*> getReachableOpponentPieces(const MovementRange&) const;
 
 			public:
-				Piece(PlayersColor color, PieceType type, std::unique_ptr<Coordinate> coord, Match& match)
+				Piece(PlayersColor color, PieceType type, Coordinate coord, Match& match)
 					: cyvmath::Piece(color, type)
-					, m_coord(std::move(coord))
+					, m_coord(make_unique<Coordinate>(coord))
 					, m_match(match)
 				{ }
 

@@ -10,21 +10,7 @@ AM_CXXFLAGS = \
 	-std=c++11
 
 noinst_LIBRARIES = \
-	libcyvdb.a \
 	libcyvmath.a
-
-libcyvdb_a_SOURCES = \
-	include/cyvdb/config.hpp \
-	include/cyvdb/match.hpp \
-	include/cyvdb/match_manager.hpp \
-	include/cyvdb/player.hpp \
-	include/cyvdb/player_manager.hpp \
-	src/cyvdb/match_manager.cpp \
-	src/cyvdb/player_manager.cpp
-
-libcyvdb_a_CPPFLAGS = \
-	-I$(top_srcdir)/include
-
 
 libcyvmath_a_SOURCES = \
 	include/cyvmath/coordinate.hpp \
@@ -54,3 +40,23 @@ libcyvmath_a_SOURCES = \
 
 libcyvmath_a_CPPFLAGS = \
 	-I$(top_srcdir)/include
+
+
+if BUILD_CYVDB
+
+noinst_LIBRARIES += \
+    libcyvdb.a
+
+libcyvdb_a_SOURCES = \
+    include/cyvdb/config.hpp \
+    include/cyvdb/match.hpp \
+    include/cyvdb/match_manager.hpp \
+    include/cyvdb/player.hpp \
+    include/cyvdb/player_manager.hpp \
+    src/cyvdb/match_manager.cpp \
+    src/cyvdb/player_manager.cpp
+
+libcyvdb_a_CPPFLAGS = \
+    -I$(top_srcdir)/include
+
+endif
