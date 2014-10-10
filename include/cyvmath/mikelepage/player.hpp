@@ -21,13 +21,13 @@
 #include <memory>
 #include <cyvmath/player.hpp>
 
+#include "fortress.hpp"
 #include "piece.hpp"
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
-		class Fortress;
 		class Match;
 
 		class Player : public cyvmath::Player
@@ -39,34 +39,28 @@ namespace cyvmath
 
 				TypePieceMap m_inactivePieces;
 
-				std::shared_ptr<Fortress> m_fortress;
+				std::unique_ptr<Fortress> m_fortress;
 
 			public:
-				Player(PlayersColor color, Match& match)
-					: cyvmath::Player(color)
-					, m_kingTaken{false}
-					, m_match(match)
-				{ }
+				Player(PlayersColor, Match&, std::unique_ptr<Fortress>);
 
 				virtual ~Player() = default;
 
-				void kingTaken()
-				{ m_kingTaken = true; }
+				bool kingTaken()
+				{ return m_kingTaken; }
+
+				void kingTaken(bool value)
+				{ m_kingTaken = value; }
 
 				TypePieceMap& getInactivePieces()
 				{ return m_inactivePieces; }
 
-				std::shared_ptr<Fortress> getFortress()
-				{ return m_fortress; }
-
-				void setFortress(std::shared_ptr<Fortress>);
+				Fortress& getFortress()
+				{ return *m_fortress; }
 
 				virtual bool setupComplete() override;
 
 				void onTurnEnd();
-
-				virtual void removeFortress()
-				{ m_fortress.reset(); }
 		};
 
 		typedef std::array<std::shared_ptr<Player>, 2> PlayerArray;

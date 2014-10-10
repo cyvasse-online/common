@@ -30,10 +30,16 @@ namespace cyvmath
 				const PlayersColor m_color;
 				Coordinate m_coord;
 
+				bool m_ruined;
+
 			public:
+				const bool& isRuined;
+
 				Fortress(PlayersColor color, Coordinate coord)
-					: m_color(color)
-					, m_coord(coord)
+					: m_color{color}
+					, m_coord{coord}
+					, m_ruined{false}
+					, isRuined{m_ruined}
 				{ }
 
 				PlayersColor getColor()
@@ -44,6 +50,9 @@ namespace cyvmath
 
 				virtual void setCoord(Coordinate coord)
 				{ m_coord = coord; }
+
+				virtual void ruined()
+				{ m_ruined = true; }
 		};
 	}
 }

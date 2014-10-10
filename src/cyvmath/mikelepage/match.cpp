@@ -22,24 +22,12 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
-		std::set<Coordinate> Match::getHexagonMovementCenters()
+		std::set<Coordinate> Match::getHorseMovementCenters()
 		{
-			std::set<Coordinate> ret;
-
-			for(auto player : m_players)
-			{
-				auto fortress = player->getFortress();
-
-				if(fortress)
-					ret.insert(fortress->getCoord());
-			}
-
-			std::set<Coordinate>& replacementCenters = m_fortressReplaceCorners;
-			// TODO: would make sense to re-add somewhen
-			//assert(ret.size() + replacementCenters.size() == 2);
-			ret.insert(replacementCenters.begin(), replacementCenters.end());
-
-			return ret;
+			return {
+				m_players[PlayersColor::WHITE]->getFortress().getCoord(),
+				m_players[PlayersColor::BLACK]->getFortress().getCoord()
+			};
 		}
 
 		std::shared_ptr<Piece> Match::getPieceAt(Coordinate coord)
@@ -117,7 +105,7 @@ namespace cyvmath
 			player->getInactivePieces().emplace(piece->getType(), piece);
 
 			if(piece->getType() == PieceType::KING)
-				player->kingTaken();
+				player->kingTaken(true);
 		}
 	}
 }

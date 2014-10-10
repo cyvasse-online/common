@@ -17,13 +17,21 @@
 #include <cyvmath/mikelepage/player.hpp>
 
 #include <cassert>
-#include <cyvmath/mikelepage/fortress.hpp>
 #include <cyvmath/mikelepage/match.hpp>
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
+		Player::Player(PlayersColor color, Match& match, std::unique_ptr<Fortress> fortress)
+			: cyvmath::Player(color)
+			, m_kingTaken{false}
+			, m_match{match}
+			, m_fortress(std::move(fortress))
+		{
+			assert(m_fortress);
+		}
+
 		bool Player::setupComplete()
 		{
 			auto outsideOwnSide = (m_color == PlayersColor::WHITE)
@@ -41,32 +49,17 @@ namespace cyvmath
 
 		void Player::onTurnEnd()
 		{
-			if(m_fortress)
+			if(m_kingTaken && !m_fortress->isRuined)
 			{
 				auto piece = m_match.getPieceAt(m_fortress->getCoord());
-				if(piece)
-				{
-					if(piece->getColor() != m_color)
-						removeFortress();
-					else if(m_kingTaken && piece->getBaseTier() == 3)
-					{
-						piece->promoteTo(PieceType::KING);
-						m_kingTaken = false;
-					}
-				}
+				if(piece && piece->getBaseTier() == 3)
+					piece->promoteTo(PieceType::KING);
 			}
 
 			if(m_kingTaken)
 				m_match.endGame(!m_color);
 
 			m_match.getBearingTable().update();
-		}
-
-		void Player::setFortress(std::shared_ptr<Fortress> fortress)
-		{
-			assert(fortress);
-
-			m_fortress = fortress;
 		}
 	}
 }

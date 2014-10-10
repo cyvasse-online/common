@@ -160,7 +160,7 @@ namespace cyvmath
 
 			auto fortress = m_match.getPlayer(m_color)->getFortress();
 
-			if(fortress && fortress->getCoord() == *m_coord)
+			if(!fortress.isRuined && fortress.getCoord() == *m_coord)
 				return ++baseTier;
 
 			auto terrainIt = m_match.getTerrain().find(*m_coord);
@@ -257,7 +257,7 @@ namespace cyvmath
 						default: break; // disable compiler warning about unhandled enum value
 					}
 					break;
-				// TODO: add extra case for RANGE and maybe be HEXAGONAL
+				// TODO: add extra case for RANGE and maybe HEXAGONAL
 				default:
 					for(const Coordinate it : getReachableTiles())
 						if(it == target)
@@ -310,7 +310,7 @@ namespace cyvmath
 
 			TileStateMap ret;
 
-			for(Coordinate centerCoord : m_match.getHexagonMovementCenters())
+			for(Coordinate centerCoord : m_match.getHorseMovementCenters())
 			{
 				TileStateVec tmpTileVec;
 
@@ -441,8 +441,6 @@ namespace cyvmath
 					break;
 				case MovementType::RANGE:
 				{
-					bool noMovementInterference = false;
-
 					// completely unnecessary, and not perfect
 					// ... but would probably work! :)
 					if(!distance)
@@ -461,7 +459,7 @@ namespace cyvmath
 								auto it = tiles.find(coord);
 								if(it == tiles.end()) // if the tile wasn't already checked
 								{
-									if(noMovementInterference || !piece || piece->getType() == PieceType::MOUNTAINS)
+									if(!piece || piece->getType() == PieceType::MOUNTAINS)
 										tiles.insert(coord);
 
 									if(!piece || (piece->getColor() == !m_color && piece->getType() != PieceType::MOUNTAINS))
@@ -605,7 +603,7 @@ namespace cyvmath
 				if(setup)
 				{
 					if(m_type == PieceType::KING)
-						player.getFortress()->setCoord(target);
+						player.getFortress().setCoord(target);
 					else
 					{
 						TerrainType tType = getSetupTerrain();
@@ -651,6 +649,13 @@ namespace cyvmath
 			auto res = activePieces.emplace(target, selfSharedPtr);
 			assert(res.second);
 
+			if(!setup)
+			{
+				auto& opFortress = m_match.getPlayer(!m_color)->getFortress();
+				if(!opFortress.isRuined && target == opFortress.getCoord())
+					opFortress.ruined();
+			}
+
 			return true;
 		}
 
@@ -662,6 +667,14 @@ namespace cyvmath
 
 			m_match.removeFromBoard(selfSharedPtr);
 			m_match.addToBoard(type, m_color, *m_coord);
+
+			if(type == PieceType::KING)
+			{
+				auto player = m_match.getPlayer(m_color);
+
+				assert(player->kingTaken());
+				player->kingTaken(false);
+			}
 		}
 	}
 }

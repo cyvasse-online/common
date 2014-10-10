@@ -40,10 +40,6 @@ namespace cyvmath
 
 				BearingTable m_bearingTable;
 
-				// alternative centers for horse movement;
-				// one replacement coord per ruined fortress
-				std::set<Coordinate> m_fortressReplaceCorners;
-
 			public:
 				Match()
 					: cyvmath::Match(PlayersColor::WHITE)
@@ -67,7 +63,7 @@ namespace cyvmath
 				BearingTable& getBearingTable()
 				{ return m_bearingTable; }
 
-				std::set<Coordinate> getHexagonMovementCenters();
+				std::set<Coordinate> getHorseMovementCenters();
 
 				std::shared_ptr<Piece> getPieceAt(Coordinate);
 
