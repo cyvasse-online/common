@@ -18,6 +18,7 @@
 
 #include <stdexcept>
 #include <make_unique.hpp>
+#include <cyvmath/mikelepage/fortress.hpp>
 #include <cyvmath/mikelepage/match.hpp>
 #include <cyvmath/mikelepage/player.hpp>
 
@@ -40,7 +41,9 @@ namespace cyvmath
 		{
 			auto& m = dynamic_cast<mikelepage::Match&>(match);
 
-			return make_unique<mikelepage::Player>(color, m);
+			// fortress start coordinate doesn't matter on the server
+			return make_unique<mikelepage::Player>(color, m,
+				make_unique<mikelepage::Fortress>(color, *mikelepage::Coordinate::create(5,5)));
 		}
 		else throw std::runtime_error("Match object not recognized");
 	}
