@@ -59,6 +59,10 @@ namespace cyvmath
 			if(m_kingTaken)
 				m_match.endGame(!m_color);
 
+			auto op = m_match.getPlayer(!m_color);
+			if(op->kingTaken() && op->getFortress().isRuined)
+				m_match.endGame(m_color);
+
 			m_match.getBearingTable().update();
 		}
 	}
