@@ -6,9 +6,6 @@ SUBDIRS = . $(UNIT_TESTS_DIR)
 
 AUTOMAKE_OPTIONS = subdir-objects
 
-AM_CXXFLAGS = \
-	-std=c++11
-
 noinst_LIBRARIES = \
 	libcyvmath.a
 

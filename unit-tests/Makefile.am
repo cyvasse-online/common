@@ -9,7 +9,6 @@ cyvmath_tests_CPPFLAGS = \
 	-I $(top_srcdir)/include
 
 cyvmath_tests_CXXFLAGS = \
-	-std=c++11 \
 	$(CPPUNIT_CFLAGS)
 
 cyvmath_tests_LDFLAGS = \
