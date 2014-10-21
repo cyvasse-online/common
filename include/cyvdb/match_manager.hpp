@@ -40,7 +40,7 @@ namespace cyvdb
 
 			// queries
 			Match getMatch(const std::string& matchID);
-			std::vector<Match> getRandomModeMatches();
+			std::vector<Match> getFreeRandomModeMatches();
 
 			// modifications
 			void addMatch(const Match&);

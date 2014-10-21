@@ -55,17 +55,20 @@ namespace cyvdb
 		}
 	}
 
-	std::vector<Match> MatchManager::getRandomModeMatches()
+	std::vector<Match> MatchManager::getFreeRandomModeMatches()
 	{
 		std::vector<Match> ret;
 
 		for(const auto& row : m_conn.prepareCached(
-			"SELECT matches.match_id, rule_sets.rule_set_str "
+			"SELECT matches.match_id, rule_sets.rule_set_str, COUNT(matches.match_id) "
 			"FROM random_matches "
 			"INNER JOIN matches ON random_matches.match_id = matches.match_id "
 			"INNER JOIN rule_sets ON matches.rule_set_id = rule_sets.rule_set_id "
+			"INNER JOIN players ON matches.match_id = players.match_id "
+			"GROUP BY matches.match_id "
+			"HAVING COUNT(*) = 1 "
 			"ORDER BY random_matches.created ASC",
-			"getRandomModeMatches" // cache key
+			"getFreeRandomModeMatches" // cache key
 			))
 		{
 			ret.emplace_back(row.getString(0), StrToRuleSet(row.getString(1)), true);
