@@ -667,6 +667,7 @@ namespace cyvmath
 
 			m_match.removeFromBoard(selfSharedPtr);
 			m_match.addToBoard(type, m_color, *m_coord);
+			m_match.getBearingTable().update();
 
 			if(type == PieceType::KING)
 			{
