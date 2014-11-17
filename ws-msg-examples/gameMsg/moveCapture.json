@@ -1,0 +1,19 @@
+{
+	"msgType": "gameMsg",
+	"msgID": 5,
+	"msgData": {
+		"playerID": "OQI15ZqM",
+		"action": "moveCapture",
+		"param": {
+			"atkPiece": {
+				"type": "dragon",
+				"oldPos": "G4",
+				"newPos": "E8"
+			},
+			"defPiece": {
+				"type": "spears",
+				"pos": "E8"
+			}
+		}
+	}
+}

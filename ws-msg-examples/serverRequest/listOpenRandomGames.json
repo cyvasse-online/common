@@ -1,0 +1,13 @@
+{
+	"msgType": "serverRequest",
+	"msgID": 2,
+    "requestData": {
+        "action": "listOpenRandomGames",
+        "param": {
+			"filters": [
+				{ "property": "ruleSet", "values": [ "mikelepage", "ninetile" ] },
+				{ "property": "playAs", "values": [ "black" ] }
+			]
+        }
+    }
+}

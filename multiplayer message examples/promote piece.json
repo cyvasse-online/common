@@ -1,8 +1,0 @@
-{
-	"messageType": "game update",
-	"update": "promote piece",
-	"data": {
-		"from": "spears",
-		"to": "elephant"
-	}
-}

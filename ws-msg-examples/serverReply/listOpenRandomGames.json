@@ -1,0 +1,22 @@
+{
+	"msgType": "serverReply",
+	"msgID": 2,
+	"replyData": {
+		"openRandomGames": [
+			{
+				"id": "NHVy",
+				"ruleSet": "mikelepage",
+				"freeColor": "black",
+				"extraRules": [ "seaPorts" ],
+				"waitingPlayer": "Test user X"
+			},
+			{
+				"id": "vnUM",
+				"ruleSet": "ninetile",
+				"freeColor": "black",
+				"extraRules": [ ],
+				"waitingPlayer": "jPlatte"
+			}
+		]
+	}
+}

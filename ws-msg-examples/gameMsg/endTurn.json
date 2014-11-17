@@ -1,0 +1,8 @@
+{
+	"msgType": "gameMsg",
+	"msgID": 5,
+	"msgData": {
+        "playerID": "OQI15ZqM",
+        "action": "endTurn"
+    }
+}

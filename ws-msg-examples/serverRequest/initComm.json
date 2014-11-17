@@ -1,0 +1,10 @@
+{
+	"msgType": "serverRequest",
+	"msgID": 1,
+	"requestData": {
+		"action": "initComm",
+		"param": {
+			"protocolVersion": "1.0"
+		}
+	}
+}

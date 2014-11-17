@@ -1,0 +1,14 @@
+{
+	"msgType": "serverReply",
+	"msgID": 2,
+	"replyData": {
+		"runningPublicGames": [
+			{
+				"id": "NHVy",
+				"ruleSet": "mikelepage",
+				"extraRules": [ "seaPorts" ],
+				"title": "Test user X vs. Test user Y"
+			}
+		]
+	}
+}

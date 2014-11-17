@@ -1,0 +1,5 @@
+{
+    "msgType": "gameMsgErr",
+    "msgID": 3,
+    "error": "invalidOpeningArray"
+}

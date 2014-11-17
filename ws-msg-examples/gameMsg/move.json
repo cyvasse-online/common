@@ -1,0 +1,13 @@
+{
+	"msgType": "gameMsg",
+	"msgID": 5,
+	"msgData": {
+		"playerID": "OcanC0N3",
+		"action": "move",
+		"param": {
+			"pieceType": "king",
+			"oldPos": "B10",
+			"newPos": "A11"
+		}
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"msgType": "serverReply",
+	"msgID": 2,
+	"replyData": {
+		"success": false,
+		"error": "gameFull"
+	}
+}

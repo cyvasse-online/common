@@ -1,0 +1,12 @@
+{
+	"msgType": "serverRequest",
+	"msgID": 2,
+    "requestData": {
+        "action": "listRunningPublicGames",
+        "param": {
+			"filters": [
+				{ "property": "ruleSet", "values": [ "mikelepage" ] }
+			]
+        }
+    }
+}

@@ -1,0 +1,10 @@
+{
+	"msgType": "serverReply",
+	"msgID": 2,
+	"replyData": {
+		"success": true,
+		"color": "black",
+		"playerID": "OcanC0N3",
+		"ruleSet": "mikelepage"
+	}
+}

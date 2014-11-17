@@ -1,9 +1,0 @@
-{
-	"messageType": "game update",
-	"update": "move piece",
-	"data": {
-		"piece type": "spears",
-		"old position": "F4",
-		"new position": "H6"
-	}
-}

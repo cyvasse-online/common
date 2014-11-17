@@ -1,0 +1,10 @@
+{
+	"msgType": "serverRequest",
+	"msgID": 2,
+	"requestData": {
+		"action": "joinGame",
+		"param": {
+			"matchID": "URJS"
+		}
+	}
+}

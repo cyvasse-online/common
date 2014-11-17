@@ -1,0 +1,52 @@
+{
+	"msgType": "gameMsg",
+	"msgID": 3,
+	"msgData": {
+		"playerID": "OcanC0N3",
+		"action": "setOpeningArray",
+		"param": {
+			"piecePosition": [
+				{
+					"type": "mountains",
+					"positions": [ "D3", "E4", "F5", "G5", "I5", "K4" ]
+				},
+				{
+					"type": "rabble",
+					"positions": [ "G2", "G3", "H1", "H3", "I1", "I2" ]
+				},
+				{
+					"type": "crossbows",
+					"positions": [ "F1", "J1" ]
+				},
+				{
+					"type": "spears",
+					"positions": [ "F4", "K3" ]
+				},
+				{
+					"type": "light horse",
+					"positions": [ "C4", "D5" ]
+				},
+				{
+					"type": "trebuchet",
+					"positions": [ "F2", "J3"]
+				},
+				{
+					"type": "elephant",
+					"positions": [ "F3", "I3" ]
+				},
+				{
+					"type": "heavy horse",
+					"positions": [ "C5", "J5" ]
+				},
+				{
+					"type": "dragon",
+					"positions": [ "G4" ]
+				},
+				{
+					"type": "king",
+					"positions": [ "H2" ]
+				}
+			]
+		}
+	}
+}

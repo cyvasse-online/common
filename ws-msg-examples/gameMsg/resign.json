@@ -1,0 +1,8 @@
+{
+	"msgType": "gameMsg",
+	"msgID": 25,
+	"msgData": {
+		"playerID": "OcanC0N3",
+		"action": "resign"
+	}
+}
