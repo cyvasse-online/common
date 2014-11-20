@@ -1,6 +1,6 @@
 {
 	"msgType": "gameMsg",
-	"msgID": 3,
+	"msgID": 4,
 	"msgData": {
 		"playerID": "OcanC0N3",
 		"action": "setOpeningArray",

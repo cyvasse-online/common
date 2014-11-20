@@ -5,6 +5,7 @@
 		"success": true,
 		"color": "black",
 		"playerID": "OcanC0N3",
-		"ruleSet": "mikelepage"
+		"ruleSet": "mikelepage",
+		"extraRules": [ ]
 	}
 }

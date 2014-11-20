@@ -1,6 +1,6 @@
 {
 	"msgType": "gameMsg",
-	"msgID": 4,
+	"msgID": 5,
 	"msgData": {
 		"playerID": "OQI15ZqM",
 		"action": "setIsReady",

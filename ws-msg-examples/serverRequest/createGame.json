@@ -1,11 +1,14 @@
 {
 	"msgType": "serverRequest",
-	"msgID": 2,
+	"msgID": 3,
 	"requestData": {
 		"action": "createGame",
 		"param": {
 			"ruleSet": "mikelepage",
-			"color": "white"
+			"color": "white",
+			"random": true,
+			"public": false,
+			"extraRules": [ "seaPorts" ]
 		}
 	}
 }

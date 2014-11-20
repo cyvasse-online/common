@@ -2,7 +2,6 @@
 	"msgType": "serverReply",
 	"msgID": 2,
 	"replyData": {
-		"success": false,
-		"error": "serverRestartScheduled"
+		"success": true
 	}
 }

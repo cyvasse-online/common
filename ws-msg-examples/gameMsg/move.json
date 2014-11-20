@@ -1,6 +1,6 @@
 {
 	"msgType": "gameMsg",
-	"msgID": 5,
+	"msgID": 6,
 	"msgData": {
 		"playerID": "OcanC0N3",
 		"action": "move",

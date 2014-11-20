@@ -1,6 +1,6 @@
 {
 	"msgType": "serverRequest",
-	"msgID": 2,
+	"msgID": 3,
 	"requestData": {
 		"action": "joinGame",
 		"param": {

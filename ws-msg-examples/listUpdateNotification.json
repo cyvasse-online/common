@@ -1,8 +1,9 @@
 {
-	"msgType": "serverReply",
-	"msgID": 2,
+	"msgType": "listUpdateNotification",
+	"msgID": 3,
 	"replyData": {
-		"openRandomGames": [
+		"listName": "openRandomGames",
+		"listContent": [
 			{
 				"id": "NHVy",
 				"ruleSet": "mikelepage",
@@ -13,7 +14,7 @@
 			{
 				"id": "vnUM",
 				"ruleSet": "ninetile",
-				"freeColor": "black",
+				"freeColor": "white",
 				"extraRules": [ ],
 				"waitingPlayer": "jPlatte"
 			}

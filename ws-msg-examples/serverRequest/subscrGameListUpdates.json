@@ -1,0 +1,11 @@
+{
+	"msgType": "serverRequest",
+	"msgID": 2,
+    "requestData": {
+        "action": "subscrGameListUpdates",
+        "param": {
+			"ruleSet": "mikelepage",
+			"lists": [ "openRandomGames", "runningPublicGames" ]
+        }
+    }
+}
