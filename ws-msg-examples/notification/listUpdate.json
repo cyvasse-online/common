@@ -1,7 +1,8 @@
 {
-	"msgType": "listUpdateNotification",
+	"msgType": "notification",
 	"msgID": 3,
-	"replyData": {
+	"notificationType": "listUpdate",
+	"notificationData": {
 		"listName": "openRandomGames",
 		"listContent": [
 			{

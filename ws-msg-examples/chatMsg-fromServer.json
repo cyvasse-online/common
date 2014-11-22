@@ -2,8 +2,7 @@
 	"msgType": "chatMsg",
 	"msgID": 6,
 	"msgData": {
-        "senderType": "player",
-		"id": "OQI15ZqM",
+        "user": "jPlatte",
 		"content": "Hey!"
 	}
 }

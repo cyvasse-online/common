@@ -1,0 +1,11 @@
+{
+	"msgType": "chatMsg",
+	"msgID": 6,
+	"msgData": {
+		"userInfo": {
+			"role": "player",
+			"id": "OQI15ZqM"
+		},
+		"content": "Hey!"
+	}
+}

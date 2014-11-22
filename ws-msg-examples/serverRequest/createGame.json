@@ -8,7 +8,12 @@
 			"color": "white",
 			"random": true,
 			"public": false,
-			"extraRules": [ "seaPorts" ]
+			"extraRules": [ "seaPorts" ],
+			"userInfo": {
+				"registered": true,
+				"userName": "jPlatte",
+				"sessionToken": "Tr1kGqZV"
+			}
 		}
 	}
 }

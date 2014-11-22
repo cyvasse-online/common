@@ -1,0 +1,10 @@
+{
+	"msgType": "notification",
+	"msgID": 3,
+	"notificationType": "userJoined",
+	"notificationData": {
+		"screenName": "mikelepage",
+		"registered": true,
+		"role": "spectator"
+	}
+}
