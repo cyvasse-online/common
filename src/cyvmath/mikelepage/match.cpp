@@ -25,8 +25,8 @@ namespace cyvmath
 		std::set<Coordinate> Match::getHorseMovementCenters()
 		{
 			return {
-				m_players[PlayersColor::WHITE]->getFortress().getCoord(),
-				m_players[PlayersColor::BLACK]->getFortress().getCoord()
+				getPlayer(PlayersColor::WHITE).getFortress().getCoord(),
+				getPlayer(PlayersColor::BLACK).getFortress().getCoord()
 			};
 		}
 
@@ -80,7 +80,7 @@ namespace cyvmath
 			assert(type != PieceType::UNDEFINED);
 			assert(color != PlayersColor::UNDEFINED);
 
-			auto& inactivePieces = m_players.at(color)->getInactivePieces();
+			auto& inactivePieces = getPlayer(color).getInactivePieces();
 
 			auto it = inactivePieces.find(type);
 			assert(it != inactivePieces.end());
@@ -100,12 +100,12 @@ namespace cyvmath
 			assert(it != m_activePieces.end());
 			m_activePieces.erase(it);
 
-			auto& player = m_players.at(piece->getColor());
+			auto& player = getPlayer(piece->getColor());
 
-			player->getInactivePieces().emplace(piece->getType(), piece);
+			player.getInactivePieces().emplace(piece->getType(), piece);
 
 			if(piece->getType() == PieceType::KING)
-				player->kingTaken(true);
+				player.kingTaken(true);
 		}
 	}
 }

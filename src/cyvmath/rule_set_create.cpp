@@ -24,27 +24,27 @@
 
 namespace cyvmath
 {
-	std::unique_ptr<Match> createMatch(RuleSet ruleSet)
+	std::unique_ptr<Match> createMatch(RuleSet ruleSet, const std::string& id, bool random, bool _public)
 	{
 		switch(ruleSet)
 		{
 			case RuleSet::MIKELEPAGE:
-				return make_unique<mikelepage::Match>();
+				return make_unique<mikelepage::Match>(id, random, _public);
 			default:
 				throw std::invalid_argument("invalid rule set");
 		}
 	}
 
-	std::unique_ptr<Player> createPlayer(PlayersColor color, Match& match)
+	std::unique_ptr<Player> createPlayer(Match& match, PlayersColor color, const std::string& id)
 	{
-		if(dynamic_cast<mikelepage::Match*>(&match) != nullptr)
+		switch(match.getRuleSet())
 		{
-			auto& m = dynamic_cast<mikelepage::Match&>(match);
-
-			// fortress start coordinate doesn't matter on the server
-			return make_unique<mikelepage::Player>(color, m,
-				make_unique<mikelepage::Fortress>(color, *mikelepage::Coordinate::create(5,5)));
+			case RuleSet::MIKELEPAGE:
+				// fortress start coordinate doesn't matter on the server
+				return make_unique<mikelepage::Player>(dynamic_cast<mikelepage::Match&>(match), color,
+					make_unique<mikelepage::Fortress>(color, *mikelepage::Coordinate::create(5,5)), id);
+			default:
+				throw std::runtime_error("Match object not recognized");
 		}
-		else throw std::runtime_error("Match object not recognized");
 	}
 }

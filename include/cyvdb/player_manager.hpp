@@ -17,28 +17,36 @@
 #ifndef _CYVDB_PLAYER_MANAGER_HPP_
 #define _CYVDB_PLAYER_MANAGER_HPP_
 
-#include <vector>
+#include <array>
+#include <memory>
 #include <tntdb/connection.h>
+#include <cyvmath/match.hpp>
+#include <cyvmath/player.hpp>
 
 namespace cyvdb
 {
-	class Player;
-
 	class PlayerManager
 	{
+		public:
+			typedef std::array<std::unique_ptr<cyvmath::Player>, 2> playerArray;
+
 		private:
 			tntdb::Connection m_conn;
+
+			static bool playerValid(const cyvmath::Player&);
+
+			int getPlayersColorID(cyvmath::PlayersColor color);
 
 		public:
 			explicit PlayerManager(tntdb::Connection& conn);
 			PlayerManager();
 
 			// queries
-			Player getPlayer(const std::string& playerID);
-			std::vector<Player> getPlayers(const std::string& matchID);
+			//cyvmath::Player getPlayer(const std::string& playerID);
+			playerArray getPlayers(cyvmath::Match&);
 
 			// modifications
-			void addPlayer(const Player&);
+			void addPlayer(std::unique_ptr<cyvmath::Player>);
 	};
 }
 

@@ -46,9 +46,7 @@ noinst_LIBRARIES += \
 
 libcyvdb_a_SOURCES = \
     include/cyvdb/config.hpp \
-    include/cyvdb/match.hpp \
     include/cyvdb/match_manager.hpp \
-    include/cyvdb/player.hpp \
     include/cyvdb/player_manager.hpp \
     src/cyvdb/match_manager.cpp \
     src/cyvdb/player_manager.cpp

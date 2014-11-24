@@ -26,8 +26,13 @@ namespace cyvmath
 		protected:
 			const PlayersColor m_color;
 
-			Player(PlayersColor color)
+			const std::string m_id;
+			const std::string m_matchID;
+
+			Player(PlayersColor color, const std::string& id, const std::string& matchID)
 				: m_color(color)
+				, m_id(id)
+				, m_matchID(matchID)
 			{ }
 
 		public:
@@ -36,7 +41,13 @@ namespace cyvmath
 			PlayersColor getColor() const
 			{ return m_color; }
 
-			virtual bool setupComplete() = 0;
+			const std::string& getID() const
+			{ return m_id; }
+
+			const std::string& getMatchID() const
+			{ return m_matchID; }
+
+			virtual bool setupComplete() const = 0;
 	};
 }
 

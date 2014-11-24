@@ -17,7 +17,6 @@
 #ifndef _CYVMATH_MIKELEPAGE_PLAYER_HPP_
 #define _CYVMATH_MIKELEPAGE_PLAYER_HPP_
 
-#include <array>
 #include <memory>
 #include <cyvmath/player.hpp>
 
@@ -42,11 +41,11 @@ namespace cyvmath
 				std::unique_ptr<Fortress> m_fortress;
 
 			public:
-				Player(PlayersColor, Match&, std::unique_ptr<Fortress>);
+				Player(Match&, PlayersColor, std::unique_ptr<Fortress>, const std::string& id = {});
 
 				virtual ~Player() = default;
 
-				bool kingTaken()
+				bool kingTaken() const
 				{ return m_kingTaken; }
 
 				void kingTaken(bool value)
@@ -58,12 +57,13 @@ namespace cyvmath
 				Fortress& getFortress()
 				{ return *m_fortress; }
 
-				virtual bool setupComplete() override;
+				virtual bool setupComplete() const override;
 
 				void onTurnEnd();
-		};
 
-		typedef std::array<std::shared_ptr<Player>, 2> PlayerArray;
+				void setFortress(std::unique_ptr<Fortress> fortress)
+				{ m_fortress = std::move(fortress); }
+		};
 	}
 }
 

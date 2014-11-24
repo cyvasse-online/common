@@ -33,26 +33,22 @@ namespace cyvmath
 		class Match : public cyvmath::Match
 		{
 			protected:
-				PlayerArray m_players;
-
 				CoordPieceMap m_activePieces;
 				TerrainMap m_terrain;
 
 				BearingTable m_bearingTable;
 
 			public:
-				Match()
-					: cyvmath::Match(PlayersColor::WHITE)
+				Match(const std::string& id = {}, bool random = false,
+				      bool _public = false, playerArray players = playerArray())
+					: cyvmath::Match(RuleSet::MIKELEPAGE, id, random, _public, std::move(players))
 					, m_bearingTable(m_activePieces)
 				{ }
 
 				virtual ~Match() = default;
 
-				PlayerArray& getPlayers()
-				{ return m_players; }
-
-				std::shared_ptr<Player> getPlayer(PlayersColor color) const
-				{ return m_players[color]; }
+				Player& getPlayer(PlayersColor color) const
+				{ return dynamic_cast<Player&>(*m_players.at(color)); }
 
 				CoordPieceMap& getActivePieces()
 				{ return m_activePieces; }
@@ -71,8 +67,7 @@ namespace cyvmath
 
 				virtual void addToBoard(PieceType, PlayersColor, Coordinate);
 				virtual void removeFromBoard(std::shared_ptr<Piece>);
-				virtual void endGame(PlayersColor /* winner */)
-				{ }
+				virtual void endGame(PlayersColor /* winner */) { }
 		};
 	}
 }

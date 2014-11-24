@@ -158,7 +158,7 @@ namespace cyvmath
 			if(baseTier < 1 || baseTier >= 4)
 				return baseTier;
 
-			auto fortress = m_match.getPlayer(m_color)->getFortress();
+			auto fortress = m_match.getPlayer(m_color).getFortress();
 
 			if(!fortress.isRuined && fortress.getCoord() == *m_coord)
 				return ++baseTier;
@@ -587,8 +587,8 @@ namespace cyvmath
 			if(!(setup || moveToValid(target)))
 				return false;
 
-			CoordPieceMap& activePieces = m_match.getActivePieces();
-			Player& player = *m_match.getPlayer(m_color);
+			auto& activePieces = m_match.getActivePieces();
+			auto& player = m_match.getPlayer(m_color);
 
 			std::shared_ptr<Piece> selfSharedPtr;
 
@@ -651,7 +651,7 @@ namespace cyvmath
 
 			if(!setup)
 			{
-				auto& opFortress = m_match.getPlayer(!m_color)->getFortress();
+				auto& opFortress = m_match.getPlayer(!m_color).getFortress();
 				if(!opFortress.isRuined && target == opFortress.getCoord())
 					opFortress.ruined();
 			}
@@ -671,10 +671,10 @@ namespace cyvmath
 
 			if(type == PieceType::KING)
 			{
-				auto player = m_match.getPlayer(m_color);
+				auto& player = m_match.getPlayer(m_color);
 
-				assert(player->kingTaken());
-				player->kingTaken(false);
+				assert(player.kingTaken());
+				player.kingTaken(false);
 			}
 		}
 	}

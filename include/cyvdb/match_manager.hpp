@@ -17,40 +17,36 @@
 #ifndef _CYVDB_MATCH_MANAGER_HPP_
 #define _CYVDB_MATCH_MANAGER_HPP_
 
-#include <mutex>
+#include <memory>
 #include <tntdb/connection.h>
+#include <cyvmath/match.hpp>
 #include <cyvmath/rule_sets.hpp>
 
 namespace cyvdb
 {
-	using cyvmath::RuleSet;
-
-	class Match;
-
 	class MatchManager
 	{
 		private:
 			tntdb::Connection m_conn;
 
-			static std::mutex randomMatchesMtx;
+			static bool matchValid(const cyvmath::Match& match);
+
+			int getRuleSetID(cyvmath::RuleSet);
 
 		public:
 			explicit MatchManager(tntdb::Connection& conn);
 			MatchManager();
 
 			// queries
-			Match getMatch(const std::string& matchID);
-			std::vector<Match> getFreeRandomModeMatches();
+			typedef std::vector<std::unique_ptr<cyvmath::Match>> matchList;
+
+			matchList getOpenRandomMatches();
+			matchList getRunningPublicMatches();
 
 			// modifications
-			void addMatch(const Match&);
-
-			//Match getOldestRandomModeMatch(RuleSet);
+			void addMatch(std::unique_ptr<cyvmath::Match>);
 
 			void removeMatch(const std::string& id);
-			void removeRandomModeMatch(const std::string& id);
-
-			int getRuleSetID(RuleSet);
 	};
 }
 

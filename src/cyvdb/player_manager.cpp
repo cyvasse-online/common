@@ -20,12 +20,49 @@
 #include <tntdb/error.h>
 #include <tntdb/statement.h>
 #include <cyvdb/config.hpp>
-#include <cyvdb/player.hpp>
+#include <cyvmath/rule_set_create.hpp>
 
 using namespace cyvmath;
 
 namespace cyvdb
 {
+	bool PlayerManager::playerValid(const cyvmath::Player& player)
+	{
+		return player.getColor() != PlayersColor::UNDEFINED
+			&& player.getID().length() == 8
+			&& player.getMatchID().length() == 4;
+	}
+
+	int PlayerManager::getPlayersColorID(PlayersColor color)
+	{
+		auto colorStr = PlayersColorToStr(color);
+
+		try
+		{
+			return m_conn.prepareCached(
+				"SELECT players_color_id "
+				"FROM players_colors "
+				"WHERE players_color_str = :playersColorStr",
+				"getPlayersColor" // cache key
+			)
+			.set("playersColorStr", colorStr)
+			.selectValue()
+			.getInt();
+		}
+		catch(tntdb::NotFound&)
+		{
+			m_conn.prepareCached(
+				"INSERT INTO players_colors(players_color_str) "
+				"VALUES (:playersColorStr)",
+				"addPlayersColor" // cache key
+			)
+			.set("playersColorStr", colorStr)
+			.execute();
+
+			return m_conn.lastInsertId();
+		}
+	}
+
 	PlayerManager::PlayerManager(tntdb::Connection& conn)
 		: m_conn(conn)
 	{ }
@@ -34,12 +71,13 @@ namespace cyvdb
 		: m_conn(tntdb::connectCached(DBConfig::glob().getMatchDataUrl()))
 	{ }
 
-	Player PlayerManager::getPlayer(const std::string& playerID)
+
+	/*Player PlayerManager::getPlayer(const std::string& playerID)
 	{
 		try
 		{
 			tntdb::Row row =
-				m_conn.prepareCached(
+			m_conn.prepareCached(
 					"SELECT match_id, color FROM players "
 					"WHERE player_id = :id",
 					"getPlayer" // cache key
@@ -53,36 +91,41 @@ namespace cyvdb
 		{
 			return Player();
 		}
-	}
+	}*/
 
-	std::vector<Player> PlayerManager::getPlayers(const std::string& matchID)
+	PlayerManager::playerArray PlayerManager::getPlayers(Match& match)
 	{
-		std::vector<Player> ret;
+		playerArray ret;
+
+		int i = 0;
 
 		for(const auto& row : m_conn.prepareCached(
-				"SELECT player_id, color FROM players WHERE match_id = :matchID", "getPlayers")
-			.set("matchID", matchID)
+				"SELECT player_id, color FROM players WHERE match_id = :matchID",
+				"getPlayers" // cache key
 			)
+			.set("matchID", match.getID()))
 		{
-			ret.emplace_back(row.getString(0), matchID, StrToPlayersColor(row.getString(1)));
+			assert(i < 2);
+			ret[i] = createPlayer(match, StrToPlayersColor(row.getString(1)), row.getString(0));
+			i++;
 		}
 
 		return ret;
 	}
 
-	void PlayerManager::addPlayer(const Player& player)
+	void PlayerManager::addPlayer(std::unique_ptr<cyvmath::Player> player)
 	{
-		if(!player.valid())
+		if(!playerValid(*player))
 			throw std::invalid_argument("The given Player object is invalid");
 
 		m_conn.prepareCached(
-			"INSERT INTO players (player_id, match_id, color) "
-			"VALUES (:id, :matchID, :color)",
-			"addPlayer" // statement cache key
+				"INSERT INTO players (player_id, match_id, color) "
+				"VALUES (:id, :matchID, :color)",
+				"addPlayer" // statement cache key
 			)
-			.set("id", player.id)
-			.set("matchID", player.matchID)
-			.set("color", PlayersColorToStr(player.getColor()))
+			.set("id", player->getID())
+			.set("matchID", player->getMatchID())
+			.set("color", getPlayersColorID(player->getColor()))
 			.execute();
 	}
 }
