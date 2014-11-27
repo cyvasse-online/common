@@ -19,14 +19,6 @@
 
 #include "enum_str.hpp"
 
-enum class Message
-{
-	UNDEFINED,
-	REQUEST,
-	REPLY,
-	GAME_UPDATE
-};
-
 enum class Action
 {
 	UNDEFINED,
@@ -53,15 +45,6 @@ enum class GameMode
 	BOT,
 	LOCAL
 };
-
-ENUM_STR(Message, ({
-		{Message::UNDEFINED, "undefined"},
-		{Message::REQUEST, "request"},
-		{Message::REPLY, "reply"},
-		{Message::GAME_UPDATE, "game update"}
-	}),
-	Message::UNDEFINED
-)
 
 ENUM_STR(Action, ({
 		{Action::UNDEFINED, "undefined"},
