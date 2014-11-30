@@ -7,7 +7,8 @@ SUBDIRS = . $(UNIT_TESTS_DIR)
 AUTOMAKE_OPTIONS = subdir-objects
 
 noinst_LIBRARIES = \
-	libcyvmath.a
+	libcyvmath.a \
+	libcyvws.a
 
 libcyvmath_a_SOURCES = \
 	include/cyvmath/coordinate.hpp \
@@ -42,16 +43,26 @@ libcyvmath_a_CPPFLAGS = \
 if BUILD_CYVDB
 
 noinst_LIBRARIES += \
-    libcyvdb.a
+	libcyvdb.a
 
 libcyvdb_a_SOURCES = \
-    include/cyvdb/config.hpp \
-    include/cyvdb/match_manager.hpp \
-    include/cyvdb/player_manager.hpp \
-    src/cyvdb/match_manager.cpp \
-    src/cyvdb/player_manager.cpp
+	include/cyvdb/config.hpp \
+	include/cyvdb/match_manager.hpp \
+	include/cyvdb/player_manager.hpp \
+	src/cyvdb/match_manager.cpp \
+	src/cyvdb/player_manager.cpp
 
 libcyvdb_a_CPPFLAGS = \
-    -I$(top_srcdir)/include
+	-I$(top_srcdir)/include
 
-endif
+endif # BUILD_CYVDB
+
+
+libcyvws_a_SOURCES = \
+	include/cyvws/game_msg_action.hpp \
+	include/cyvws/msg_type.hpp \
+	include/cyvws/notification_type.hpp \
+	include/cyvws/server_request_action.hpp
+
+libcyvws_a_CPPFLAGS = \
+	-I$(top_srcdir)/include

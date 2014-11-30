@@ -16,29 +16,19 @@
 
 #include "enum_str.hpp"
 
-enum class MsgType
+enum class NotificationType
 {
     UNDEFINED,
-    CHAT_MSG,
-    CHAT_MSG_ACK,
-    GAME_MSG,
-    GAME_MSG_ACK,
-    GAME_MSG_ERR,
-    NOTIFICATION,
-    SERVER_REPLY,
-    SERVER_REQUEST,
+    LIST_UPDATE,
+    USER_JOINED,
+    USER_LEFT,
 };
 
-ENUM_STR(MsgType, ({
-        {MsgType::UNDEFINED, "undefined"},
-        {MsgType::CHAT_MSG, "chatMsg"},
-        {MsgType::CHAT_MSG_ACK, "chatMsgAck"},
-        {MsgType::GAME_MSG, "gameMsg"},
-        {MsgType::GAME_MSG_ACK, "gameMsgAck"},
-        {MsgType::GAME_MSG_ERR, "gameMsgErr"},
-        {MsgType::NOTIFICATION, "notification"},
-        {MsgType::SERVER_REPLY, "serverReply"},
-        {MsgType::SERVER_REQUEST, "serverRequest"},
+ENUM_STR(NotificationType, ({
+        {NotificationType::UNDEFINED, "undefined"},
+        {NotificationType::LIST_UPDATE, "listUpdate"},
+        {NotificationType::USER_JOINED, "userJoined"},
+        {NotificationType::USER_LEFT, "userLeft"},
     }),
-    MsgType::UNDEFINED
+    NotificationType::UNDEFINED
 )

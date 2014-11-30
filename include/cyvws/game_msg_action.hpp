@@ -16,29 +16,27 @@
 
 #include "enum_str.hpp"
 
-enum class MsgType
+enum class GameMsgAction
 {
     UNDEFINED,
-    CHAT_MSG,
-    CHAT_MSG_ACK,
-    GAME_MSG,
-    GAME_MSG_ACK,
-    GAME_MSG_ERR,
-    NOTIFICATION,
-    SERVER_REPLY,
-    SERVER_REQUEST,
+    END_TURN,
+    MOVE,
+    MOVE_CAPTURE,
+    PROMOTE,
+    RESIGN,
+    SET_IS_READY,
+    SET_OPENING_ARRAY,
 };
 
-ENUM_STR(MsgType, ({
-        {MsgType::UNDEFINED, "undefined"},
-        {MsgType::CHAT_MSG, "chatMsg"},
-        {MsgType::CHAT_MSG_ACK, "chatMsgAck"},
-        {MsgType::GAME_MSG, "gameMsg"},
-        {MsgType::GAME_MSG_ACK, "gameMsgAck"},
-        {MsgType::GAME_MSG_ERR, "gameMsgErr"},
-        {MsgType::NOTIFICATION, "notification"},
-        {MsgType::SERVER_REPLY, "serverReply"},
-        {MsgType::SERVER_REQUEST, "serverRequest"},
+ENUM_STR(GameMsgAction, ({
+        {GameMsgAction::UNDEFINED, "undefined"},
+        {GameMsgAction::END_TURN, "endTurn"},
+        {GameMsgAction::MOVE, "move"},
+        {GameMsgAction::MOVE_CAPTURE, "moveCapture"},
+        {GameMsgAction::PROMOTE, "promote"},
+        {GameMsgAction::RESIGN, "resign"},
+        {GameMsgAction::SET_IS_READY, "setIsReady"},
+        {GameMsgAction::SET_OPENING_ARRAY, "setOpeningArray"},
     }),
-    MsgType::UNDEFINED
+    GameMsgAction::UNDEFINED
 )
