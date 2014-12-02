@@ -16,19 +16,22 @@
 
 #include "enum_str.hpp"
 
-enum class NotificationType
+namespace cyvws
 {
-    UNDEFINED,
-    LIST_UPDATE,
-    USER_JOINED,
-    USER_LEFT,
-};
+    enum class NotificationType
+    {
+        UNDEFINED,
+        LIST_UPDATE,
+        USER_JOINED,
+        USER_LEFT,
+    };
 
-ENUM_STR(NotificationType, ({
-        {NotificationType::UNDEFINED, "undefined"},
-        {NotificationType::LIST_UPDATE, "listUpdate"},
-        {NotificationType::USER_JOINED, "userJoined"},
-        {NotificationType::USER_LEFT, "userLeft"},
-    }),
-    NotificationType::UNDEFINED
-)
+    ENUM_STR(NotificationType, ({
+            {NotificationType::UNDEFINED, "undefined"},
+            {NotificationType::LIST_UPDATE, "listUpdate"},
+            {NotificationType::USER_JOINED, "userJoined"},
+            {NotificationType::USER_LEFT, "userLeft"},
+        }),
+        NotificationType::UNDEFINED
+    )
+}

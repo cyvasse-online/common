@@ -16,17 +16,20 @@
 
 #include "enum_str.hpp"
 
-enum class UserType
+namespace cyvws
 {
-    UNDEFINED,
-    PLAYER,
-    SPECTATOR,
-};
+    enum class UserType
+    {
+        UNDEFINED,
+        PLAYER,
+        SPECTATOR,
+    };
 
-ENUM_STR(UserType, ({
-        {UserType::UNDEFINED, "undefined"},
-        {UserType::PLAYER, "player"},
-        {UserType::SPECTATOR, "spectator"},
-    }),
-    UserType::UNDEFINED
-)
+    ENUM_STR(UserType, ({
+            {UserType::UNDEFINED, "undefined"},
+            {UserType::PLAYER, "player"},
+            {UserType::SPECTATOR, "spectator"},
+        }),
+        UserType::UNDEFINED
+    )
+}

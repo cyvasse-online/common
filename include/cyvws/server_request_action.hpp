@@ -16,23 +16,26 @@
 
 #include "enum_str.hpp"
 
-enum class ServerRequestAction
+namespace cyvws
 {
-    UNDEFINED,
-    CREATE_GAME,
-    INIT_COMM,
-    JOIN_GAME,
-    SUBSCR_GAME_LIST_UPDATES,
-    UNSUBSCR_GAME_LIST_UPDATES,
-};
+    enum class ServerRequestAction
+    {
+        UNDEFINED,
+        CREATE_GAME,
+        INIT_COMM,
+        JOIN_GAME,
+        SUBSCR_GAME_LIST_UPDATES,
+        UNSUBSCR_GAME_LIST_UPDATES,
+    };
 
-ENUM_STR(ServerRequestAction, ({
-        {ServerRequestAction::UNDEFINED, "undefined"},
-        {ServerRequestAction::CREATE_GAME, "createGame"},
-        {ServerRequestAction::INIT_COMM, "initComm"},
-        {ServerRequestAction::JOIN_GAME, "joinGame"},
-        {ServerRequestAction::SUBSCR_GAME_LIST_UPDATES, "subscrGameListUpdates"},
-        {ServerRequestAction::UNSUBSCR_GAME_LIST_UPDATES, "unsubscrGameListUpdates"},
-    }),
-    ServerRequestAction::UNDEFINED
-)
+    ENUM_STR(ServerRequestAction, ({
+            {ServerRequestAction::UNDEFINED, "undefined"},
+            {ServerRequestAction::CREATE_GAME, "createGame"},
+            {ServerRequestAction::INIT_COMM, "initComm"},
+            {ServerRequestAction::JOIN_GAME, "joinGame"},
+            {ServerRequestAction::SUBSCR_GAME_LIST_UPDATES, "subscrGameListUpdates"},
+            {ServerRequestAction::UNSUBSCR_GAME_LIST_UPDATES, "unsubscrGameListUpdates"},
+        }),
+        ServerRequestAction::UNDEFINED
+    )
+}
