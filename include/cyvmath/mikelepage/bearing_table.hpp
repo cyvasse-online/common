@@ -50,9 +50,8 @@ namespace cyvmath
 
                 void init();
                 void clear()
-                {
-                    m_canBeReachedBy.clear();
-                }
+                { m_canBeReachedBy.clear(); }
+
                 void update()
                 {
                     clear();

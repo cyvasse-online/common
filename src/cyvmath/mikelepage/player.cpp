@@ -24,7 +24,6 @@ namespace cyvmath
 	{
 		Player::Player(Match& match, PlayersColor color, std::unique_ptr<Fortress> fortress, const std::string& id)
 			: cyvmath::Player(color, id, match.getID())
-			, m_kingTaken{false}
 			, m_match{match}
 			, m_fortress(std::move(fortress))
 		{ }

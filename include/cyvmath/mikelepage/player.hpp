@@ -32,7 +32,7 @@ namespace cyvmath
 		class Player : public cyvmath::Player
 		{
 			protected:
-				bool m_kingTaken;
+				bool m_kingTaken = false;
 
 				Match& m_match;
 

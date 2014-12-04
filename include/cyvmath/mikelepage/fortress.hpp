@@ -30,16 +30,14 @@ namespace cyvmath
 				const PlayersColor m_color;
 				Coordinate m_coord;
 
-				bool m_ruined;
+				bool m_ruined = false;
 
 			public:
-				const bool& isRuined;
+				const bool& isRuined = m_ruined;
 
 				Fortress(PlayersColor color, Coordinate coord)
 					: m_color{color}
 					, m_coord{coord}
-					, m_ruined{false}
-					, isRuined{m_ruined}
 				{ }
 
 				PlayersColor getColor()

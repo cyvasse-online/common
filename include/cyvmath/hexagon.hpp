@@ -95,32 +95,22 @@ namespace cyvmath
 					}
 
 					bool isValid() const
-					{
-						return isValid(m_x, m_y);
-					}
+					{ return isValid(m_x, m_y); }
 
 				public:
 					virtual ~Coordinate() = default;
 
 					int_least8_t x() const final override
-					{
-						return m_x;
-					}
+					{ return m_x; }
 
 					int_least8_t y() const final override
-					{
-						return m_y;
-					}
+					{ return m_y; }
 
 					constexpr int_least8_t z() const
-					{
-						return -(m_x + m_y);
-					}
+					{ return -(m_x + m_y); }
 
 					int_least16_t dump() const final override
-					{
-						return (m_x << 8) | m_y;
-					}
+					{ return (m_x << 8) | m_y; }
 
 					/** Get the distance to another coordinate in form of the amount
 						of single moves to adjacent tiles required to move there
@@ -135,9 +125,7 @@ namespace cyvmath
 
 					/// Check if the given coordinate is reachable in one orthogonal move
 					constexpr bool isOrthogonal(Coordinate other) const
-					{
-						return m_x == other.m_x || m_y == other.m_y || z() == other.z();
-					}
+					{ return m_x == other.m_x || m_y == other.m_y || z() == other.z(); }
 
 					DirectionOrthogonal getDirectionOrthogonal(Coordinate other) const
 					{
@@ -163,9 +151,7 @@ namespace cyvmath
 						directions of the neighboring hex-tiles.
 					 */
 					constexpr int_least8_t getDistanceOrthogonal(Coordinate other) const
-					{
-						return isOrthogonal(other) ? getDistance(other) : -1;
-					}
+					{ return isOrthogonal(other) ? getDistance(other) : -1; }
 
 					/// Check if the given coordinate is reachable in one diagonal move
 					constexpr bool isDiagonal(Coordinate other) const
@@ -188,7 +174,8 @@ namespace cyvmath
 
 					DirectionDiagonal getDirectionDiagonal(Coordinate other) const
 					{
-						if(*this == other) return DirectionDiagonal::UNDEFINED;
+						if(*this == other)
+							return DirectionDiagonal::UNDEFINED;
 
 						int_least8_t dX = m_x  - other.m_x;
 						int_least8_t dY = m_y  - other.m_y;
@@ -214,9 +201,7 @@ namespace cyvmath
 						directions of the lines between the neighboring hex-tiles.
 					 */
 					constexpr int_least8_t getDistanceDiagonal(Coordinate other) const
-					{
-						return isDiagonal(other) ? getDistance(other) / 2 : -1;
-					}
+					{ return isDiagonal(other) ? getDistance(other) / 2 : -1; }
 
 					/** Get the distance to another coordinate with the same distance to
 						the center Coordinate along the line of these coordinates, or -1

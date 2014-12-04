@@ -10,8 +10,7 @@ namespace cyvdb
 		private:
 			std::string m_matchDataUrl;
 
-			DBConfig()
-			{ }
+			DBConfig() = default;
 
 			DBConfig(const DBConfig&) = delete;
 			const DBConfig& operator= (const DBConfig&) = delete;

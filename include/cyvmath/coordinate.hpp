@@ -27,9 +27,7 @@ namespace cyvmath
 			virtual bool isValid() const = 0;
 
 			explicit operator bool() const
-			{
-				return isValid();
-			}
+			{ return isValid(); }
 
 		public:
 			virtual int_least16_t dump() const = 0;
@@ -38,19 +36,13 @@ namespace cyvmath
 			virtual int_least8_t y() const = 0;
 
 			bool operator==(const Coordinate& other) const
-			{
-				return dump() == other.dump();
-			}
+			{ return dump() == other.dump(); }
 
 			bool operator!=(const Coordinate& other) const
-			{
-				return dump() != other.dump();
-			}
+			{ return dump() != other.dump(); }
 
 			bool operator<(const Coordinate& other) const
-			{
-				return dump() < other.dump();
-			}
+			{ return dump() < other.dump(); }
 	};
 }
 
