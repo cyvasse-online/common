@@ -20,8 +20,8 @@
 #include <cyvmath/match.hpp>
 
 #include <functional>
+#include <cyvmath/coordinate.hpp>
 #include "bearing_table.hpp"
-#include "coordinate.hpp"
 #include "piece.hpp"
 #include "player.hpp"
 #include "terrain.hpp"

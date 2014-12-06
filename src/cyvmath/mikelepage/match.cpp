@@ -16,12 +16,15 @@
 
 #include <cyvmath/mikelepage/match.hpp>
 
+#include <cyvmath/hexagon.hpp>
 #include <cyvmath/mikelepage/fortress.hpp>
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
+		using HexCoordinate = Hexagon<6>::Coordinate;
+
 		std::set<Coordinate> Match::getHorseMovementCenters()
 		{
 			return {
@@ -48,7 +51,7 @@ namespace cyvmath
 			{
 				assert(step.size() == 2);
 
-				auto tmpPos = start.toValarray<int_least8_t>();
+				auto tmpPos = start.toValarray<int8_t>();
 				auto tmpCoord = make_unique<Coordinate>(start);
 
 				for(auto i = 0; i < range.second; i++)
@@ -56,7 +59,7 @@ namespace cyvmath
 					assert(tmpCoord);
 
 					tmpPos += step;
-					tmpCoord = Coordinate::create(tmpPos);
+					tmpCoord = HexCoordinate::create(tmpPos);
 
 					// if one step into this direction results in a
 					// invalid coordinate, all further ones do too

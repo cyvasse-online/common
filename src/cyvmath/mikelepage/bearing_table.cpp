@@ -28,22 +28,22 @@ namespace cyvmath
             assert(defPiece);
             assert(defPiece->getType() != PieceType::MOUNTAINS);
 
-            uint_least8_t defenseTier = defPiece->getEffectiveDefenseTier();
+            uint8_t defenseTier = defPiece->getEffectiveDefenseTier();
 
             if(atkPiece->getBaseTier() >= defenseTier)
                 return true;
 
             bool haveKing = (atkPiece->getType() == PieceType::KING);
 
-            uint_least8_t maxAllowedTier = haveKing ? 3 : atkPiece->getBaseTier();
-            uint_least8_t maxTier = 1;
+            uint8_t maxAllowedTier = haveKing ? 3 : atkPiece->getBaseTier();
+            uint8_t maxTier = 1;
 
             auto defPieceIt = m_canBeReachedBy.find(defPiece);
 
             if(defPieceIt == m_canBeReachedBy.end())
                 return false;
 
-            std::map<uint_least8_t, uint_least8_t> flankingTiers {
+            std::map<uint8_t, uint8_t> flankingTiers {
                 {1, 0},
                 {2, 0},
                 {3, 0}
@@ -72,10 +72,10 @@ namespace cyvmath
             if(haveKing)
                 ++flankingTiers[maxTier];
 
-            for(uint_least8_t i = 1; i < maxTier; ++i)
+            for(uint8_t i = 1; i < maxTier; ++i)
                 flankingTiers[i+1] += (flankingTiers[i] > 0 ? flankingTiers[i] - 1 : 0);
 
-            uint_least8_t attackTier = maxTier + flankingTiers[maxTier] - 1;
+            uint8_t attackTier = maxTier + flankingTiers[maxTier] - 1;
 
             return attackTier >= defenseTier;
         }

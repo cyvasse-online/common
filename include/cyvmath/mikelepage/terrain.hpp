@@ -20,8 +20,8 @@
 #include <array>
 #include <map>
 #include <memory>
+#include <cyvmath/coordinate.hpp>
 #include <cyvmath/piece_type.hpp>
-#include "coordinate.hpp"
 #include "terrain_type.hpp"
 
 namespace cyvmath

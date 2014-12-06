@@ -17,6 +17,8 @@
 #ifndef _CYVMATH_COORDINATE_HPP_
 #define _CYVMATH_COORDINATE_HPP_
 
+#include <string>
+#include <valarray>
 #include <cstdint>
 
 namespace cyvmath
@@ -24,16 +26,39 @@ namespace cyvmath
 	class Coordinate
 	{
 		protected:
-			virtual bool isValid() const = 0;
+			int8_t m_x, m_y;
 
-			explicit operator bool() const
-			{ return isValid(); }
+			Coordinate(int8_t X, int8_t Y)
+				: m_x(X)
+				, m_y(Y)
+			{ }
 
 		public:
-			virtual int_least16_t dump() const = 0;
+			virtual ~Coordinate() = default;
 
-			virtual int_least8_t x() const = 0;
-			virtual int_least8_t y() const = 0;
+			Coordinate(const Coordinate&) = default;
+			Coordinate(Coordinate&&) = default;
+
+			Coordinate& operator=(const Coordinate&) = default;
+			Coordinate& operator=(Coordinate&&) = default;
+
+			int8_t x() const
+			{ return m_x; }
+
+			int8_t y() const
+			{ return m_y; }
+
+			int16_t dump() const
+			{ return (m_x << 8) | m_y; }
+
+			virtual std::string toString() const;
+
+			template<class T = uint8_t>
+			std::valarray<T> toValarray() const
+			{
+				static_assert(std::is_integral<T>::value, "T has to be an integral type");
+				return {static_cast<T>(m_x), static_cast<T>(m_y)};
+			}
 
 			bool operator==(const Coordinate& other) const
 			{ return dump() == other.dump(); }

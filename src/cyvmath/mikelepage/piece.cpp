@@ -21,6 +21,7 @@
 #include <utility>
 #include <valarray>
 #include <vector>
+#include <cyvmath/hexagon.hpp>
 #include <cyvmath/mikelepage/match.hpp>
 #include <cyvmath/mikelepage/fortress.hpp>
 
@@ -28,6 +29,9 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
+		using Hexagon = Hexagon<6>;
+		using HexCoordinate = Hexagon::Coordinate;
+
 		const MovementVec Piece::stepsOrthogonal {
 			{-1,  1}, // top left
 			{ 0,  1}, // top right
@@ -128,9 +132,9 @@ namespace cyvmath
 				(!opPiece || m_match.getBearingTable().canTake(this, opPiece.get()));
 		}
 
-		uint_least8_t Piece::getBaseTier() const
+		uint8_t Piece::getBaseTier() const
 		{
-			static const std::map<PieceType, uint_least8_t> data {
+			static const std::map<PieceType, uint8_t> data {
 				{PieceType::RABBLE,      1},
 				{PieceType::KING,        1},
 				{PieceType::CROSSBOWS,   2},
@@ -149,7 +153,7 @@ namespace cyvmath
 			return it->second;
 		}
 
-		uint_least8_t Piece::getEffectiveDefenseTier() const
+		uint8_t Piece::getEffectiveDefenseTier() const
 		{
 			assert(m_coord);
 
@@ -228,13 +232,16 @@ namespace cyvmath
 
 		bool Piece::canReach(Coordinate target) const
 		{
+			assert(m_coord);
+			auto& coord = dynamic_cast<HexCoordinate&>(*m_coord);
+
 			auto scope = getMovementScope();
-			std::valarray<int_least8_t> step(2);
+			std::valarray<int8_t> step(2);
 
 			switch(scope.first)
 			{
 				case MovementType::ORTHOGONAL:
-					switch(m_coord->getDirectionOrthogonal(target))
+					switch(coord.getDirectionOrthogonal(target))
 					{
 						case DirectionOrthogonal::TOP_LEFT:     step = stepsOrthogonal.at(0); break;
 						case DirectionOrthogonal::TOP_RIGHT:    step = stepsOrthogonal.at(1); break;
@@ -246,7 +253,7 @@ namespace cyvmath
 					}
 					break;
 				case MovementType::DIAGONAL:
-					switch(m_coord->getDirectionDiagonal(target))
+					switch(coord.getDirectionDiagonal(target))
 					{
 						case DirectionDiagonal::TOP:          step = stepsDiagonal.at(0); break;
 						case DirectionDiagonal::TOP_RIGHT:    step = stepsDiagonal.at(1); break;
@@ -282,8 +289,8 @@ namespace cyvmath
 						distance = Hexagon::edgeLength - 1;
 				}
 
-				m_match.forReachableCoords(*m_coord, {{step}, distance}, [&](Coordinate coord, Piece*) {
-					if(coord == target)
+				m_match.forReachableCoords(*m_coord, {{step}, distance}, [&](Coordinate c, Piece*) {
+					if(c == target)
 					{
 						assert(!ret);
 						ret = true;
@@ -296,7 +303,7 @@ namespace cyvmath
 
 		TileStateMap Piece::getHexagonalLineTiles() const
 		{
-			typedef std::vector<std::pair<std::valarray<int_least8_t>, TileState>> TileStateVec;
+			typedef std::vector<std::pair<std::valarray<int8_t>, TileState>> TileStateVec;
 
 			auto scope = getMovementScope();
 			auto distance = scope.second;
@@ -310,20 +317,20 @@ namespace cyvmath
 
 			TileStateMap ret;
 
-			for(Coordinate centerCoord : m_match.getHorseMovementCenters())
+			for(HexCoordinate centerCoord : m_match.getHorseMovementCenters())
 			{
 				TileStateVec tmpTileVec;
 
-				int_least8_t centerDistance = centerCoord.getDistance(*m_coord);
+				int8_t centerDistance = centerCoord.getDistance(*m_coord);
 
 				if(!centerDistance) // standing on the movement center
 					continue;
 
 				// begin in top left of the hexagonal line
-				std::valarray<int_least8_t> tmpPos {
+				std::valarray<int8_t> tmpPos {
 					// explicit cast to avoid compiler warning
-					int_least8_t(centerCoord.x() - centerDistance),
-					int_least8_t(centerCoord.y() + centerDistance)
+					int8_t(centerCoord.x() - centerDistance),
+					int8_t(centerCoord.y() + centerDistance)
 				};
 
 				for(const auto& step : stepsHexagonalLine)
@@ -333,7 +340,7 @@ namespace cyvmath
 					for(auto i = 0; i < centerDistance; i++)
 					{
 						tmpPos += step;
-						auto tmpCoord = Coordinate::create(tmpPos);
+						auto tmpCoord = HexCoordinate::create(tmpPos);
 
 						auto tileState = TileState::EMPTY;
 
@@ -391,7 +398,7 @@ namespace cyvmath
 
 						if(tmpTileState == TileState::EMPTY || tmpTileState == TileState::OP_OCCUPIED)
 						{
-							auto coord = Coordinate::create(tileIt->first);
+							auto coord = HexCoordinate::create(tileIt->first);
 							assert(coord);
 
 							ret.emplace(*coord, tileIt->second);

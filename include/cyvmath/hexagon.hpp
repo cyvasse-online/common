@@ -60,7 +60,7 @@ namespace cyvmath
 	   so this is implemented as a template class with a deleted constructor.
 	   The template parameter l stands for the edge length of the hexagon.
 	 */
-	template <uint_least8_t l>
+	template <uint8_t l>
 	class Hexagon
 	{
 		/* The smallest possible hexagon has 7 tiles and an edge lenth of 2
@@ -78,15 +78,11 @@ namespace cyvmath
 			class Coordinate : public cyvmath::Coordinate
 			{
 				private:
-					uint_least8_t m_x;
-					uint_least8_t m_y;
-
-					constexpr Coordinate(uint_least8_t X, uint_least8_t Y)
-						: m_x(X)
-						, m_y(Y)
+					constexpr Coordinate(short X, short Y)
+						: cyvmath::Coordinate(X, Y)
 					{ }
 
-					static constexpr bool isValid(int_least8_t X, int_least8_t Y)
+					static constexpr bool isValid(int8_t X, int8_t Y)
 					{
 						return X >= 0 && X < (l * 2 - 1) &&
 							   Y >= 0 && Y < (l * 2 - 1) &&
@@ -100,22 +96,23 @@ namespace cyvmath
 				public:
 					virtual ~Coordinate() = default;
 
-					int_least8_t x() const final override
-					{ return m_x; }
+					Coordinate(const Coordinate&) = default;
+					Coordinate(Coordinate&&) = default;
 
-					int_least8_t y() const final override
-					{ return m_y; }
+					Coordinate& operator=(const Coordinate&) = default;
+					Coordinate& operator=(Coordinate&&) = default;
 
-					constexpr int_least8_t z() const
+					Coordinate(const cyvmath::Coordinate& other)
+						: cyvmath::Coordinate(other.x(), other.y())
+					{ }
+
+					constexpr int8_t z() const
 					{ return -(m_x + m_y); }
-
-					int_least16_t dump() const final override
-					{ return (m_x << 8) | m_y; }
 
 					/** Get the distance to another coordinate in form of the amount
 						of single moves to adjacent tiles required to move there
 					 */
-					constexpr int_least8_t getDistance(Coordinate other) const
+					constexpr int8_t getDistance(Coordinate other) const
 					{
 						// Concept from http://keekerdc.com/2011/03/hexagon-grids-coordinate-systems-and-distance-calculations/
 						// I have no idea why the maximum of x-, y- and z-difference
@@ -150,7 +147,7 @@ namespace cyvmath
 						An orthogonal move is a straight move in one of the six
 						directions of the neighboring hex-tiles.
 					 */
-					constexpr int_least8_t getDistanceOrthogonal(Coordinate other) const
+					constexpr int8_t getDistanceOrthogonal(Coordinate other) const
 					{ return isOrthogonal(other) ? getDistance(other) : -1; }
 
 					/// Check if the given coordinate is reachable in one diagonal move
@@ -177,9 +174,9 @@ namespace cyvmath
 						if(*this == other)
 							return DirectionDiagonal::UNDEFINED;
 
-						int_least8_t dX = m_x  - other.m_x;
-						int_least8_t dY = m_y  - other.m_y;
-						int_least8_t dZ = z() - other.z();
+						int8_t dX = m_x  - other.m_x;
+						int8_t dY = m_y  - other.m_y;
+						int8_t dZ = z() - other.z();
 
 						if(dX == dY)
 							return (dX > 0) ? DirectionDiagonal::BOTTOM_LEFT
@@ -200,7 +197,7 @@ namespace cyvmath
 						A diagonal move is a straight move in one of the six
 						directions of the lines between the neighboring hex-tiles.
 					 */
-					constexpr int_least8_t getDistanceDiagonal(Coordinate other) const
+					constexpr int8_t getDistanceDiagonal(Coordinate other) const
 					{ return isDiagonal(other) ? getDistance(other) / 2 : -1; }
 
 					/** Get the distance to another coordinate with the same distance to
@@ -211,7 +208,7 @@ namespace cyvmath
 						The direct distance from this coordinate to another one on that
 						line may be different than the distance along the line.
 					 */
-					int_least8_t getDistanceHexagonalLine(Coordinate other, Coordinate center) const
+					int8_t getDistanceHexagonalLine(Coordinate other, Coordinate center) const
 					{
 						auto distance = getDistance(center);
 
@@ -234,39 +231,10 @@ namespace cyvmath
 						return 0;
 					}
 
-					bool set(int_least8_t X, int_least8_t Y)
-					{
-						if(isValid(X, Y))
-						{
-							m_x = X;
-							m_y = Y;
-
-							return true;
-						}
-
-						return false;
-					}
-
-					std::string toString() const
-					{
-						std::string ret;
-						ret.append(1, char(m_x) + 'A');
-						ret.append(std::to_string(int(m_y + 1)));
-
-						return ret;
-					}
-
-					template<class T = uint_least8_t>
-					std::valarray<T> toValarray() const
-					{
-						static_assert(std::is_integral<T>::value, "T has to be an integral type");
-						return {static_cast<T>(m_x), static_cast<T>(m_y)};
-					}
-
 					/// @{
 					/// Create a Coordinate object from an X and an Y
 					/// If the coordinte is invalid, return nullptr
-					static constexpr std::unique_ptr<Coordinate> create(int_least8_t X, int_least8_t Y)
+					static constexpr std::unique_ptr<Coordinate> create(int8_t X, int8_t Y)
 					{
 						// can't use make_unique because private constructor has to be called directly
 						return isValid(X, Y)
@@ -306,10 +274,10 @@ namespace cyvmath
 			};
 
 			/// The edge length of the hexagon (template parameter)
-			static constexpr uint_least8_t edgeLength = l;
+			static constexpr uint8_t edgeLength = l;
 
 			/// The amount of tiles that make up the hexagon
-			static constexpr uint_least16_t tileCount = (l * (l - 1)) / 2 * 6 + 1;
+			static constexpr uint16_t tileCount = (l * (l - 1)) / 2 * 6 + 1;
 
 			/// Get a container with all possible coordinates in this hexagon
 			static const std::set<Coordinate>& getAllCoordinates()

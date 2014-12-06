@@ -21,10 +21,11 @@
 
 #include <map>
 #include <memory>
+#include <set>
 #include <valarray>
 #include <vector>
 #include <make_unique.hpp>
-#include "coordinate.hpp"
+#include <cyvmath/coordinate.hpp>
 #include "terrain_type.hpp"
 
 namespace cyvmath
@@ -44,19 +45,9 @@ namespace cyvmath
 			OP_OCCUPIED
 		};
 
-		ENUM_STR(TileState, ({
-				{TileState::UNDEFINED, "undefined"},
-				{TileState::START, "start"},
-				{TileState::EMPTY, "empty"},
-				{TileState::INACCESSIBLE, "inaccessible"},
-				{TileState::OP_OCCUPIED, "oppupied by opponent"}
-			}),
-			TileState::UNDEFINED
-		)
-
 		typedef std::map<Coordinate, TileState> TileStateMap;
-		typedef std::vector<std::valarray<int_least8_t>> MovementVec;
-		typedef std::pair<MovementVec, uint_least8_t> MovementRange;
+		typedef std::vector<std::valarray<int8_t>> MovementVec;
+		typedef std::pair<MovementVec, uint8_t> MovementRange;
 
 		class Piece : public cyvmath::Piece
 		{
@@ -66,8 +57,6 @@ namespace cyvmath
 				static const MovementVec stepsHexagonalLine;
 
 			protected:
-				// can be none, so this is a pointer
-				std::unique_ptr<Coordinate> m_coord;
 				Match& m_match;
 
 				bool moveToValid(Coordinate) const;
@@ -78,22 +67,21 @@ namespace cyvmath
 
 			public:
 				Piece(PlayersColor color, PieceType type, Coordinate coord, Match& match)
-					: cyvmath::Piece(color, type)
-					, m_coord(make_unique<Coordinate>(coord))
+					: cyvmath::Piece(color, type, make_unique<Coordinate>(coord))
 					, m_match(match)
 				{ }
 
 				virtual ~Piece() = default;
 
 				std::unique_ptr<Coordinate> getCoord() const
-				{ return make_unique(m_coord); }
+				{ return make_unique<Coordinate>(dynamic_cast<Coordinate&>(*m_coord)); }
 
 				// ugly hack for piece promotion
 				void setCoord(Coordinate coord)
 				{ m_coord = make_unique<Coordinate>(coord); }
 
-				uint_least8_t getBaseTier() const;
-				uint_least8_t getEffectiveDefenseTier() const;
+				uint8_t getBaseTier() const;
+				uint8_t getEffectiveDefenseTier() const;
 				TerrainType getHomeTerrain() const;
 				TerrainType getSetupTerrain() const;
 				virtual const MovementScope& getMovementScope() const final override;
@@ -109,6 +97,7 @@ namespace cyvmath
 				virtual void promoteTo(PieceType);
 		};
 
+		// TODO
 		typedef std::map<Coordinate, std::shared_ptr<Piece>> CoordPieceMap;
 		typedef std::multimap<PieceType, std::shared_ptr<Piece>> TypePieceMap;
 	}

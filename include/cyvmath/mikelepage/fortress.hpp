@@ -17,8 +17,8 @@
 #ifndef _CYVMATH_MIKELEPAGE_FORTRESS_HPP_
 #define _CYVMATH_MIKELEPAGE_FORTRESS_HPP_
 
+#include <cyvmath/coordinate.hpp>
 #include <cyvmath/players_color.hpp>
-#include "coordinate.hpp"
 
 namespace cyvmath
 {

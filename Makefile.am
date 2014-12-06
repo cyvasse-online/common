@@ -21,13 +21,13 @@ libcyvmath_a_SOURCES = \
 	include/cyvmath/rule_set_create.hpp \
 	include/cyvmath/rule_sets.hpp \
 	include/cyvmath/mikelepage/bearing_table.hpp \
-	include/cyvmath/mikelepage/coordinate.hpp \
 	include/cyvmath/mikelepage/fortress.hpp \
 	include/cyvmath/mikelepage/match.hpp \
 	include/cyvmath/mikelepage/piece.hpp \
 	include/cyvmath/mikelepage/player.hpp \
 	include/cyvmath/terrain_type.hpp \
 	include/cyvmath/terrain.hpp \
+	src/cyvmath/coordinate.cpp \
 	src/cyvmath/players_color.cpp \
 	src/cyvmath/rule_set_create.cpp \
 	src/cyvmath/rule_sets.cpp \
@@ -59,14 +59,17 @@ endif # BUILD_CYVDB
 
 
 libcyvws_a_SOURCES = \
+	include/cyvws/create_json.hpp \
 	include/cyvws/game_msg_action.hpp \
 	include/cyvws/msg_type.hpp \
 	include/cyvws/notification_type.hpp \
-	include/cyvws/server_request_action.hpp
+	include/cyvws/server_request_action.hpp \
+	include/cyvws/user_type.hpp \
+	src/cyvws/create_json.cpp
 
 libcyvws_a_CPPFLAGS = \
 	-I$(top_srcdir)/include
 
 # workaround for jsoncpp include directory hack in arch linux package
 libcyvws_a_CPPFLAGS += \
-    -I/usr/include/jsoncpp
+	-I/usr/include/jsoncpp
