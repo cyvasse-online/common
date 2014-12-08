@@ -43,7 +43,7 @@ namespace cyvmath
 			case RuleSet::MIKELEPAGE:
 				// fortress start coordinate doesn't matter on the server
 				return make_unique<mikelepage::Player>(dynamic_cast<mikelepage::Match&>(match), color,
-					make_unique<mikelepage::Fortress>(color, *Hexagon<6>::Coordinate::create(5,5)), id);
+					make_unique<mikelepage::Fortress>(color, Hexagon<6>::Coordinate(uint8<5>(), uint8<5>())), id);
 			default:
 				throw std::runtime_error("Match object not recognized");
 		}

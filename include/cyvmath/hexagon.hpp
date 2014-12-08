@@ -25,11 +25,16 @@
 #include <set>
 #include <string>
 #include <stdexcept>
+#include <type_traits>
 #include <valarray>
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
 #include <make_unique.hpp>
+
+// not sure where to put this
+template<uint8_t v>
+using uint8 = std::integral_constant<uint8_t, v>;
 
 namespace cyvmath
 {
@@ -78,7 +83,7 @@ namespace cyvmath
 			class Coordinate : public cyvmath::Coordinate
 			{
 				private:
-					constexpr Coordinate(short X, short Y)
+					Coordinate(short X, short Y)
 						: cyvmath::Coordinate(X, Y)
 					{ }
 
@@ -94,6 +99,13 @@ namespace cyvmath
 					{ return isValid(m_x, m_y); }
 
 				public:
+					template<uint8_t X, uint8_t Y>
+					constexpr Coordinate(uint8<X>, uint8<Y>)
+						: cyvmath::Coordinate(X, Y)
+					{
+						static_assert(isValid(X, Y), "The given arguments are invalid.");
+					}
+
 					virtual ~Coordinate() = default;
 
 					Coordinate(const Coordinate&) = default;
