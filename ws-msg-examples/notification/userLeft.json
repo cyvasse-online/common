@@ -1,6 +1,5 @@
 {
 	"msgType": "notification",
-	"msgID": 68,
 	"notificationData": {
 		"type": "userLeft",
 		"screenName": "mikelepage"

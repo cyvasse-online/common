@@ -1,6 +1,5 @@
 {
 	"msgType": "notification",
-	"msgID": 3,
 	"notificationData": {
 		"type": "userJoined",
 		"screenName": "mikelepage",
