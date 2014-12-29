@@ -28,7 +28,7 @@ namespace cyvmath
 		protected:
 			int8_t m_x, m_y;
 
-			Coordinate(int8_t X, int8_t Y)
+			constexpr Coordinate(int8_t X, int8_t Y)
 				: m_x(X)
 				, m_y(Y)
 			{ }

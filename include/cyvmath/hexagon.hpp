@@ -32,10 +32,6 @@
 #include <cstdlib>
 #include <make_unique.hpp>
 
-// not sure where to put this
-template<uint8_t v>
-using uint8 = std::integral_constant<uint8_t, v>;
-
 namespace cyvmath
 {
 	enum class DirectionOrthogonal
@@ -79,11 +75,18 @@ namespace cyvmath
 			Hexagon() = delete;
 
 		public:
+			// Forward declaration
+			template<uint8_t X, uint8_t Y>
+			struct ConstexprCoordinate;
+
 			/// A coordinate on the hexboard (see mockup/hexboard-coordinates-internal.svg)
 			class Coordinate : public cyvmath::Coordinate
 			{
+				template<uint8_t X, uint8_t Y>
+				friend struct ConstexprCoordinate;
+
 				private:
-					Coordinate(short X, short Y)
+					constexpr Coordinate(int8_t X, int8_t Y)
 						: cyvmath::Coordinate(X, Y)
 					{ }
 
@@ -99,13 +102,6 @@ namespace cyvmath
 					{ return isValid(m_x, m_y); }
 
 				public:
-					template<uint8_t X, uint8_t Y>
-					constexpr Coordinate(uint8<X>, uint8<Y>)
-						: cyvmath::Coordinate(X, Y)
-					{
-						static_assert(isValid(X, Y), "The given arguments are invalid.");
-					}
-
 					virtual ~Coordinate() = default;
 
 					Coordinate(const Coordinate&) = default;
@@ -285,38 +281,50 @@ namespace cyvmath
 					}
 			};
 
+			/// Compiletime-instantiated Coordinate
+			template<uint8_t X, uint8_t Y>
+			struct ConstexprCoordinate
+			{
+				static_assert(Coordinate::isValid(X, Y), "This coordinate is invalid.");
+
+				constexpr operator Coordinate()
+				{ return Coordinate(X, Y); }
+			};
+
 			/// The edge length of the hexagon (template parameter)
 			static constexpr uint8_t edgeLength = l;
 
 			/// The amount of tiles that make up the hexagon
 			static constexpr uint16_t tileCount = (l * (l - 1)) / 2 * 6 + 1;
 
-			/// Get a container with all possible coordinates in this hexagon
-			static const std::set<Coordinate>& getAllCoordinates()
-			{
-				static std::set<Coordinate> set;
-
-				if(set.empty())
-				{
-					for(auto X = 0; X < (2 * l) - 1; X++)
-					{
-						auto yBegin = (X < (l - 1)) ? (l - 1 - X) : 0;
-						auto yEnd   = (X < (l - 1)) ? (2 * l - 1) : (2 * l - 1) + (l - 1 - X);
-
-						for(auto Y = yBegin; Y < yEnd; Y++)
-						{
-							std::unique_ptr<Coordinate> c = Coordinate::create(X, Y);
-							assert(c);
-
-							auto res = set.insert(*c);
-							assert(res.second);
-						}
-					}
-				}
-
-				return set;
-			}
+			/// A container with all possible coordinates in this hexagon
+			static const std::set<Coordinate> allCoordinates;
 	};
+
+	template <uint8_t l>
+	const std::set<typename Hexagon<l>::Coordinate> Hexagon<l>::allCoordinates = [] {
+		std::set<Coordinate> set;
+
+		if(set.empty())
+		{
+			for(auto X = 0; X < (2 * l) - 1; X++)
+			{
+				auto yBegin = (X < (l - 1)) ? (l - 1 - X) : 0;
+				auto yEnd   = (X < (l - 1)) ? (2 * l - 1) : (2 * l - 1) + (l - 1 - X);
+
+				for(auto Y = yBegin; Y < yEnd; Y++)
+				{
+					std::unique_ptr<Coordinate> c = Coordinate::create(X, Y);
+					assert(c);
+
+					auto res = set.insert(*c);
+					assert(res.second);
+				}
+			}
+		}
+
+		return set;
+	}();
 }
 
 #endif // _CYVMATH_HEXAGON_HPP_
