@@ -20,6 +20,12 @@ AS_IF([test -n "$EMMAKEN_JUST_CONFIGURE"], [
 	AC_CHECK_HEADER([tntdb/connection.h], [], AC_MSG_ERROR([tntdb headers not found]))
 ])
 
+# jsoncpp < 0.7.0 doesn't support pkgconfig. If you're using an older version
+# (0.6.0 rc2 is the only other tested version though), you'll have to manually
+# define JSONCPP_CFLAGS (to e.g. "-I/usr/include/jsoncpp" for Ubuntu) and
+# JSONCPP_LIBS (to e.g. "-ljsoncpp")
+PKG_CHECK_MODULES([JSONCPP], [jsoncpp])
+
 PKG_CHECK_MODULES([CPPUNIT], [cppunit], [have_cppunit=yes], [have_cppunit=no])
 AM_CONDITIONAL([HAVE_CPPUNIT], [test "$have_cppunit" = "yes"])
 

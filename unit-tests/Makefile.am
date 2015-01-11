@@ -6,7 +6,7 @@ cyvmath_tests_SOURCES = \
 	main.cpp
 
 cyvmath_tests_CPPFLAGS = \
-	-I $(top_srcdir)/include
+	-I$(top_srcdir)/include
 
 cyvmath_tests_CXXFLAGS = \
 	$(CPPUNIT_CFLAGS)

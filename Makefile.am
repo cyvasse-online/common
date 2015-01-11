@@ -70,6 +70,5 @@ libcyvws_a_SOURCES = \
 libcyvws_a_CPPFLAGS = \
 	-I$(top_srcdir)/include
 
-# workaround for jsoncpp include directory hack in arch linux package
-libcyvws_a_CPPFLAGS += \
-	-I/usr/include/jsoncpp
+libcyvws_a_CXXFLAGS = \
+    $(JSONCPP_CFLAGS)
