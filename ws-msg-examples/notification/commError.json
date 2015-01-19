@@ -1,0 +1,7 @@
+{
+    "msgType": "notification",
+    "notificationData": {
+        "type": "commError",
+        "errMsg": "No valid msgType found"
+    }
+}
