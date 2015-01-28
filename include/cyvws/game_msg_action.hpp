@@ -18,28 +18,28 @@
 
 namespace cyvws
 {
-    enum class GameMsgAction
-    {
-        UNDEFINED,
-        END_TURN,
-        MOVE,
-        MOVE_CAPTURE,
-        PROMOTE,
-        RESIGN,
-        SET_IS_READY,
-        SET_OPENING_ARRAY,
-    };
+	enum class GameMsgAction
+	{
+		UNDEFINED,
+		END_TURN,
+		MOVE,
+		MOVE_CAPTURE,
+		PROMOTE,
+		RESIGN,
+		SET_IS_READY,
+		SET_OPENING_ARRAY,
+	};
 
-    ENUM_STR(GameMsgAction, ({
-            {GameMsgAction::UNDEFINED, "undefined"},
-            {GameMsgAction::END_TURN, "endTurn"},
-            {GameMsgAction::MOVE, "move"},
-            {GameMsgAction::MOVE_CAPTURE, "moveCapture"},
-            {GameMsgAction::PROMOTE, "promote"},
-            {GameMsgAction::RESIGN, "resign"},
-            {GameMsgAction::SET_IS_READY, "setIsReady"},
-            {GameMsgAction::SET_OPENING_ARRAY, "setOpeningArray"},
-        }),
-        GameMsgAction::UNDEFINED
-    )
+	ENUM_STR(GameMsgAction, ({
+			{GameMsgAction::UNDEFINED, "undefined"},
+			{GameMsgAction::END_TURN, "endTurn"},
+			{GameMsgAction::MOVE, "move"},
+			{GameMsgAction::MOVE_CAPTURE, "moveCapture"},
+			{GameMsgAction::PROMOTE, "promote"},
+			{GameMsgAction::RESIGN, "resign"},
+			{GameMsgAction::SET_IS_READY, "setIsReady"},
+			{GameMsgAction::SET_OPENING_ARRAY, "setOpeningArray"},
+		}),
+		GameMsgAction::UNDEFINED
+	)
 }

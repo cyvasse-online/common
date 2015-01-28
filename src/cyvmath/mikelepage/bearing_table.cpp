@@ -20,96 +20,96 @@
 
 namespace cyvmath
 {
-    namespace mikelepage
-    {
-        bool BearingTable::canTake(const Piece* atkPiece, const Piece* defPiece) const
-        {
-            assert(atkPiece);
-            assert(defPiece);
-            assert(defPiece->getType() != PieceType::MOUNTAINS);
+	namespace mikelepage
+	{
+		bool BearingTable::canTake(const Piece* atkPiece, const Piece* defPiece) const
+		{
+			assert(atkPiece);
+			assert(defPiece);
+			assert(defPiece->getType() != PieceType::MOUNTAINS);
 
-            uint8_t defenseTier = defPiece->getEffectiveDefenseTier();
+			uint8_t defenseTier = defPiece->getEffectiveDefenseTier();
 
-            if(atkPiece->getBaseTier() >= defenseTier)
-                return true;
+			if(atkPiece->getBaseTier() >= defenseTier)
+				return true;
 
-            bool haveKing = (atkPiece->getType() == PieceType::KING);
+			bool haveKing = (atkPiece->getType() == PieceType::KING);
 
-            uint8_t maxAllowedTier = haveKing ? 3 : atkPiece->getBaseTier();
-            uint8_t maxTier = 1;
+			uint8_t maxAllowedTier = haveKing ? 3 : atkPiece->getBaseTier();
+			uint8_t maxTier = 1;
 
-            auto defPieceIt = m_canBeReachedBy.find(defPiece);
+			auto defPieceIt = m_canBeReachedBy.find(defPiece);
 
-            if(defPieceIt == m_canBeReachedBy.end())
-                return false;
+			if(defPieceIt == m_canBeReachedBy.end())
+				return false;
 
-            std::map<uint8_t, uint8_t> flankingTiers {
-                {1, 0},
-                {2, 0},
-                {3, 0}
-            };
+			std::map<uint8_t, uint8_t> flankingTiers {
+				{1, 0},
+				{2, 0},
+				{3, 0}
+			};
 
-            for(const Piece* piece : defPieceIt->second)
-            {
-                auto baseTier = piece->getBaseTier();
+			for(const Piece* piece : defPieceIt->second)
+			{
+				auto baseTier = piece->getBaseTier();
 
-                if(baseTier > maxAllowedTier)
-                    continue;
+				if(baseTier > maxAllowedTier)
+					continue;
 
-                if(piece->getType() == PieceType::KING)
-                {
-                    // king will count as maxTier after the loop
-                    haveKing = true;
-                    continue;
-                }
+				if(piece->getType() == PieceType::KING)
+				{
+					// king will count as maxTier after the loop
+					haveKing = true;
+					continue;
+				}
 
-                if(baseTier > maxTier)
-                    maxTier = baseTier;
+				if(baseTier > maxTier)
+					maxTier = baseTier;
 
-                ++flankingTiers[baseTier];
-            }
+				++flankingTiers[baseTier];
+			}
 
-            if(haveKing)
-                ++flankingTiers[maxTier];
+			if(haveKing)
+				++flankingTiers[maxTier];
 
-            for(uint8_t i = 1; i < maxTier; ++i)
-                flankingTiers[i+1] += (flankingTiers[i] > 0 ? flankingTiers[i] - 1 : 0);
+			for(uint8_t i = 1; i < maxTier; ++i)
+				flankingTiers[i+1] += (flankingTiers[i] > 0 ? flankingTiers[i] - 1 : 0);
 
-            uint8_t attackTier = maxTier + flankingTiers[maxTier] - 1;
+			uint8_t attackTier = maxTier + flankingTiers[maxTier] - 1;
 
-            return attackTier >= defenseTier;
-        }
+			return attackTier >= defenseTier;
+		}
 
-        void BearingTable::init()
-        {
-            for(auto it : m_pieceMap)
-            {
-                auto piece = it.second.get();
+		void BearingTable::init()
+		{
+			for(auto it : m_pieceMap)
+			{
+				auto piece = it.second.get();
 
-                if(piece->getType() != PieceType::MOUNTAINS &&
-                   piece->getType() != PieceType::DRAGON)
-                {
-                    auto reachableOpPieces = piece->getReachableOpponentPieces();
+				if(piece->getType() != PieceType::MOUNTAINS &&
+				   piece->getType() != PieceType::DRAGON)
+				{
+					auto reachableOpPieces = piece->getReachableOpponentPieces();
 
-                    if(!reachableOpPieces.empty())
-                    {
-                        for(const Piece* opPiece : reachableOpPieces)
-                        {
-                            auto opPieceIt = m_canBeReachedBy.find(opPiece);
-                            if(opPieceIt == m_canBeReachedBy.end())
-                            {
-                                auto res = m_canBeReachedBy.emplace(opPiece, std::set<const Piece*>{piece});
-                                assert(res.second);
-                            }
-                            else
-                            {
-                                auto res = opPieceIt->second.insert(piece);
-                                assert(res.second);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+					if(!reachableOpPieces.empty())
+					{
+						for(const Piece* opPiece : reachableOpPieces)
+						{
+							auto opPieceIt = m_canBeReachedBy.find(opPiece);
+							if(opPieceIt == m_canBeReachedBy.end())
+							{
+								auto res = m_canBeReachedBy.emplace(opPiece, std::set<const Piece*>{piece});
+								assert(res.second);
+							}
+							else
+							{
+								auto res = opPieceIt->second.insert(piece);
+								assert(res.second);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }

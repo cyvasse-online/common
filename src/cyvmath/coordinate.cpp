@@ -18,12 +18,12 @@
 
 namespace cyvmath
 {
-    std::string Coordinate::toString() const
-    {
-        std::string ret;
-        ret.append(1, char(m_x) + 'A');
-        ret.append(std::to_string(int(m_y + 1)));
+	std::string Coordinate::toString() const
+	{
+		std::string ret;
+		ret.append(1, char(m_x) + 'A');
+		ret.append(std::to_string(int(m_y + 1)));
 
-        return ret;
-    }
+		return ret;
+	}
 }

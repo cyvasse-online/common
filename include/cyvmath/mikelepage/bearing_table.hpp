@@ -23,42 +23,42 @@
 
 namespace cyvmath
 {
-    namespace mikelepage
-    {
-        class BearingTable
-        {
-            private:
-                typedef std::map<const Piece*, std::set<const Piece*>> BearingMap;
+	namespace mikelepage
+	{
+		class BearingTable
+		{
+			private:
+				typedef std::map<const Piece*, std::set<const Piece*>> BearingMap;
 
-                CoordPieceMap& m_pieceMap;
+				CoordPieceMap& m_pieceMap;
 
-                BearingMap m_canBeReachedBy;
+				BearingMap m_canBeReachedBy;
 
-                void addCanReach(const Piece*);
-                void addCanBeReachedBy(const Piece*);
+				void addCanReach(const Piece*);
+				void addCanBeReachedBy(const Piece*);
 
-            public:
-                BearingTable(CoordPieceMap& pieceMap)
-                    : m_pieceMap(pieceMap)
-                { }
+			public:
+				BearingTable(CoordPieceMap& pieceMap)
+					: m_pieceMap(pieceMap)
+				{ }
 
-                // non-copyable
-                BearingTable(const BearingTable&) = delete;
-                BearingTable& operator=(const BearingTable&) = delete;
+				// non-copyable
+				BearingTable(const BearingTable&) = delete;
+				BearingTable& operator=(const BearingTable&) = delete;
 
-                bool canTake(const Piece* attackingPiece, const Piece* defendingPiece) const;
+				bool canTake(const Piece* attackingPiece, const Piece* defendingPiece) const;
 
-                void init();
-                void clear()
-                { m_canBeReachedBy.clear(); }
+				void init();
+				void clear()
+				{ m_canBeReachedBy.clear(); }
 
-                void update()
-                {
-                    clear();
-                    init();
-                }
-        };
-    }
+				void update()
+				{
+					clear();
+					init();
+				}
+		};
+	}
 }
 
 #endif // _CYVMATH_MIKELEPAGE_BEARING_TABLE_HPP_

@@ -18,18 +18,18 @@
 
 namespace cyvws
 {
-    enum class UserType
-    {
-        UNDEFINED,
-        PLAYER,
-        SPECTATOR,
-    };
+	enum class UserType
+	{
+		UNDEFINED,
+		PLAYER,
+		SPECTATOR,
+	};
 
-    ENUM_STR(UserType, ({
-            {UserType::UNDEFINED, "undefined"},
-            {UserType::PLAYER, "player"},
-            {UserType::SPECTATOR, "spectator"},
-        }),
-        UserType::UNDEFINED
-    )
+	ENUM_STR(UserType, ({
+			{UserType::UNDEFINED, "undefined"},
+			{UserType::PLAYER, "player"},
+			{UserType::SPECTATOR, "spectator"},
+		}),
+		UserType::UNDEFINED
+	)
 }
