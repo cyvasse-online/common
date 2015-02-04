@@ -11,22 +11,6 @@ noinst_LIBRARIES = \
 	libcyvws.a
 
 libcyvmath_a_SOURCES = \
-	include/cyvmath/coordinate.hpp \
-	include/cyvmath/hexagon.hpp \
-	include/cyvmath/match.hpp \
-	include/cyvmath/piece_type.hpp \
-	include/cyvmath/piece.hpp \
-	include/cyvmath/player.hpp \
-	include/cyvmath/players_color.hpp \
-	include/cyvmath/rule_set_create.hpp \
-	include/cyvmath/rule_sets.hpp \
-	include/cyvmath/mikelepage/bearing_table.hpp \
-	include/cyvmath/mikelepage/fortress.hpp \
-	include/cyvmath/mikelepage/match.hpp \
-	include/cyvmath/mikelepage/piece.hpp \
-	include/cyvmath/mikelepage/player.hpp \
-	include/cyvmath/terrain_type.hpp \
-	include/cyvmath/terrain.hpp \
 	src/cyvmath/coordinate.cpp \
 	src/cyvmath/players_color.cpp \
 	src/cyvmath/rule_set_create.cpp \
@@ -46,9 +30,6 @@ noinst_LIBRARIES += \
 	libcyvdb.a
 
 libcyvdb_a_SOURCES = \
-	include/cyvdb/config.hpp \
-	include/cyvdb/match_manager.hpp \
-	include/cyvdb/player_manager.hpp \
 	src/cyvdb/match_manager.cpp \
 	src/cyvdb/player_manager.cpp
 
@@ -59,12 +40,6 @@ endif # BUILD_CYVDB
 
 
 libcyvws_a_SOURCES = \
-	include/cyvws/create_json.hpp \
-	include/cyvws/game_msg_action.hpp \
-	include/cyvws/msg_type.hpp \
-	include/cyvws/notification_type.hpp \
-	include/cyvws/server_request_action.hpp \
-	include/cyvws/user_type.hpp \
 	src/cyvws/create_json.cpp
 
 libcyvws_a_CPPFLAGS = \
