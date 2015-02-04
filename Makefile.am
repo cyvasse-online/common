@@ -40,7 +40,7 @@ endif # BUILD_CYVDB
 
 
 libcyvws_a_SOURCES = \
-	src/cyvws/create_json.cpp
+	src/cyvws/json_game_msg.cpp
 
 libcyvws_a_CPPFLAGS = \
 	-I$(top_srcdir)/include

@@ -14,13 +14,15 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cyvws/create_json.hpp>
+#include <cyvws/json_game_msg.hpp>
 
 using namespace cyvmath;
 
 namespace cyvws
 {
-	Json::Value createJsonPiecePosition(PieceType pieceType, const Coordinate& pos)
+namespace json
+{
+	Json::Value piecePosition(PieceType pieceType, const Coordinate& pos)
 	{
 		if(pieceType == PieceType::UNDEFINED)
 			throw std::invalid_argument("cyvws::createJsonPiecePosition: pieceType is undefined");
@@ -32,7 +34,7 @@ namespace cyvws
 		return data;
 	}
 
-	Json::Value createJsonPieceMovement(PieceType pieceType, const Coordinate& oldPos, const Coordinate& newPos)
+	Json::Value pieceMovement(PieceType pieceType, const Coordinate& oldPos, const Coordinate& newPos)
 	{
 		if(pieceType == PieceType::UNDEFINED)
 			throw std::invalid_argument("cyvws::createJsonPieceMovement: pieceType is undefined");
@@ -45,7 +47,7 @@ namespace cyvws
 		return data;
 	}
 
-	Json::Value createJsonPromotion(PieceType origType, PieceType newType)
+	Json::Value promotion(PieceType origType, PieceType newType)
 	{
 		if(origType == PieceType::UNDEFINED)
 			throw std::invalid_argument("cyvws::createJsonPromotion: origType is undefined");
@@ -59,11 +61,12 @@ namespace cyvws
 		return data;
 	}
 
-	Json::Value createJsonPiecePosition(const Piece& piece)
+	Json::Value piecePosition(const Piece& piece)
 	{
 		if(!piece.getCoord())
 			throw std::invalid_argument("cyvws::createJsonPiecePosition: piece has coordinate");
 
-		return createJsonPiecePosition(piece.getType(), *piece.getCoord());
+		return piecePosition(piece.getType(), *piece.getCoord());
 	}
+}
 }

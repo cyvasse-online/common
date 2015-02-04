@@ -22,12 +22,13 @@
 
 namespace cyvws
 {
-	Json::Value createJsonPiecePosition(cyvmath::PieceType, const cyvmath::Coordinate&);
-	Json::Value createJsonPieceMovement(cyvmath::PieceType, const cyvmath::Coordinate& oldPos,
-	                                    const cyvmath::Coordinate& newPos);
+namespace json
+{
+	Json::Value piecePosition(cyvmath::PieceType, const cyvmath::Coordinate&);
+	Json::Value pieceMovement(cyvmath::PieceType, const cyvmath::Coordinate& oldPos, const cyvmath::Coordinate& newPos);
 
 	template<class PieceMap>
-	Json::Value createJsonOpeningArray(const PieceMap& pieces)
+	Json::Value openingArray(const PieceMap& pieces)
 	{
 		static_assert(std::is_convertible<typename PieceMap::key_type, cyvmath::Coordinate>::value,
 			"PieceMap has to have a type convertible to cyvmath::Coordinate as key_type");
@@ -47,8 +48,9 @@ namespace cyvws
 		return data;
 	}
 
-	Json::Value createJsonPromotion(cyvmath::PieceType origType, cyvmath::PieceType newType);
+	Json::Value promotion(cyvmath::PieceType origType, cyvmath::PieceType newType);
 
 	// convenience overloads
-	Json::Value createJsonPiecePosition(const cyvmath::Piece& piece);
+	Json::Value piecePosition(const cyvmath::Piece& piece);
+}
 }
