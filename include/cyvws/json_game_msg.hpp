@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -14,43 +14,68 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <type_traits>
+#ifndef _CYVWS_JSON_GAME_MSG_HPP_
+#define _CYVWS_JSON_GAME_MSG_HPP_
+
+#include <map>
 #include <json/value.h>
 #include <cyvmath/coordinate.hpp>
 #include <cyvmath/piece_type.hpp>
 #include <cyvmath/piece.hpp>
+#include "game_msg_action.hpp"
 
 namespace cyvws
 {
-namespace json
-{
-	Json::Value piecePosition(cyvmath::PieceType, const cyvmath::Coordinate&);
-	Json::Value pieceMovement(cyvmath::PieceType, const cyvmath::Coordinate& oldPos, const cyvmath::Coordinate& newPos);
-
-	template<class PieceMap>
-	Json::Value openingArray(const PieceMap& pieces)
+	struct PiecePosition
 	{
-		static_assert(std::is_convertible<typename PieceMap::key_type, cyvmath::Coordinate>::value,
-			"PieceMap has to have a type convertible to cyvmath::Coordinate as key_type");
-		static_assert(std::is_convertible<typename PieceMap::mapped_type, std::shared_ptr<cyvmath::Piece>>::value,
-			"PieceMap has to have a type convertible to std::shared_ptr<cyvmath::Piece> as mapped_type");
+		cyvmath::PieceType pieceType;
+		cyvmath::Coordinate pos;
+	};
 
-		Json::Value data;
+	struct PieceMovement
+	{
+		cyvmath::PieceType pieceType;
+		cyvmath::Coordinate oldPos;
+		cyvmath::Coordinate newPos;
+	};
 
-		for(auto&& it : pieces)
-		{
-			auto pieceTypeStr = PieceTypeToStr(it.second->getType());
-			auto coordStr = it.first.toString();
+	struct Promotion
+	{
+		cyvmath::PieceType origType;
+		cyvmath::PieceType newType;
+	};
 
-			data[pieceTypeStr].append(coordStr);
-		}
+	namespace json
+	{
+		Json::Value piecePosition(cyvmath::PieceType pieceType, cyvmath::Coordinate pos);
+		PiecePosition piecePosition(const Json::Value&);
 
-		return data;
+		Json::Value pieceMovement(cyvmath::PieceType pieceType, cyvmath::Coordinate oldPos, cyvmath::Coordinate newPos);
+		PieceMovement pieceMovement(const Json::Value&);
+
+		template <class piece_t>
+		Json::Value openingArray(const std::map<cyvmath::Coordinate, piece_t>&);
+		template <class piece_t>
+		std::map<cyvmath::Coordinate, piece_t> openingArray(const Json::Value&);
+
+		Json::Value promotion(cyvmath::PieceType origType, cyvmath::PieceType newType);
+		Promotion promotion(const Json::Value&);
+
+		// convenience overloads
+		Json::Value piecePosition(const cyvmath::Piece&);
+
+		// complete message assembling
+		Json::Value gameMsg(GameMsgAction action, Json::Value param);
+
+		template <class piece_t>
+		Json::Value gameMsgSetOpeningArray(const std::map<cyvmath::Coordinate, piece_t>& pieces);
+
+		Json::Value gameMsgSetIsReady(bool val);
+		Json::Value gameMsgMove(cyvmath::PieceType pieceType, cyvmath::Coordinate oldPos, cyvmath::Coordinate newPos);
+		Json::Value gameMsgPromote(cyvmath::PieceType origType, cyvmath::PieceType newType);
 	}
-
-	Json::Value promotion(cyvmath::PieceType origType, cyvmath::PieceType newType);
-
-	// convenience overloads
-	Json::Value piecePosition(const cyvmath::Piece& piece);
 }
-}
+
+#include "json_game_msg.inl"
+
+#endif // _CYVWS_JSON_GAME_MSG_HPP_

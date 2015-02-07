@@ -14,6 +14,9 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef _CYVWS_GAME_MSG_ACTION_HPP_
+#define _CYVWS_GAME_MSG_ACTION_HPP_
+
 #include "enum_str.hpp"
 
 namespace cyvws
@@ -43,3 +46,5 @@ namespace cyvws
 		GameMsgAction::UNDEFINED
 	)
 }
+
+#endif // _CYVWS_GAME_MSG_ACTION_HPP_

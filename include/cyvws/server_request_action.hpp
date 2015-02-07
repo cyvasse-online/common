@@ -14,6 +14,9 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef _CYVWS_SERVER_REQUEST_ACTION_HPP_
+#define _CYVWS_SERVER_REQUEST_ACTION_HPP_
+
 #include "enum_str.hpp"
 
 namespace cyvws
@@ -39,3 +42,5 @@ namespace cyvws
 		ServerRequestAction::UNDEFINED
 	)
 }
+
+#endif // _CYVWS_SERVER_REQUEST_ACTION_HPP_

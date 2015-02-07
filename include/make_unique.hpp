@@ -1,6 +1,6 @@
 /* Copyright 2014 Jonas Platte
  *
- * This file is NO part of Cyvasse Online or cyvmath.
+ * This file is NO part of Cyvasse Online or cyvasse-common.
  *
  * Use it however you want to.
  */

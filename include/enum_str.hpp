@@ -14,8 +14,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_ENUM_STR_HPP_
-#define _CYVMATH_ENUM_STR_HPP_
+#ifndef _ENUM_STR_HPP_
+#define _ENUM_STR_HPP_
 
 #include <initializer_list>
 #include <map>
@@ -65,4 +65,4 @@ std::map<std::string, const EnumT> swapFirstSecond(initMap<EnumT> orig)
 		return it->second; \
 	}
 
-#endif // _CYVMATH_ENUM_STR_HPP_
+#endif // _ENUM_STR_HPP_

@@ -14,6 +14,9 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef _CYVWS_USER_TYPE_HPP_
+#define _CYVWS_USER_TYPE_HPP_
+
 #include "enum_str.hpp"
 
 namespace cyvws
@@ -33,3 +36,5 @@ namespace cyvws
 		UserType::UNDEFINED
 	)
 }
+
+#endif // _CYVWS_USER_TYPE_HPP_

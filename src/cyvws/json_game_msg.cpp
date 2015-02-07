@@ -16,57 +16,103 @@
 
 #include <cyvws/json_game_msg.hpp>
 
+#include <cyvws/msg_type.hpp>
+
 using namespace cyvmath;
 
 namespace cyvws
 {
-namespace json
-{
-	Json::Value piecePosition(PieceType pieceType, const Coordinate& pos)
+	namespace json
 	{
-		if(pieceType == PieceType::UNDEFINED)
-			throw std::invalid_argument("cyvws::createJsonPiecePosition: pieceType is undefined");
+		Json::Value piecePosition(PieceType pieceType, Coordinate pos)
+		{
+			if(pieceType == PieceType::UNDEFINED)
+				throw std::invalid_argument("cyvws::json::piecePosition: piece type is undefined");
 
-		Json::Value data;
-		data["pieceType"] = PieceTypeToStr(pieceType);
-		data["pos"]	   = pos.toString();
+			Json::Value data;
+			data["pieceType"] = PieceTypeToStr(pieceType);
+			data["pos"]	      = pos.toString();
 
-		return data;
+			return data;
+		}
+
+		PiecePosition piecePosition(const Json::Value& val)
+		{
+			return {
+				StrToPieceType(val["pieceType"].asString()),
+				Coordinate(val["pos"].asString())
+			};
+		}
+
+		Json::Value pieceMovement(PieceType pieceType, Coordinate oldPos, Coordinate newPos)
+		{
+			if(pieceType == PieceType::UNDEFINED)
+				throw std::invalid_argument("cyvws::json::pieceMovement: pieceType is undefined");
+
+			Json::Value data;
+			data["pieceType"] = PieceTypeToStr(pieceType);
+			data["oldPos"]    = oldPos.toString();
+			data["newPos"]    = newPos.toString();
+
+			return data;
+		}
+
+		PieceMovement pieceMovement(const Json::Value& val)
+		{
+			return {
+				StrToPieceType(val["pieceType"].asString()),
+				Coordinate(val["oldPos"].asString()),
+				Coordinate(val["newPos"].asString())
+			};
+		}
+
+		Json::Value promotion(PieceType origType, PieceType newType)
+		{
+			if(origType == PieceType::UNDEFINED)
+				throw std::invalid_argument("cyvws::json::promotion: origType is undefined");
+			if(newType == PieceType::UNDEFINED)
+				throw std::invalid_argument("cyvws::json::promotion: newType is undefined");
+
+			Json::Value data;
+			data["origType"] = PieceTypeToStr(origType);
+			data["newType"]  = PieceTypeToStr(newType);
+
+			return data;
+		}
+
+		Promotion promotion(const Json::Value& val)
+		{
+			return {
+				StrToPieceType(val["origType"].asString()),
+				StrToPieceType(val["newType"].asString())
+			};
+		}
+
+		Json::Value piecePosition(const Piece& piece)
+		{
+			if(!piece.getCoord())
+				throw std::invalid_argument("cyvws::json::piecePosition: piece has coordinate");
+
+			return piecePosition(piece.getType(), *piece.getCoord());
+		}
+
+		Json::Value gameMsg(GameMsgAction action, Json::Value param)
+		{
+			Json::Value msg;
+			msg["msgType"] = MsgTypeToStr(MsgType::GAME_MSG);
+			msg["msgData"]["action"] = GameMsgActionToStr(action);
+			msg["msgData"]["param"]  = param;
+
+			return msg;
+		}
+
+		Json::Value gameMsgSetIsReady(bool val)
+		{ return gameMsg(GameMsgAction::SET_IS_READY, val); }
+
+		Json::Value gameMsgMove(PieceType pieceType, Coordinate oldPos, Coordinate newPos)
+		{ return gameMsg(GameMsgAction::MOVE, pieceMovement(pieceType, oldPos, newPos)); }
+
+		Json::Value gameMsgPromote(PieceType origType, PieceType newType)
+		{ return gameMsg(GameMsgAction::PROMOTE, promotion(origType, newType)); }
 	}
-
-	Json::Value pieceMovement(PieceType pieceType, const Coordinate& oldPos, const Coordinate& newPos)
-	{
-		if(pieceType == PieceType::UNDEFINED)
-			throw std::invalid_argument("cyvws::createJsonPieceMovement: pieceType is undefined");
-
-		Json::Value data;
-		data["pieceType"] = PieceTypeToStr(pieceType);
-		data["oldPos"]    = oldPos.toString();
-		data["newPos"]    = newPos.toString();
-
-		return data;
-	}
-
-	Json::Value promotion(PieceType origType, PieceType newType)
-	{
-		if(origType == PieceType::UNDEFINED)
-			throw std::invalid_argument("cyvws::createJsonPromotion: origType is undefined");
-		if(newType == PieceType::UNDEFINED)
-			throw std::invalid_argument("cyvws::createJsonPromotion: newType is undefined");
-
-		Json::Value data;
-		data["origType"] = PieceTypeToStr(origType);
-		data["newType"]  = PieceTypeToStr(newType);
-
-		return data;
-	}
-
-	Json::Value piecePosition(const Piece& piece)
-	{
-		if(!piece.getCoord())
-			throw std::invalid_argument("cyvws::createJsonPiecePosition: piece has coordinate");
-
-		return piecePosition(piece.getType(), *piece.getCoord());
-	}
-}
 }
