@@ -16,6 +16,7 @@
 
 #include <cyvmath/mikelepage/match.hpp>
 
+#include <stdexcept>
 #include <cyvmath/hexagon.hpp>
 #include <cyvmath/mikelepage/fortress.hpp>
 

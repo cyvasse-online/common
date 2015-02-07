@@ -17,6 +17,7 @@
 #ifndef _CYVMATH_COORDINATE_HPP_
 #define _CYVMATH_COORDINATE_HPP_
 
+#include <stdexcept>
 #include <string>
 #include <valarray>
 #include <cstdint>
@@ -28,12 +29,27 @@ namespace cyvmath
 		protected:
 			int8_t m_x, m_y;
 
+		public:
 			constexpr Coordinate(int8_t X, int8_t Y)
-				: m_x(X)
-				, m_y(Y)
+				: m_x(X > 25 ? throw std::invalid_argument("Coordinate(X, Y): X (" + std::to_string(X) + ") out of range") : X)
+				, m_y(Y > 25 ? throw std::invalid_argument("Coordinate(X, Y): Y (" + std::to_string(Y) + ") out of range") : Y)
 			{ }
 
-		public:
+			Coordinate(std::string str);
+
+			template<class T>
+			Coordinate(typename std::valarray<T> a)
+			{
+				if(a.size() != 2)
+					throw std::invalid_argument("Invalid std::valarray for Coordinate construction");
+
+				if(a[0] > 25 || a[1] > 25)
+					throw std::invalid_argument("Coordinate (" + std::to_string(a[0]) + ", " + std::to_string(a[1]) + ") is not valid");
+
+				m_x = a[0];
+				m_y = a[1];
+			}
+
 			virtual ~Coordinate() = default;
 
 			Coordinate(const Coordinate&) = default;

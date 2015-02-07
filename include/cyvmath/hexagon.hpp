@@ -25,8 +25,6 @@
 #include <set>
 #include <string>
 #include <stdexcept>
-#include <type_traits>
-#include <valarray>
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
@@ -64,45 +62,57 @@ namespace cyvmath
 	template <uint8_t l>
 	class Hexagon
 	{
-		/* The smallest possible hexagon has 7 tiles and an edge lenth of 2
-		   The largest possible hexagon in which the highest X and Y can be represented
-		   using a signed 8 bit integer has an edge length of 64 (=> width and height 127)
-		 */
+		// A hexagon of size 1 is a single square which definitely makes no sense
 		static_assert(l >= 2,  "The minimum size of the hexagon edge length is 2.");
-		static_assert(l <= 64, "The maximum size of the hexagon edge length is 64.");
+
+		// The biggest hexagon coordinate parts will always have the value l * 2 - 1
+		// l = 13 thus is the biggest possible edge length when one part
+		// of the coordinate is represented as a single character from A to Z
+		static_assert(l <= 13, "The maximum size of the hexagon edge length is 13.");
 
 		private:
 			Hexagon() = delete;
 
 		public:
-			// Forward declaration
-			template<uint8_t X, uint8_t Y>
-			struct ConstexprCoordinate;
-
 			/// A coordinate on the hexboard (see mockup/hexboard-coordinates-internal.svg)
 			class Coordinate : public cyvmath::Coordinate
 			{
-				template<uint8_t X, uint8_t Y>
-				friend struct ConstexprCoordinate;
-
 				private:
-					constexpr Coordinate(int8_t X, int8_t Y)
-						: cyvmath::Coordinate(X, Y)
-					{ }
-
 					static constexpr bool isValid(int8_t X, int8_t Y)
 					{
 						return X >= 0 && X < (l * 2 - 1) &&
-							   Y >= 0 && Y < (l * 2 - 1) &&
-							   (X + Y) >= (l - 1) &&
-							   (X + Y) <= (l - 1) * 3;
+						       Y >= 0 && Y < (l * 2 - 1) &&
+						       (X + Y) >= (l - 1) &&
+						       (X + Y) <= (l - 1) * 3;
 					}
 
 					bool isValid() const
 					{ return isValid(m_x, m_y); }
 
 				public:
-					virtual ~Coordinate() = default;
+					constexpr Coordinate(int8_t X, int8_t Y)
+						: cyvmath::Coordinate(
+							!isValid(X, Y)
+								? throw std::invalid_argument("Invalid Hexagon<" + std::to_string(l) + ">"
+									"::Coordinate : (" + std::to_string(X) + ", " + std::to_string(Y) + ")")
+								: X, Y
+						)
+					{ }
+
+					/// Create a Coordinate object from a coordinate in the public notation
+					Coordinate(std::string str)
+						: cyvmath::Coordinate(str)
+					{
+						if(!isValid())
+						{
+							throw std::invalid_argument("Invalid Hexagon<" + std::to_string(l) + ">"
+								"::Coordinate : (" + std::to_string(m_x) + ", " + std::to_string(m_y) + ")");
+						}
+					}
+
+					Coordinate(const cyvmath::Coordinate& other)
+						: Coordinate(other.x(), other.y())
+					{ }
 
 					Coordinate(const Coordinate&) = default;
 					Coordinate(Coordinate&&) = default;
@@ -110,15 +120,13 @@ namespace cyvmath
 					Coordinate& operator=(const Coordinate&) = default;
 					Coordinate& operator=(Coordinate&&) = default;
 
-					Coordinate(const cyvmath::Coordinate& other)
-						: cyvmath::Coordinate(other.x(), other.y())
-					{ }
+					virtual ~Coordinate() = default;
 
 					constexpr int8_t z() const
 					{ return -(m_x + m_y); }
 
 					/** Get the distance to another coordinate in form of the amount
-						of single moves to adjacent tiles required to move there
+					    of single moves to adjacent tiles required to move there
 					 */
 					constexpr int8_t getDistance(Coordinate other) const
 					{
@@ -150,10 +158,10 @@ namespace cyvmath
 					}
 
 					/** Like getDistance(), but return -1 if the given coordinate
-						is not reachable in one orthogonal move
+					    is not reachable in one orthogonal move
 
-						An orthogonal move is a straight move in one of the six
-						directions of the neighboring hex-tiles.
+					    An orthogonal move is a straight move in one of the six
+					    directions of the neighboring hex-tiles.
 					 */
 					constexpr int8_t getDistanceOrthogonal(Coordinate other) const
 					{ return isOrthogonal(other) ? getDistance(other) : -1; }
@@ -169,8 +177,8 @@ namespace cyvmath
 						#define dZ z() - other.z()
 
 						return dX == dY ||
-							   dY == dZ ||
-							   dZ == dX;
+						       dY == dZ ||
+						       dZ == dX;
 
 						#undef dX
 						#undef dY
@@ -200,21 +208,21 @@ namespace cyvmath
 					}
 
 					/** Get the diagonal distance to a coordinate, or -1 if
-						the coordinate isn't reachable in one diagonal move
+					    the coordinate isn't reachable in one diagonal move
 
-						A diagonal move is a straight move in one of the six
-						directions of the lines between the neighboring hex-tiles.
+					    A diagonal move is a straight move in one of the six
+					    directions of the lines between the neighboring hex-tiles.
 					 */
 					constexpr int8_t getDistanceDiagonal(Coordinate other) const
 					{ return isDiagonal(other) ? getDistance(other) / 2 : -1; }
 
 					/** Get the distance to another coordinate with the same distance to
-						the center Coordinate along the line of these coordinates, or -1
-						if the coordinate isn't reachable while only moving on that line.
+					    the center Coordinate along the line of these coordinates, or -1
+					    if the coordinate isn't reachable while only moving on that line.
 
-						All possible movement targets here are along a hexagonal line.
-						The direct distance from this coordinate to another one on that
-						line may be different than the distance along the line.
+					    All possible movement targets here are along a hexagonal line.
+					    The direct distance from this coordinate to another one on that
+					    line may be different than the distance along the line.
 					 */
 					int8_t getDistanceHexagonalLine(Coordinate other, Coordinate center) const
 					{
@@ -244,9 +252,8 @@ namespace cyvmath
 					/// If the coordinte is invalid, return nullptr
 					static constexpr std::unique_ptr<Coordinate> create(int8_t X, int8_t Y)
 					{
-						// can't use make_unique because private constructor has to be called directly
 						return isValid(X, Y)
-							? std::unique_ptr<Coordinate>(new Coordinate(X, Y))
+							? make_unique<Coordinate>(X, Y)
 							: nullptr;
 					}
 
@@ -257,38 +264,6 @@ namespace cyvmath
 						return create(a[0], a[1]);
 					}
 					/// @}
-
-					/// Create a Coordinate object from a coordinate in the public notation
-					/// (see mockup/hexboard-coordinates-public.svg)
-					static std::unique_ptr<Coordinate> createFromStr(const std::string& str)
-					{
-						// This function will currently fail on hexagons with l > 13 because there
-						// would be multiple letters for the y coordinate in the public notation.
-						// TODO: Decide on whether to set a maximum l of 13 or to alter this function
-
-						if(str.length() < 2)
-							return nullptr;
-
-						/* X: When using char's for calculations, their ASCII values are used,
-							  and as the uppercase letters are consecutive in the ASCII table,
-							  this will result in 0 for 'A', 1 for 'B' and so on.
-							  We don't accept lowercase letters.
-						   Y: Public coordinate notation starts with 1, we start with 0
-						 */
-						return std::unique_ptr<Coordinate>(
-							new Coordinate(str.at(0) - 'A', std::stoi(str.substr(1)) - 1)
-						);
-					}
-			};
-
-			/// Compiletime-instantiated Coordinate
-			template<uint8_t X, uint8_t Y>
-			struct ConstexprCoordinate
-			{
-				static_assert(Coordinate::isValid(X, Y), "This coordinate is invalid.");
-
-				constexpr operator Coordinate()
-				{ return Coordinate(X, Y); }
 			};
 
 			/// The edge length of the hexagon (template parameter)
@@ -314,10 +289,7 @@ namespace cyvmath
 
 				for(auto Y = yBegin; Y < yEnd; Y++)
 				{
-					std::unique_ptr<Coordinate> c = Coordinate::create(X, Y);
-					assert(c);
-
-					auto res = set.insert(*c);
+					auto res = set.emplace(X, Y);
 					assert(res.second);
 				}
 			}

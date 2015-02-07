@@ -16,14 +16,22 @@
 
 #include <cyvmath/coordinate.hpp>
 
+using namespace std;
+
 namespace cyvmath
 {
-	std::string Coordinate::toString() const
-	{
-		std::string ret;
-		ret.append(1, char(m_x) + 'A');
-		ret.append(std::to_string(int(m_y + 1)));
+	/* X: When using char's for calculations, their ASCII values are used,
+	      and as the uppercase letters are consecutive in the ASCII table,
+	      this will result in 0 for 'A', 1 for 'B' and so on.
+	      We don't accept lowercase letters.
+	   Y: Public coordinate notation starts with 1, we start with 0 => " - 1"
+	*/
+	Coordinate::Coordinate(string str)
+		: Coordinate(str.at(0) - 'A', std::stoi(str.substr(1)) - 1)
+	{ }
 
-		return ret;
+	string Coordinate::toString() const
+	{
+		return string(1, static_cast<char>(m_x + 'A')) + to_string(static_cast<int>(m_y + 1));
 	}
 }

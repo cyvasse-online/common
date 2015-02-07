@@ -397,12 +397,7 @@ namespace cyvmath
 						tmpTileState = tileIt->second;
 
 						if(tmpTileState == TileState::EMPTY || tmpTileState == TileState::OP_OCCUPIED)
-						{
-							auto coord = HexCoordinate::create(tileIt->first);
-							assert(coord);
-
-							ret.emplace(*coord, tileIt->second);
-						}
+							ret.emplace(HexCoordinate(tileIt->first), tileIt->second);
 
 						if(tmpTileState != TileState::EMPTY)
 							break;

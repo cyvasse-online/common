@@ -17,6 +17,7 @@
 #ifndef _CYVMATH_MATCH_HPP_
 #define _CYVMATH_MATCH_HPP_
 
+#include <array>
 #include <map>
 #include <memory>
 #include <string>
