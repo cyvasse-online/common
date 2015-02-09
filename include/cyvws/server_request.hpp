@@ -21,6 +21,8 @@
 
 namespace cyvws
 {
+	const std::string REQUEST_DATA = "requestData";
+
 	namespace ServerRequestAction
 	{
 		const std::string

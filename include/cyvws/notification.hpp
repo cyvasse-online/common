@@ -31,6 +31,15 @@ namespace cyvws
 			USER_JOINED = "userJoined",
 			USER_LEFT   = "userLeft";
 	}
+
+	const std::string LISTS = "lists";
+
+	namespace GameList
+	{
+		const std::string
+			OPEN_RANDOM_GAMES    = "openRandomGames",
+			RUNNING_PUBLIC_GAMES = "runningPublicGames";
+	}
 }
 
 #endif // _CYVWS_NOTIFICATION_HPP_

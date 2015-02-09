@@ -22,10 +22,20 @@
 namespace cyvws
 {
 	const std::string
+		ACTION      = "action",
+		COLOR       = "color",
 		ERR_MSG     = "errMsg",
 		ERR_DETAILS = "errDetails",
 		MATCH_ID    = "matchID",
+		MSG_DATA    = "msgData",
+		PARAM       = "param",
 		PLAYER_ID   = "playerID",
+		PUBLIC      = "public",
+		RANDOM      = "random",
+		REGISTERED  = "registered",
+		ROLE        = "role",
+		RULE_SET    = "ruleSet",
+		SCREEN_NAME = "screenName",
 		SUCCESS     = "success",
 		TYPE        = "type";
 }

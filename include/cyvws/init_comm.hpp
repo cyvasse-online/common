@@ -14,25 +14,14 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVWS_SERVER_REPLY_HPP_
-#define _CYVWS_SERVER_REPLY_HPP_
+#ifndef _CYVWS_INIT_COMM_HPP_
+#define _CYVWS_INIT_COMM_HPP_
 
 #include <string>
 
 namespace cyvws
 {
-	const std::string REPLY_DATA = "replyData";
-
-	namespace ServerReplyErrMsg
-	{
-		const std::string
-			CONN_IN_USE         = "connInUse",
-			GAME_EMPTY          = "gameEmpty",
-			GAME_FULL           = "gameFull",
-			GAME_NOT_FOUND      = "gameNotFound",
-			LIST_DOES_NOT_EXIST = "listDoesNotExist",
-			DIFF_MAJOR_PROT_V   = "differingMajorProtVersion";
-	}
+	const std::string PROTOCOL_VERSION = "protocolVersion";
 }
 
-#endif // _CYVWS_SERVER_REPLY_HPP_
+#endif // _CYVWS_INIT_COMM_HPP_
