@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -14,27 +14,29 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVWS_USER_TYPE_HPP_
-#define _CYVWS_USER_TYPE_HPP_
+#ifndef _CYVWS_MSG_HPP_
+#define _CYVWS_MSG_HPP_
 
-#include "enum_str.hpp"
+#include <string>
 
 namespace cyvws
 {
-	enum class UserType
-	{
-		UNDEFINED,
-		PLAYER,
-		SPECTATOR,
-	};
+	const std::string
+		MSG_TYPE = "msgType",
+		MSG_ID   = "msgID";
 
-	ENUM_STR(UserType, ({
-			{UserType::UNDEFINED, "undefined"},
-			{UserType::PLAYER, "player"},
-			{UserType::SPECTATOR, "spectator"},
-		}),
-		UserType::UNDEFINED
-	)
+	namespace MsgType
+	{
+		const std::string
+			CHAT_MSG       = "chatMsg",
+			CHAT_MSG_ACK   = "chatMsgAck",
+			GAME_MSG       = "gameMsg",
+			GAME_MSG_ACK   = "gameMsgAck",
+			GAME_MSG_ERR   = "gameMsgErr",
+			NOTIFICATION   = "notification",
+			SERVER_REPLY   = "serverReply",
+			SERVER_REQUEST = "serverRequest";
+	}
 }
 
-#endif // _CYVWS_USER_TYPE_HPP_
+#endif // _CYVWS_MSG_HPP_

@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -14,29 +14,23 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVWS_NOTIFICATION_TYPE_HPP_
-#define _CYVWS_NOTIFICATION_TYPE_HPP_
+#ifndef _CYVWS_NOTIFICATION_HPP_
+#define _CYVWS_NOTIFICATION_HPP_
 
-#include "enum_str.hpp"
+#include <string>
 
 namespace cyvws
 {
-	enum class NotificationType
-	{
-		UNDEFINED,
-		LIST_UPDATE,
-		USER_JOINED,
-		USER_LEFT,
-	};
+	const std::string NOTIFICATION_DATA = "notificationData";
 
-	ENUM_STR(NotificationType, ({
-			{NotificationType::UNDEFINED, "undefined"},
-			{NotificationType::LIST_UPDATE, "listUpdate"},
-			{NotificationType::USER_JOINED, "userJoined"},
-			{NotificationType::USER_LEFT, "userLeft"},
-		}),
-		NotificationType::UNDEFINED
-	)
+	namespace NotificationType
+	{
+		const std::string
+			COMM_ERROR  = "commError",
+			LIST_UPDATE = "listUpdate",
+			USER_JOINED = "userJoined",
+			USER_LEFT   = "userLeft";
+	}
 }
 
-#endif // _CYVWS_NOTIFICATION_TYPE_HPP_
+#endif // _CYVWS_NOTIFICATION_HPP_

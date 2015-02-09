@@ -14,6 +14,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cyvws/game_msg.hpp>
+
 namespace cyvws
 {
 	namespace json

@@ -18,6 +18,7 @@
 #define _CYVDB_MATCH_MANAGER_HPP_
 
 #include <memory>
+#include <cassert>
 #include <tntdb/connection.h>
 #include <cyvmath/match.hpp>
 #include <cyvmath/rule_sets.hpp>

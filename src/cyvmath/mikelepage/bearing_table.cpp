@@ -17,6 +17,7 @@
 #include <cyvmath/mikelepage/bearing_table.hpp>
 
 #include <vector>
+#include <cassert>
 
 namespace cyvmath
 {

@@ -39,20 +39,18 @@ namespace cyvmath
 	// placing it in a seperate file still results in unsresolved
 	// symbols although I made sure the cpp would be compiled
 	ENUM_STR(PieceType, ({
-			{PieceType::UNDEFINED, "undefined"},
-			{PieceType::MOUNTAINS, "mountains"},
-			{PieceType::RABBLE, "rabble"},
-			{PieceType::CROSSBOWS, "crossbows"},
-			{PieceType::SPEARS, "spears"},
-			{PieceType::LIGHT_HORSE, "light horse"},
-			{PieceType::TREBUCHET, "trebuchet"},
-			{PieceType::ELEPHANT, "elephant"},
-			{PieceType::HEAVY_HORSE, "heavy horse"},
-			{PieceType::DRAGON, "dragon"},
-			{PieceType::KING, "king"}
-		}),
-		PieceType::UNDEFINED
-	)
+		{PieceType::UNDEFINED, "undefined"},
+		{PieceType::MOUNTAINS, "mountains"},
+		{PieceType::RABBLE, "rabble"},
+		{PieceType::CROSSBOWS, "crossbows"},
+		{PieceType::SPEARS, "spears"},
+		{PieceType::LIGHT_HORSE, "light horse"},
+		{PieceType::TREBUCHET, "trebuchet"},
+		{PieceType::ELEPHANT, "elephant"},
+		{PieceType::HEAVY_HORSE, "heavy horse"},
+		{PieceType::DRAGON, "dragon"},
+		{PieceType::KING, "king"}
+	}))
 }
 
 #endif // _CYVMATH_PIECE_TYPE_HPP_

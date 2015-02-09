@@ -46,4 +46,4 @@ libcyvws_a_CPPFLAGS = \
 	-I$(top_srcdir)/include
 
 libcyvws_a_CXXFLAGS = \
-    $(JSONCPP_CFLAGS)
+	$(JSONCPP_CFLAGS)

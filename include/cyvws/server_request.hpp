@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -14,37 +14,22 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVWS_GAME_MSG_ACTION_HPP_
-#define _CYVWS_GAME_MSG_ACTION_HPP_
+#ifndef _CYVWS_SERVER_REQUEST_HPP_
+#define _CYVWS_SERVER_REQUEST_HPP_
 
-#include "enum_str.hpp"
+#include <string>
 
 namespace cyvws
 {
-	enum class GameMsgAction
+	namespace ServerRequestAction
 	{
-		UNDEFINED,
-		END_TURN,
-		MOVE,
-		MOVE_CAPTURE,
-		PROMOTE,
-		RESIGN,
-		SET_IS_READY,
-		SET_OPENING_ARRAY,
-	};
-
-	ENUM_STR(GameMsgAction, ({
-			{GameMsgAction::UNDEFINED, "undefined"},
-			{GameMsgAction::END_TURN, "endTurn"},
-			{GameMsgAction::MOVE, "move"},
-			{GameMsgAction::MOVE_CAPTURE, "moveCapture"},
-			{GameMsgAction::PROMOTE, "promote"},
-			{GameMsgAction::RESIGN, "resign"},
-			{GameMsgAction::SET_IS_READY, "setIsReady"},
-			{GameMsgAction::SET_OPENING_ARRAY, "setOpeningArray"},
-		}),
-		GameMsgAction::UNDEFINED
-	)
+		const std::string
+			CREATE_GAME                = "createGame",
+			INIT_COMM                  = "initComm",
+			JOIN_GAME                  = "joinGame",
+			SUBSCR_GAME_LIST_UPDATES   = "subscrGameListUpdates",
+			UNSUBSCR_GAME_LIST_UPDATES = "unsubscrGameListUpdates";
+	}
 }
 
-#endif // _CYVWS_GAME_MSG_ACTION_HPP_
+#endif // _CYVWS_SERVER_REQUEST_HPP_

@@ -78,12 +78,10 @@ namespace cyvmath
 	// moving the definition to the cpp leads
 	// to undefined references for some reason
 	ENUM_STR(PlayersColor, ({
-			{PlayersColor::UNDEFINED, "undefined"},
-			{PlayersColor::WHITE, "white"},
-			{PlayersColor::BLACK, "black"}
-		}),
-		PlayersColor::UNDEFINED
-	)
+		{PlayersColor::UNDEFINED, "undefined"},
+		{PlayersColor::WHITE, "white"},
+		{PlayersColor::BLACK, "black"}
+	}))
 
 	const std::vector<PlayersColor> allPlayersColors();
 	const std::string& PlayersColorToPrettyStr(PlayersColor);

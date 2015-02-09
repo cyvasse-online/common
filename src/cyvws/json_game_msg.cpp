@@ -16,8 +16,11 @@
 
 #include <cyvws/json_game_msg.hpp>
 
-#include <cyvws/msg_type.hpp>
+#include <stdexcept>
+#include <cyvws/msg.hpp>
+#include <cyvws/game_msg.hpp>
 
+using namespace std;
 using namespace cyvmath;
 
 namespace cyvws
@@ -27,7 +30,7 @@ namespace cyvws
 		Json::Value piecePosition(PieceType pieceType, Coordinate pos)
 		{
 			if(pieceType == PieceType::UNDEFINED)
-				throw std::invalid_argument("cyvws::json::piecePosition: piece type is undefined");
+				throw invalid_argument("cyvws::json::piecePosition: piece type is undefined");
 
 			Json::Value data;
 			data["pieceType"] = PieceTypeToStr(pieceType);
@@ -47,7 +50,7 @@ namespace cyvws
 		Json::Value pieceMovement(PieceType pieceType, Coordinate oldPos, Coordinate newPos)
 		{
 			if(pieceType == PieceType::UNDEFINED)
-				throw std::invalid_argument("cyvws::json::pieceMovement: pieceType is undefined");
+				throw invalid_argument("cyvws::json::pieceMovement: pieceType is undefined");
 
 			Json::Value data;
 			data["pieceType"] = PieceTypeToStr(pieceType);
@@ -68,11 +71,6 @@ namespace cyvws
 
 		Json::Value promotion(PieceType origType, PieceType newType)
 		{
-			if(origType == PieceType::UNDEFINED)
-				throw std::invalid_argument("cyvws::json::promotion: origType is undefined");
-			if(newType == PieceType::UNDEFINED)
-				throw std::invalid_argument("cyvws::json::promotion: newType is undefined");
-
 			Json::Value data;
 			data["origType"] = PieceTypeToStr(origType);
 			data["newType"]  = PieceTypeToStr(newType);
@@ -91,16 +89,16 @@ namespace cyvws
 		Json::Value piecePosition(const Piece& piece)
 		{
 			if(!piece.getCoord())
-				throw std::invalid_argument("cyvws::json::piecePosition: piece has coordinate");
+				throw invalid_argument("cyvws::json::piecePosition: piece has coordinate");
 
 			return piecePosition(piece.getType(), *piece.getCoord());
 		}
 
-		Json::Value gameMsg(GameMsgAction action, Json::Value param)
+		Json::Value gameMsg(const string& gameMsgAction, Json::Value param)
 		{
 			Json::Value msg;
-			msg["msgType"] = MsgTypeToStr(MsgType::GAME_MSG);
-			msg["msgData"]["action"] = GameMsgActionToStr(action);
+			msg["msgType"] = MsgType::GAME_MSG;
+			msg["msgData"]["action"] = gameMsgAction;
 			msg["msgData"]["param"]  = param;
 
 			return msg;

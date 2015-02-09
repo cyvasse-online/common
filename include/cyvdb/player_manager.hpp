@@ -19,6 +19,7 @@
 
 #include <array>
 #include <memory>
+#include <cassert>
 #include <tntdb/connection.h>
 #include <cyvmath/match.hpp>
 #include <cyvmath/player.hpp>

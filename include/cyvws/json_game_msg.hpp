@@ -22,7 +22,6 @@
 #include <cyvmath/coordinate.hpp>
 #include <cyvmath/piece_type.hpp>
 #include <cyvmath/piece.hpp>
-#include "game_msg_action.hpp"
 
 namespace cyvws
 {
@@ -65,7 +64,7 @@ namespace cyvws
 		Json::Value piecePosition(const cyvmath::Piece&);
 
 		// complete message assembling
-		Json::Value gameMsg(GameMsgAction action, Json::Value param);
+		Json::Value gameMsg(const std::string& gameMsgAction, Json::Value param);
 
 		template <class piece_t>
 		Json::Value gameMsgSetOpeningArray(const std::map<cyvmath::Coordinate, piece_t>& pieces);

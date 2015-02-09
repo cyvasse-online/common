@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -14,28 +14,20 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_RULESETS_HPP_
-#define _CYVMATH_RULESETS_HPP_
+#ifndef _CYVWS_COMMON_HPP_
+#define _CYVWS_COMMON_HPP_
 
-#include <map>
-#include <vector>
-#include <enum_str.hpp>
+#include <string>
 
-namespace cyvmath
+namespace cyvws
 {
-	enum class RuleSet
-	{
-		UNDEFINED,
-		MIKELEPAGE
-	};
-
-	ENUM_STR(RuleSet, ({
-		{RuleSet::UNDEFINED,  "undefined"},
-		{RuleSet::MIKELEPAGE, "mikelepage"}
-	}))
-
-	const std::vector<RuleSet>& allRuleSets();
-	const std::string& RuleSetToPrettyStr(RuleSet);
+	const std::string
+		ERR_MSG     = "errMsg",
+		ERR_DETAILS = "errDetails",
+		MATCH_ID    = "matchID",
+		PLAYER_ID   = "playerID",
+		SUCCESS     = "success",
+		TYPE        = "type";
 }
 
-#endif // _CYVMATH_RULESETS_HPP_
+#endif // _CYVWS_COMMON_HPP_

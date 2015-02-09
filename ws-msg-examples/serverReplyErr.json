@@ -3,6 +3,6 @@
 	"msgID": 2,
 	"replyData": {
 		"success": false,
-		"error": "gameFull"
+		"errMsg": "gameFull"
 	}
 }
