@@ -36,7 +36,6 @@ namespace cyvws
 		ROLE        = "role",
 		RULE_SET    = "ruleSet",
 		SCREEN_NAME = "screenName",
-		SUCCESS     = "success",
 		TYPE        = "type";
 }
 

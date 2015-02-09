@@ -26,7 +26,8 @@ namespace cyvws
 		NEW_TYPE   = "newType",
 		OLD_POS    = "oldPos",
 		ORIG_TYPE  = "origType",
-		PIECE_TYPE = "pieceType";
+		PIECE_TYPE = "pieceType",
+		POS        = "pos";
 
 	namespace GameMsgAction
 	{

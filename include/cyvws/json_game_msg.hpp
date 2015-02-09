@@ -64,7 +64,7 @@ namespace cyvws
 		Json::Value piecePosition(const cyvmath::Piece&);
 
 		// complete message assembling
-		Json::Value gameMsg(const std::string& gameMsgAction, Json::Value param);
+		Json::Value gameMsg(const std::string& gameMsgAction, const Json::Value& param);
 
 		template <class piece_t>
 		Json::Value gameMsgSetOpeningArray(const std::map<cyvmath::Coordinate, piece_t>& pieces);

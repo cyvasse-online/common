@@ -14,27 +14,21 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVWS_SERVER_REPLY_HPP_
-#define _CYVWS_SERVER_REPLY_HPP_
+#ifndef _CYVWS_JSON_SERVER_REPLY_HPP_
+#define _CYVWS_JSON_SERVER_REPLY_HPP_
 
-#include <string>
+#include <json/value.h>
 
 namespace cyvws
 {
-	const std::string REPLY_DATA = "replyData";
-
-	const std::string SUCCESS    = "success";
-
-	namespace ServerReplyErrMsg
+	namespace json
 	{
-		const std::string
-			CONN_IN_USE         = "connInUse",
-			GAME_EMPTY          = "gameEmpty",
-			GAME_FULL           = "gameFull",
-			GAME_NOT_FOUND      = "gameNotFound",
-			LIST_DOES_NOT_EXIST = "listDoesNotExist",
-			DIFF_MAJOR_PROT_V   = "differingMajorProtVersion";
+		Json::Value serverReply(unsigned msgID, const Json::Value& replyData);
+
+		Json::Value requestErr(unsigned msgID, const std::string& error, const std::string& errDetails = {});
+		Json::Value initCommSuccess(unsigned msgID);
+		Json::Value createGameSuccess(unsigned msgID, const std::string& matchID, const std::string& playerID);
 	}
 }
 
-#endif // _CYVWS_SERVER_REPLY_HPP_
+#endif // _CYVWS_JSON_SERVER_REPLY_HPP_

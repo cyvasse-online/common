@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -17,6 +17,7 @@
 #include <cyvws/json_game_msg.hpp>
 
 #include <stdexcept>
+#include <cyvws/common.hpp>
 #include <cyvws/msg.hpp>
 #include <cyvws/game_msg.hpp>
 
@@ -29,12 +30,9 @@ namespace cyvws
 	{
 		Json::Value piecePosition(PieceType pieceType, Coordinate pos)
 		{
-			if(pieceType == PieceType::UNDEFINED)
-				throw invalid_argument("cyvws::json::piecePosition: piece type is undefined");
-
 			Json::Value data;
-			data["pieceType"] = PieceTypeToStr(pieceType);
-			data["pos"]	      = pos.toString();
+			data[PIECE_TYPE] = PieceTypeToStr(pieceType);
+			data[POS]        = pos.toString();
 
 			return data;
 		}
@@ -42,20 +40,17 @@ namespace cyvws
 		PiecePosition piecePosition(const Json::Value& val)
 		{
 			return {
-				StrToPieceType(val["pieceType"].asString()),
-				Coordinate(val["pos"].asString())
+				StrToPieceType(val[PIECE_TYPE].asString()),
+				Coordinate(val[POS].asString())
 			};
 		}
 
 		Json::Value pieceMovement(PieceType pieceType, Coordinate oldPos, Coordinate newPos)
 		{
-			if(pieceType == PieceType::UNDEFINED)
-				throw invalid_argument("cyvws::json::pieceMovement: pieceType is undefined");
-
 			Json::Value data;
-			data["pieceType"] = PieceTypeToStr(pieceType);
-			data["oldPos"]    = oldPos.toString();
-			data["newPos"]    = newPos.toString();
+			data[PIECE_TYPE] = PieceTypeToStr(pieceType);
+			data[OLD_POS]    = oldPos.toString();
+			data[NEW_POS]    = newPos.toString();
 
 			return data;
 		}
@@ -63,17 +58,17 @@ namespace cyvws
 		PieceMovement pieceMovement(const Json::Value& val)
 		{
 			return {
-				StrToPieceType(val["pieceType"].asString()),
-				Coordinate(val["oldPos"].asString()),
-				Coordinate(val["newPos"].asString())
+				StrToPieceType(val[PIECE_TYPE].asString()),
+				Coordinate(val[OLD_POS].asString()),
+				Coordinate(val[NEW_POS].asString())
 			};
 		}
 
 		Json::Value promotion(PieceType origType, PieceType newType)
 		{
 			Json::Value data;
-			data["origType"] = PieceTypeToStr(origType);
-			data["newType"]  = PieceTypeToStr(newType);
+			data[ORIG_TYPE] = PieceTypeToStr(origType);
+			data[NEW_TYPE]  = PieceTypeToStr(newType);
 
 			return data;
 		}
@@ -81,25 +76,25 @@ namespace cyvws
 		Promotion promotion(const Json::Value& val)
 		{
 			return {
-				StrToPieceType(val["origType"].asString()),
-				StrToPieceType(val["newType"].asString())
+				StrToPieceType(val[ORIG_TYPE].asString()),
+				StrToPieceType(val[NEW_TYPE].asString())
 			};
 		}
 
 		Json::Value piecePosition(const Piece& piece)
 		{
 			if(!piece.getCoord())
-				throw invalid_argument("cyvws::json::piecePosition: piece has coordinate");
+				throw invalid_argument("cyvws::json::piecePosition: piece has no valid coordinate");
 
 			return piecePosition(piece.getType(), *piece.getCoord());
 		}
 
-		Json::Value gameMsg(const string& gameMsgAction, Json::Value param)
+		Json::Value gameMsg(const string& gameMsgAction, const Json::Value& param)
 		{
 			Json::Value msg;
-			msg["msgType"] = MsgType::GAME_MSG;
-			msg["msgData"]["action"] = gameMsgAction;
-			msg["msgData"]["param"]  = param;
+			msg[MSG_TYPE] = MsgType::GAME_MSG;
+			msg[MSG_DATA][ACTION] = gameMsgAction;
+			msg[MSG_DATA][PARAM]  = param;
 
 			return msg;
 		}
