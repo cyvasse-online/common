@@ -21,6 +21,13 @@
 
 namespace cyvws
 {
+	const std::string
+		NEW_POS    = "newPos",
+		NEW_TYPE   = "newType",
+		OLD_POS    = "oldPos",
+		ORIG_TYPE  = "origType",
+		PIECE_TYPE = "pieceType";
+
 	namespace GameMsgAction
 	{
 		const std::string
