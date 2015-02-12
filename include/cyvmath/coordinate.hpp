@@ -17,6 +17,7 @@
 #ifndef _CYVMATH_COORDINATE_HPP_
 #define _CYVMATH_COORDINATE_HPP_
 
+#include <ostream>
 #include <stdexcept>
 #include <string>
 #include <valarray>
@@ -85,6 +86,8 @@ namespace cyvmath
 			bool operator<(const Coordinate& other) const
 			{ return dump() < other.dump(); }
 	};
+
+	std::ostream& operator <<(std::ostream& os, const Coordinate& coord);
 }
 
 #endif // _CYVMATH_COORDINATE_HPP_

@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -19,6 +19,7 @@
 
 #include <cppunit/TestFixture.h>
 
+#include <string>
 #include <vector>
 #include <cppunit/extensions/HelperMacros.h>
 #include <cyvmath/hexagon.hpp>
@@ -29,14 +30,17 @@ class HexagonTest : public CppUnit::TestFixture
 {
 	private:
 		std::vector<Hexagon<6>::Coordinate> h6Coords;
+		std::vector<std::string> h6CoordStrings;
 
 	public:
-		void setUp() override;
-		void tearDown() override;
+		HexagonTest();
 
 		void testCoordValidity();
 		void testCoordEquality();
 		void testCoordCompleteness();
+
+		void testCoordToString();
+		void testCoordFromString();
 
 		void testDistanceOrthogonal();
 		void testDistanceDiagonal();
@@ -49,6 +53,9 @@ class HexagonTest : public CppUnit::TestFixture
 		CPPUNIT_TEST(testCoordValidity);
 		CPPUNIT_TEST(testCoordEquality);
 		CPPUNIT_TEST(testCoordCompleteness);
+
+		CPPUNIT_TEST(testCoordToString);
+		CPPUNIT_TEST(testCoordFromString);
 
 		CPPUNIT_TEST(testDistanceOrthogonal);
 		CPPUNIT_TEST(testDistanceDiagonal);

@@ -32,6 +32,12 @@ namespace cyvmath
 
 	string Coordinate::toString() const
 	{
-		return string(1, static_cast<char>(m_x + 'A')) + to_string(static_cast<int>(m_y + 1));
+		return string(1, m_x + 'A') + to_string(m_y + 1);
+	}
+
+	std::ostream& operator <<(std::ostream& os, const Coordinate& coord)
+	{
+		os << coord.toString();
+		return os;
 	}
 }

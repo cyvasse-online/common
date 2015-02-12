@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -16,33 +16,77 @@
 
 #include "hexagon_test.hpp"
 
+#include <map>
 #include <stdexcept>
+#include <utility>
 
 using namespace std;
 
-void HexagonTest::setUp()
+namespace CppUnit
 {
-	#define IGNORE_EXCEPT(expression) \
-		try \
-		{ expression; } \
-		catch(...) \
-		{ }
+	template<>
+	struct assertion_traits<DirectionOrthogonal>
+	{
+		static bool equal(DirectionOrthogonal x, DirectionOrthogonal y)
+		{ return x == y; }
 
-	IGNORE_EXCEPT(h6Coords.emplace_back(3,  5)); // 0
-	IGNORE_EXCEPT(h6Coords.emplace_back(1,  5)); // 1
-	IGNORE_EXCEPT(h6Coords.emplace_back(3, 10)); // 2
-	IGNORE_EXCEPT(h6Coords.emplace_back(6,  2)); // 3
-	IGNORE_EXCEPT(h6Coords.emplace_back(1,  6)); // 4
-	IGNORE_EXCEPT(h6Coords.emplace_back(1,  9)); // 5
-	IGNORE_EXCEPT(h6Coords.emplace_back(9,  2)); // 6
-	IGNORE_EXCEPT(h6Coords.emplace_back(5,  7)); // 7
+		static string toString(const DirectionOrthogonal& val)
+		{
+			switch(val)
+			{
+				case DirectionOrthogonal::NONE:         return "none";
+				case DirectionOrthogonal::TOP_LEFT:     return "top left";
+				case DirectionOrthogonal::TOP_RIGHT:    return "top right";
+				case DirectionOrthogonal::RIGHT:        return "right";
+				case DirectionOrthogonal::BOTTOM_RIGHT: return "bottom right";
+				case DirectionOrthogonal::BOTTOM_LEFT:  return "bottom left";
+				case DirectionOrthogonal::LEFT:         return "left";
+				default:
+					CPPUNIT_FAIL("Invalid DirectionOrthogonal value!");
+			}
 
-	#undef IGNORE_EXCEPT
+			return {};
+		}
+	};
+
+	template<>
+	struct assertion_traits<DirectionDiagonal>
+	{
+		static bool equal(DirectionDiagonal x, DirectionDiagonal y)
+		{ return x == y; }
+
+		static string toString(const DirectionDiagonal& val)
+		{
+			switch(val)
+			{
+				case DirectionDiagonal::NONE:         return "none";
+				case DirectionDiagonal::TOP_LEFT:     return "top left";
+				case DirectionDiagonal::TOP:          return "top";
+				case DirectionDiagonal::TOP_RIGHT:    return "top right";
+				case DirectionDiagonal::BOTTOM_RIGHT: return "bottom right";
+				case DirectionDiagonal::BOTTOM:       return "bottom";
+				case DirectionDiagonal::BOTTOM_LEFT:  return "bottom left";
+				default:
+					CPPUNIT_FAIL("Invalid DirectionDiagonal value!");
+			}
+
+			return {};
+		}
+	};
 }
 
-void HexagonTest::tearDown()
+HexagonTest::HexagonTest()
 {
-	h6Coords.clear();
+	// function try block would rethrow
+	try
+	{
+		h6Coords       = { {3, 5}, {1, 5}, {3, 10}, {6, 2}, {1, 6}, {1, 9}, {9, 2}, {5, 7} };
+		h6CoordStrings = { "D6",   "B6",   "D11",   "G3",   "B7",   "B10",  "J3",   "F8" };
+	}
+	catch(...)
+	{
+		CPPUNIT_FAIL("Hardcoded Coordinates not considered valid!");
+	}
 }
 
 void HexagonTest::testCoordValidity()
@@ -56,9 +100,9 @@ void HexagonTest::testCoordValidity()
 		{-2,  7}  // outside – top left
 	};
 
-	CPPUNIT_ASSERT(h6Coords.size() == 8);
+	CPPUNIT_ASSERT_EQUAL(size_t(8), h6Coords.size());
 
-	for(const auto& invalidCoord : invalidCoords)
+	for (const auto& invalidCoord : invalidCoords)
 	{
 		CPPUNIT_ASSERT(!Hexagon<6>::Coordinate::create(invalidCoord.first, invalidCoord.second));
 		CPPUNIT_ASSERT_THROW(Hexagon<6>::Coordinate(invalidCoord.first, invalidCoord.second), invalid_argument);
@@ -67,110 +111,208 @@ void HexagonTest::testCoordValidity()
 
 void HexagonTest::testCoordEquality()
 {
-	for(size_t i = 0; i < h6Coords.size(); i++)
-		CPPUNIT_ASSERT(h6Coords[i] == h6Coords[i]);
+	for (size_t i = 0; i < h6Coords.size(); i++)
+		CPPUNIT_ASSERT_EQUAL(h6Coords[i], h6Coords[i]);
 
-	CPPUNIT_ASSERT(h6Coords[0] != h6Coords[1]);
-	CPPUNIT_ASSERT(h6Coords[0] != h6Coords[2]);
-	CPPUNIT_ASSERT(h6Coords[0] != h6Coords[3]);
+	for (size_t i = 1; i < h6Coords.size(); i++)
+		CPPUNIT_ASSERT(h6Coords[0] != h6Coords[i]);
 }
 
 void HexagonTest::testCoordCompleteness()
 {
-	CPPUNIT_ASSERT(Hexagon<2>::allCoordinates.size() == 7);
-	CPPUNIT_ASSERT(Hexagon<3>::allCoordinates.size() == 19);
-	CPPUNIT_ASSERT(Hexagon<4>::allCoordinates.size() == 37);
-
-	const auto& coords = Hexagon<2>::allCoordinates;
+	CPPUNIT_ASSERT_EQUAL(size_t(7),  Hexagon<2>::allCoordinates.size());
+	CPPUNIT_ASSERT_EQUAL(size_t(19), Hexagon<3>::allCoordinates.size());
+	CPPUNIT_ASSERT_EQUAL(size_t(37), Hexagon<4>::allCoordinates.size());
 
 	CPPUNIT_ASSERT_NO_THROW(
-		CPPUNIT_ASSERT(coords.find(Hexagon<2>::Coordinate(0, 1)) != coords.end());
-		CPPUNIT_ASSERT(coords.find(Hexagon<2>::Coordinate(0, 2)) != coords.end());
-		CPPUNIT_ASSERT(coords.find(Hexagon<2>::Coordinate(1, 0)) != coords.end());
-		CPPUNIT_ASSERT(coords.find(Hexagon<2>::Coordinate(1, 1)) != coords.end());
-		CPPUNIT_ASSERT(coords.find(Hexagon<2>::Coordinate(1, 2)) != coords.end());
-		CPPUNIT_ASSERT(coords.find(Hexagon<2>::Coordinate(2, 0)) != coords.end());
-		CPPUNIT_ASSERT(coords.find(Hexagon<2>::Coordinate(2, 1)) != coords.end());
+		set<Hexagon<2>::Coordinate> allH2Coords({ {0, 1}, {0, 2}, {1, 0}, {1, 1}, {1, 2}, {2, 0}, {2, 1} });
+
+		CPPUNIT_ASSERT_EQUAL(allH2Coords.size(), Hexagon<2>::allCoordinates.size());
+
+		for (const auto& coord : Hexagon<2>::allCoordinates)
+		{
+			auto it = allH2Coords.find(coord);
+			CPPUNIT_ASSERT(it != allH2Coords.end());
+			allH2Coords.erase(it);
+		}
 	);
+}
+
+void HexagonTest::testCoordToString()
+{
+	CPPUNIT_ASSERT_EQUAL(h6Coords.size(), h6CoordStrings.size());
+
+	for (size_t i = 0; i < h6Coords.size(); i++)
+		CPPUNIT_ASSERT_EQUAL(h6Coords[i].toString(), h6CoordStrings[i]);
+}
+
+void HexagonTest::testCoordFromString()
+{
+	CPPUNIT_ASSERT_EQUAL(h6Coords.size(), h6CoordStrings.size());
+
+	for (size_t i = 0; i < h6Coords.size(); i++)
+		CPPUNIT_ASSERT_EQUAL(Hexagon<6>::Coordinate(h6CoordStrings[i]), h6Coords[i]);
 }
 
 void HexagonTest::testDistanceOrthogonal()
 {
-	CPPUNIT_ASSERT(h6Coords[0].getDistanceOrthogonal(h6Coords[1]) == 2);
-	CPPUNIT_ASSERT(h6Coords[1].getDistanceOrthogonal(h6Coords[0]) == 2);
-	CPPUNIT_ASSERT(h6Coords[0].getDistanceOrthogonal(h6Coords[2]) == 5);
-	CPPUNIT_ASSERT(h6Coords[2].getDistanceOrthogonal(h6Coords[0]) == 5);
-	CPPUNIT_ASSERT(h6Coords[0].getDistanceOrthogonal(h6Coords[3]) == 3);
-	CPPUNIT_ASSERT(h6Coords[3].getDistanceOrthogonal(h6Coords[0]) == 3);
+	static const set<pair<pair<int, int>, int>> distances {
+		{{0, 1}, 2},
+		{{0, 2}, 5},
+		{{0, 3}, 3},
 
-	CPPUNIT_ASSERT(h6Coords[1].getDistanceOrthogonal(h6Coords[2]) == -1);
-	CPPUNIT_ASSERT(h6Coords[2].getDistanceOrthogonal(h6Coords[1]) == -1);
-	CPPUNIT_ASSERT(h6Coords[0].getDistanceOrthogonal(h6Coords[4]) == -1);
-	CPPUNIT_ASSERT(h6Coords[4].getDistanceOrthogonal(h6Coords[0]) == -1);
+		{{1, 2}, -1},
+		{{0, 4}, -1},
 
-	CPPUNIT_ASSERT(h6Coords[0].getDistanceOrthogonal(h6Coords[0]) == 0);
+		{{0, 0}, 0}
+	};
+
+	for (const auto& distDataSet : distances)
+	{
+		CPPUNIT_ASSERT_EQUAL(
+			distDataSet.second,
+			int(h6Coords[distDataSet.first.first].getDistanceOrthogonal(h6Coords[distDataSet.first.second]))
+		);
+
+		CPPUNIT_ASSERT_EQUAL(
+			distDataSet.second,
+			int(h6Coords[distDataSet.first.second].getDistanceOrthogonal(h6Coords[distDataSet.first.first]))
+		);
+	}
 }
 
 void HexagonTest::testDistanceDiagonal()
 {
-	CPPUNIT_ASSERT(h6Coords[0].getDistanceDiagonal(h6Coords[4]) == 1);
-	CPPUNIT_ASSERT(h6Coords[4].getDistanceDiagonal(h6Coords[0]) == 1);
-	CPPUNIT_ASSERT(h6Coords[0].getDistanceDiagonal(h6Coords[5]) == 2);
-	CPPUNIT_ASSERT(h6Coords[5].getDistanceDiagonal(h6Coords[0]) == 2);
-	CPPUNIT_ASSERT(h6Coords[0].getDistanceDiagonal(h6Coords[6]) == 3);
-	CPPUNIT_ASSERT(h6Coords[6].getDistanceDiagonal(h6Coords[0]) == 3);
+	static const set<pair<pair<int, int>, int>> distances {
+		{{0, 4}, 1},
+		{{0, 5}, 2},
+		{{0, 6}, 3},
 
-	CPPUNIT_ASSERT(h6Coords[0].getDistanceDiagonal(h6Coords[1]) == -1);
-	CPPUNIT_ASSERT(h6Coords[1].getDistanceDiagonal(h6Coords[0]) == -1);
-	CPPUNIT_ASSERT(h6Coords[1].getDistanceDiagonal(h6Coords[2]) == -1);
-	CPPUNIT_ASSERT(h6Coords[2].getDistanceDiagonal(h6Coords[1]) == -1);
+		{{0, 1}, -1},
+		{{1, 2}, -1},
 
-	CPPUNIT_ASSERT(h6Coords[0].getDistanceDiagonal(h6Coords[0]) == 0);
+		{{0, 0}, 0}
+	};
+
+	for (const auto& distDataSet : distances)
+	{
+		CPPUNIT_ASSERT_EQUAL(
+			distDataSet.second,
+			int(h6Coords[distDataSet.first.first].getDistanceDiagonal(h6Coords[distDataSet.first.second]))
+		);
+
+		CPPUNIT_ASSERT_EQUAL(
+			distDataSet.second,
+			int(h6Coords[distDataSet.first.second].getDistanceDiagonal(h6Coords[distDataSet.first.first]))
+		);
+	}
 }
 
 void HexagonTest::testDistanceHexagonalLine()
 {
-	CPPUNIT_ASSERT(h6Coords[0].getDistanceHexagonalLine(h6Coords[3], h6Coords[5]) == -1);
-	CPPUNIT_ASSERT(h6Coords[0].getDistanceHexagonalLine(h6Coords[5], h6Coords[3]) == -1);
-	CPPUNIT_ASSERT(h6Coords[3].getDistanceHexagonalLine(h6Coords[0], h6Coords[5]) == -1);
+	static const set<pair<pair<int, std::pair<int, int>>, int>> distances {
+		{{0, {3, 5}}, -1},
+		{{3, {0, 5}}, -1},
 
-	CPPUNIT_ASSERT(h6Coords[0].getDistanceHexagonalLine(h6Coords[0], h6Coords[0]) == 0);
+		{{0, {0, 0}}, 0},
+	};
+
+	for (const auto& distDataSet : distances)
+	{
+		CPPUNIT_ASSERT_EQUAL(
+			distDataSet.second,
+			int(h6Coords[distDataSet.first.first].getDistanceHexagonalLine(
+				h6Coords[distDataSet.first.second.first], h6Coords[distDataSet.first.second.second]
+			))
+		);
+
+		CPPUNIT_ASSERT_EQUAL(
+			distDataSet.second,
+			int(h6Coords[distDataSet.first.first].getDistanceHexagonalLine(
+				h6Coords[distDataSet.first.second.second], h6Coords[distDataSet.first.second.first]
+			))
+		);
+	}
 }
 
 void HexagonTest::testDirectionOrthogonal()
 {
-	CPPUNIT_ASSERT(h6Coords[0].getDirectionOrthogonal(h6Coords[2]) == DirectionOrthogonal::TOP_RIGHT);
-	CPPUNIT_ASSERT(h6Coords[2].getDirectionOrthogonal(h6Coords[0]) == DirectionOrthogonal::BOTTOM_LEFT);
-	CPPUNIT_ASSERT(h6Coords[0].getDirectionOrthogonal(h6Coords[1]) == DirectionOrthogonal::LEFT);
-	CPPUNIT_ASSERT(h6Coords[1].getDirectionOrthogonal(h6Coords[0]) == DirectionOrthogonal::RIGHT);
-	CPPUNIT_ASSERT(h6Coords[0].getDirectionOrthogonal(h6Coords[3]) == DirectionOrthogonal::BOTTOM_RIGHT);
-	CPPUNIT_ASSERT(h6Coords[3].getDirectionOrthogonal(h6Coords[0]) == DirectionOrthogonal::TOP_LEFT);
+	static const set<pair<pair<int, int>, DirectionOrthogonal>> directions {
+		{{0, 2}, DirectionOrthogonal::TOP_RIGHT},
+		{{0, 1}, DirectionOrthogonal::LEFT},
+		{{0, 3}, DirectionOrthogonal::BOTTOM_RIGHT},
 
-	CPPUNIT_ASSERT(h6Coords[0].getDirectionOrthogonal(h6Coords[0]) == DirectionOrthogonal::UNDEFINED);
+		{{0, 0}, DirectionOrthogonal::NONE},
 
-	CPPUNIT_ASSERT(h6Coords[0].getDirectionOrthogonal(h6Coords[4]) == DirectionOrthogonal::UNDEFINED);
-	CPPUNIT_ASSERT(h6Coords[4].getDirectionOrthogonal(h6Coords[0]) == DirectionOrthogonal::UNDEFINED);
-	CPPUNIT_ASSERT(h6Coords[1].getDirectionOrthogonal(h6Coords[2]) == DirectionOrthogonal::UNDEFINED);
-	CPPUNIT_ASSERT(h6Coords[2].getDirectionOrthogonal(h6Coords[1]) == DirectionOrthogonal::UNDEFINED);
-	CPPUNIT_ASSERT(h6Coords[5].getDirectionOrthogonal(h6Coords[6]) == DirectionOrthogonal::UNDEFINED);
-	CPPUNIT_ASSERT(h6Coords[6].getDirectionOrthogonal(h6Coords[5]) == DirectionOrthogonal::UNDEFINED);
+		{{0, 4}, DirectionOrthogonal::NONE},
+		{{1, 2}, DirectionOrthogonal::NONE},
+		{{5, 6}, DirectionOrthogonal::NONE},
+	};
+
+	auto opposite = [](DirectionOrthogonal val) {
+		switch(val)
+		{
+			case DirectionOrthogonal::TOP_RIGHT:    return DirectionOrthogonal::BOTTOM_LEFT;
+			case DirectionOrthogonal::RIGHT:        return DirectionOrthogonal::LEFT;
+			case DirectionOrthogonal::BOTTOM_RIGHT: return DirectionOrthogonal::TOP_LEFT;
+			case DirectionOrthogonal::BOTTOM_LEFT:  return DirectionOrthogonal::TOP_RIGHT;
+			case DirectionOrthogonal::LEFT:         return DirectionOrthogonal::RIGHT;
+			case DirectionOrthogonal::TOP_LEFT:     return DirectionOrthogonal::BOTTOM_RIGHT;
+			default:                                return DirectionOrthogonal::NONE;
+		}
+	};
+
+	for (const auto& dirDataSet : directions)
+	{
+		CPPUNIT_ASSERT_EQUAL(
+			dirDataSet.second,
+			h6Coords[dirDataSet.first.first].getDirectionOrthogonal(h6Coords[dirDataSet.first.second])
+		);
+
+		CPPUNIT_ASSERT_EQUAL(
+			opposite(dirDataSet.second),
+			h6Coords[dirDataSet.first.second].getDirectionOrthogonal(h6Coords[dirDataSet.first.first])
+		);
+	}
 }
 
 void HexagonTest::testDirectionDiagonal()
 {
-	CPPUNIT_ASSERT(h6Coords[0].getDirectionDiagonal(h6Coords[5]) == DirectionDiagonal::TOP);
-	CPPUNIT_ASSERT(h6Coords[5].getDirectionDiagonal(h6Coords[0]) == DirectionDiagonal::BOTTOM);
-	CPPUNIT_ASSERT(h6Coords[0].getDirectionDiagonal(h6Coords[6]) == DirectionDiagonal::BOTTOM_RIGHT);
-	CPPUNIT_ASSERT(h6Coords[6].getDirectionDiagonal(h6Coords[0]) == DirectionDiagonal::TOP_LEFT);
-	CPPUNIT_ASSERT(h6Coords[0].getDirectionDiagonal(h6Coords[7]) == DirectionDiagonal::TOP_RIGHT);
-	CPPUNIT_ASSERT(h6Coords[7].getDirectionDiagonal(h6Coords[0]) == DirectionDiagonal::BOTTOM_LEFT);
+	static const set<pair<pair<int, int>, DirectionDiagonal>> directions {
+		{{0, 5}, DirectionDiagonal::TOP},
+		{{0, 6}, DirectionDiagonal::BOTTOM_RIGHT},
+		{{0, 7}, DirectionDiagonal::TOP_RIGHT},
 
-	CPPUNIT_ASSERT(h6Coords[0].getDirectionDiagonal(h6Coords[0]) == DirectionDiagonal::UNDEFINED);
+		{{0, 0}, DirectionDiagonal::NONE},
 
-	CPPUNIT_ASSERT(h6Coords[0].getDirectionDiagonal(h6Coords[1]) == DirectionDiagonal::UNDEFINED);
-	CPPUNIT_ASSERT(h6Coords[0].getDirectionDiagonal(h6Coords[1]) == DirectionDiagonal::UNDEFINED);
-	CPPUNIT_ASSERT(h6Coords[1].getDirectionDiagonal(h6Coords[2]) == DirectionDiagonal::UNDEFINED);
-	CPPUNIT_ASSERT(h6Coords[1].getDirectionDiagonal(h6Coords[2]) == DirectionDiagonal::UNDEFINED);
-	CPPUNIT_ASSERT(h6Coords[4].getDirectionDiagonal(h6Coords[5]) == DirectionDiagonal::UNDEFINED);
-	CPPUNIT_ASSERT(h6Coords[5].getDirectionDiagonal(h6Coords[4]) == DirectionDiagonal::UNDEFINED);
+		{{0, 1}, DirectionDiagonal::NONE},
+		{{1, 2}, DirectionDiagonal::NONE},
+		{{4, 5}, DirectionDiagonal::NONE},
+	};
+
+	auto opposite = [](DirectionDiagonal val) {
+		switch(val)
+		{
+			case DirectionDiagonal::TOP:          return DirectionDiagonal::BOTTOM;
+			case DirectionDiagonal::BOTTOM_RIGHT: return DirectionDiagonal::TOP_LEFT;
+			case DirectionDiagonal::BOTTOM_LEFT:  return DirectionDiagonal::TOP_RIGHT;
+			case DirectionDiagonal::BOTTOM:       return DirectionDiagonal::TOP;
+			case DirectionDiagonal::TOP_LEFT:     return DirectionDiagonal::BOTTOM_RIGHT;
+			case DirectionDiagonal::TOP_RIGHT:    return DirectionDiagonal::BOTTOM_LEFT;
+			default:                              return DirectionDiagonal::NONE;
+		}
+	};
+
+	for (const auto& dirDataSet : directions)
+	{
+		CPPUNIT_ASSERT_EQUAL(
+			dirDataSet.second,
+			h6Coords[dirDataSet.first.first].getDirectionDiagonal(h6Coords[dirDataSet.first.second])
+		);
+
+		CPPUNIT_ASSERT_EQUAL(
+			opposite(dirDataSet.second),
+			h6Coords[dirDataSet.first.second].getDirectionDiagonal(h6Coords[dirDataSet.first.first])
+		);
+	}
 }

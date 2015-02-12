@@ -34,7 +34,7 @@ namespace cyvmath
 {
 	enum class DirectionOrthogonal
 	{
-		UNDEFINED,
+		NONE,
 		TOP_LEFT,
 		TOP_RIGHT,
 		RIGHT,
@@ -45,7 +45,7 @@ namespace cyvmath
 
 	enum class DirectionDiagonal
 	{
-		UNDEFINED,
+		NONE,
 		TOP_LEFT,
 		TOP,
 		TOP_RIGHT,
@@ -103,7 +103,7 @@ namespace cyvmath
 					Coordinate(std::string str)
 						: cyvmath::Coordinate(str)
 					{
-						if(!isValid())
+						if (!isValid())
 						{
 							throw std::invalid_argument("Invalid Hexagon<" + std::to_string(l) + ">"
 								"::Coordinate : (" + std::to_string(m_x) + ", " + std::to_string(m_y) + ")");
@@ -142,19 +142,19 @@ namespace cyvmath
 
 					DirectionOrthogonal getDirectionOrthogonal(Coordinate other) const
 					{
-						if(*this == other) return DirectionOrthogonal::UNDEFINED;
+						if (*this == other) return DirectionOrthogonal::NONE;
 
-						if(m_x == other.m_x)
+						if (m_x == other.m_x)
 							return (m_y > other.m_y) ? DirectionOrthogonal::BOTTOM_LEFT
 							                       : DirectionOrthogonal::TOP_RIGHT;
-						if(m_y == other.m_y)
+						if (m_y == other.m_y)
 							return (m_x > other.m_x) ? DirectionOrthogonal::LEFT
 							                       : DirectionOrthogonal::RIGHT;
-						if(z() == other.z())
+						if (z() == other.z())
 							return (m_x > other.m_x) ? DirectionOrthogonal::TOP_LEFT
 							                       : DirectionOrthogonal::BOTTOM_RIGHT;
 
-						return DirectionOrthogonal::UNDEFINED;
+						return DirectionOrthogonal::NONE;
 					}
 
 					/** Like getDistance(), but return -1 if the given coordinate
@@ -187,24 +187,24 @@ namespace cyvmath
 
 					DirectionDiagonal getDirectionDiagonal(Coordinate other) const
 					{
-						if(*this == other)
-							return DirectionDiagonal::UNDEFINED;
+						if (*this == other)
+							return DirectionDiagonal::NONE;
 
 						int8_t dX = m_x  - other.m_x;
 						int8_t dY = m_y  - other.m_y;
 						int8_t dZ = z() - other.z();
 
-						if(dX == dY)
+						if (dX == dY)
 							return (dX > 0) ? DirectionDiagonal::BOTTOM_LEFT
 							                : DirectionDiagonal::TOP_RIGHT;
-						if(dY == dZ)
+						if (dY == dZ)
 							return (dY > 0) ? DirectionDiagonal::BOTTOM_RIGHT
 							                : DirectionDiagonal::TOP_LEFT;
-						if(dZ == dX)
+						if (dZ == dX)
 							return (dZ > 0) ? DirectionDiagonal::TOP
 							                : DirectionDiagonal::BOTTOM;
 
-						return DirectionDiagonal::UNDEFINED;
+						return DirectionDiagonal::NONE;
 					}
 
 					/** Get the diagonal distance to a coordinate, or -1 if
@@ -229,7 +229,7 @@ namespace cyvmath
 						auto distance = getDistance(center);
 
 						// Check if the given coordinate has the same distance to center as this
-						if(distance != other.getDistance(center))
+						if (distance != other.getDistance(center))
 							return -1;
 
 						// TODO
@@ -280,14 +280,14 @@ namespace cyvmath
 	const std::set<typename Hexagon<l>::Coordinate> Hexagon<l>::allCoordinates = [] {
 		std::set<Coordinate> set;
 
-		if(set.empty())
+		if (set.empty())
 		{
-			for(auto X = 0; X < (2 * l) - 1; X++)
+			for (auto X = 0; X < (2 * l) - 1; X++)
 			{
 				auto yBegin = (X < (l - 1)) ? (l - 1 - X) : 0;
 				auto yEnd   = (X < (l - 1)) ? (2 * l - 1) : (2 * l - 1) + (l - 1 - X);
 
-				for(auto Y = yBegin; Y < yEnd; Y++)
+				for (auto Y = yBegin; Y < yEnd; Y++)
 				{
 					auto res = set.emplace(X, Y);
 					assert(res.second);
