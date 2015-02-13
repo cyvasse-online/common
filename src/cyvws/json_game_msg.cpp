@@ -45,6 +45,14 @@ namespace cyvws
 			};
 		}
 
+		Json::Value piecePosition(const Piece& piece)
+		{
+			if(!piece.getCoord())
+				throw invalid_argument("cyvws::json::piecePosition: piece has no valid coordinate");
+
+			return piecePosition(piece.getType(), *piece.getCoord());
+		}
+
 		Json::Value pieceMovement(PieceType pieceType, Coordinate oldPos, Coordinate newPos)
 		{
 			Json::Value data;
@@ -64,6 +72,36 @@ namespace cyvws
 			};
 		}
 
+		Json::Value openingArray(const OpeningArray& arr)
+		{
+			Json::Value val;
+
+			for (const auto& it : arr)
+			{
+				auto& pieceTypeArr = val[PieceTypeToStr(it.first)];
+
+				for (const auto& coord : it.second)
+					pieceTypeArr.append(coord.toString());
+			}
+
+			return val;
+		}
+
+		OpeningArray openingArray(const Json::Value& val)
+		{
+			OpeningArray arr;
+
+			for (const auto& str : val.getMemberNames())
+			{
+				auto it = arr.emplace(StrToPieceType(str), set<Coordinate>()).first;
+
+				for (const auto& coord : val[str])
+					it->second.emplace(coord.asString());
+			}
+
+			return arr;
+		}
+
 		Json::Value promotion(PieceType origType, PieceType newType)
 		{
 			Json::Value data;
@@ -81,14 +119,6 @@ namespace cyvws
 			};
 		}
 
-		Json::Value piecePosition(const Piece& piece)
-		{
-			if(!piece.getCoord())
-				throw invalid_argument("cyvws::json::piecePosition: piece has no valid coordinate");
-
-			return piecePosition(piece.getType(), *piece.getCoord());
-		}
-
 		Json::Value gameMsg(const string& gameMsgAction, const Json::Value& param)
 		{
 			Json::Value msg;
@@ -98,6 +128,9 @@ namespace cyvws
 
 			return msg;
 		}
+
+		Json::Value gameMsgSetOpeningArray(const OpeningArray& arr)
+		{ return gameMsg(GameMsgAction::SET_OPENING_ARRAY, openingArray(arr)); }
 
 		Json::Value gameMsgSetIsReady(bool val)
 		{ return gameMsg(GameMsgAction::SET_IS_READY, val); }

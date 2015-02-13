@@ -94,7 +94,7 @@ namespace cyvmath
 						: cyvmath::Coordinate(
 							!isValid(X, Y)
 								? throw std::invalid_argument("Invalid Hexagon<" + std::to_string(l) + ">"
-									"::Coordinate : (" + std::to_string(X) + ", " + std::to_string(Y) + ")")
+									"::Coordinate (" + std::to_string(X) + ", " + std::to_string(Y) + ")")
 								: X, Y
 						)
 					{ }

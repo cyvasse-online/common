@@ -25,12 +25,10 @@ namespace cyvws
 		{
 			Json::Value data;
 
-			for(auto&& it : pieces)
+			for (auto&& it : pieces)
 			{
 				auto pieceTypeStr = PieceTypeToStr(it.second->getType());
-				auto coordStr = it.first.toString();
-
-				data[pieceTypeStr].append(coordStr);
+				data[pieceTypeStr].append(it.first.toString());
 			}
 
 			return data;
