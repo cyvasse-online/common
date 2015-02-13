@@ -45,7 +45,7 @@ namespace cyvws
 		cyvmath::PieceType newType;
 	};
 
-	typedef std::map<cyvmath::PieceType, std::set<cyvmath::Coordinate>> OpeningArray;
+	typedef std::map<cyvmath::PieceType, std::set<cyvmath::Coordinate>> PieceMap;
 
 	namespace json
 	{
@@ -56,10 +56,10 @@ namespace cyvws
 		Json::Value pieceMovement(cyvmath::PieceType pieceType, cyvmath::Coordinate oldPos, cyvmath::Coordinate newPos);
 		PieceMovement pieceMovement(const Json::Value&);
 
-		Json::Value openingArray(const OpeningArray&);
+		Json::Value piieceMap(const PieceMap&);
 		template <class piece_t> // convenience overload
-		Json::Value openingArray(const std::map<cyvmath::Coordinate, piece_t>&);
-		OpeningArray openingArray(const Json::Value&);
+		Json::Value pieceMap(const std::map<cyvmath::Coordinate, piece_t>&);
+		PieceMap pieceMap(const Json::Value&);
 
 		Json::Value promotion(cyvmath::PieceType origType, cyvmath::PieceType newType);
 		Promotion promotion(const Json::Value&);
@@ -68,7 +68,7 @@ namespace cyvws
 
 		Json::Value gameMsg(const std::string& gameMsgAction, const Json::Value& param);
 
-		Json::Value gameMsgSetOpeningArray(const OpeningArray&);
+		Json::Value gameMsgSetOpeningArray(const PieceMap&);
 		template <class piece_t> // convenience overload
 		Json::Value gameMsgSetOpeningArray(const std::map<cyvmath::Coordinate, piece_t>& pieces);
 

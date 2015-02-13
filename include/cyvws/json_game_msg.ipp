@@ -21,7 +21,7 @@ namespace cyvws
 	namespace json
 	{
 		template <class piece_t>
-		Json::Value openingArray(const std::map<cyvmath::Coordinate, piece_t>& pieces)
+		Json::Value pieceMap(const std::map<cyvmath::Coordinate, piece_t>& pieces)
 		{
 			Json::Value data;
 

@@ -72,11 +72,11 @@ namespace cyvws
 			};
 		}
 
-		Json::Value openingArray(const OpeningArray& arr)
+		Json::Value pieceMap(const PieceMap& map)
 		{
 			Json::Value val;
 
-			for (const auto& it : arr)
+			for (const auto& it : map)
 			{
 				auto& pieceTypeArr = val[PieceTypeToStr(it.first)];
 
@@ -87,19 +87,19 @@ namespace cyvws
 			return val;
 		}
 
-		OpeningArray openingArray(const Json::Value& val)
+		PieceMap pieceMap(const Json::Value& val)
 		{
-			OpeningArray arr;
+			PieceMap map;
 
 			for (const auto& str : val.getMemberNames())
 			{
-				auto it = arr.emplace(StrToPieceType(str), set<Coordinate>()).first;
+				auto it = map.emplace(StrToPieceType(str), set<Coordinate>()).first;
 
 				for (const auto& coord : val[str])
 					it->second.emplace(coord.asString());
 			}
 
-			return arr;
+			return map;
 		}
 
 		Json::Value promotion(PieceType origType, PieceType newType)
@@ -129,8 +129,8 @@ namespace cyvws
 			return msg;
 		}
 
-		Json::Value gameMsgSetOpeningArray(const OpeningArray& arr)
-		{ return gameMsg(GameMsgAction::SET_OPENING_ARRAY, openingArray(arr)); }
+		Json::Value gameMsgSetOpeningArray(const PieceMap& map)
+		{ return gameMsg(GameMsgAction::SET_OPENING_ARRAY, pieceMap(map)); }
 
 		Json::Value gameMsgSetIsReady(bool val)
 		{ return gameMsg(GameMsgAction::SET_IS_READY, val); }
