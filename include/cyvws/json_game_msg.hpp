@@ -75,6 +75,6 @@ namespace cyvws
 	}
 }
 
-#include "json_game_msg.inl"
+#include "json_game_msg.ipp"
 
 #endif // _CYVWS_JSON_GAME_MSG_HPP_

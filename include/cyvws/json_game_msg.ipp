@@ -37,15 +37,6 @@ namespace cyvws
 		}
 
 		template <class piece_t>
-		std::map<cyvmath::Coordinate, piece_t> openingArray(const Json::Value& val)
-		{
-			// TODO
-			//for(const auto& : )
-
-			return {};
-		}
-
-		template <class piece_t>
 		Json::Value gameMsgSetOpeningArray(const std::map<cyvmath::Coordinate, piece_t>& pieces)
 		{ return gameMsg(GameMsgAction::SET_OPENING_ARRAY, openingArray(pieces)); }
 	}
