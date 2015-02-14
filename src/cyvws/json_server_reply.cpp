@@ -34,6 +34,14 @@ namespace cyvws
 			return msg;
 		}
 
+		Json::Value requestSuccess(unsigned msgID)
+		{
+			Json::Value replyData;
+			replyData[SUCCESS] = true;
+
+			return json::serverReply(msgID, replyData);
+		}
+
 		Json::Value requestErr(unsigned msgID, const std::string& error, const std::string& errDetails)
 		{
 			Json::Value replyData;
@@ -42,14 +50,6 @@ namespace cyvws
 
 			if (!errDetails.empty())
 				replyData[ERR_DETAILS] = errDetails;
-
-			return json::serverReply(msgID, replyData);
-		}
-
-		Json::Value initCommSuccess(unsigned msgID)
-		{
-			Json::Value replyData;
-			replyData[SUCCESS] = true;
 
 			return json::serverReply(msgID, replyData);
 		}

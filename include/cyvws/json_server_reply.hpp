@@ -25,8 +25,8 @@ namespace cyvws
 	{
 		Json::Value serverReply(unsigned msgID, const Json::Value& replyData);
 
+		Json::Value requestSuccess(unsigned msgID);
 		Json::Value requestErr(unsigned msgID, const std::string& error, const std::string& errDetails = {});
-		Json::Value initCommSuccess(unsigned msgID);
 		Json::Value createGameSuccess(unsigned msgID, const std::string& matchID, const std::string& playerID);
 	}
 }
