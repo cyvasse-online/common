@@ -12,13 +12,14 @@ noinst_LIBRARIES = \
 
 libcyvmath_a_SOURCES = \
 	src/cyvmath/coordinate.cpp \
+	src/cyvmath/piece.cpp \
 	src/cyvmath/players_color.cpp \
 	src/cyvmath/rule_set_create.cpp \
 	src/cyvmath/rule_sets.cpp \
-	src/cyvmath/mikelepage/bearing_table.cpp \
-	src/cyvmath/mikelepage/match.cpp \
-	src/cyvmath/mikelepage/piece.cpp \
-	src/cyvmath/mikelepage/player.cpp
+	src/cyvmath/mikelepage-bearing_table.cpp \
+	src/cyvmath/mikelepage-match.cpp \
+	src/cyvmath/mikelepage-piece.cpp \
+	src/cyvmath/mikelepage-player.cpp
 
 libcyvmath_a_CPPFLAGS = \
 	-I$(top_srcdir)/include

@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -24,9 +24,7 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
-		using HexCoordinate = Hexagon<6>::Coordinate;
-
-		std::set<Coordinate> Match::getHorseMovementCenters()
+		auto Match::getHorseMovementCenters() -> std::set<HexCoordinate>
 		{
 			return {
 				getPlayer(PlayersColor::WHITE).getFortress().getCoord(),
@@ -34,7 +32,7 @@ namespace cyvmath
 			};
 		}
 
-		std::shared_ptr<Piece> Match::getPieceAt(Coordinate coord)
+		auto Match::getPieceAt(HexCoordinate coord) -> std::shared_ptr<Piece>
 		{
 			std::shared_ptr<Piece> ret;
 
@@ -45,8 +43,8 @@ namespace cyvmath
 			return ret;
 		}
 
-		void Match::forReachableCoords(Coordinate start, const MovementRange& range,
-		                               std::function<void(Coordinate, Piece*)> func)
+		void Match::forReachableCoords(HexCoordinate start, const MovementRange& range,
+		                               std::function<void(const HexCoordinate&, Piece*)> func)
 		{
 			for(const auto& step : range.first)
 			{
@@ -79,7 +77,7 @@ namespace cyvmath
 			}
 		}
 
-		void Match::addToBoard(PieceType type, PlayersColor color, Coordinate coord)
+		void Match::addToBoard(PieceType type, PlayersColor color, const HexCoordinate& coord)
 		{
 			assert(type != PieceType::UNDEFINED);
 			assert(color != PlayersColor::UNDEFINED);

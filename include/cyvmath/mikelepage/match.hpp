@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -20,7 +20,7 @@
 #include <cyvmath/match.hpp>
 
 #include <functional>
-#include <cyvmath/coordinate.hpp>
+#include <cyvmath/hexagon.hpp>
 #include "bearing_table.hpp"
 #include "piece.hpp"
 #include "player.hpp"
@@ -32,6 +32,9 @@ namespace cyvmath
 	{
 		class Match : public cyvmath::Match
 		{
+			public:
+				using HexCoordinate = Hexagon<6>::Coordinate;
+
 			protected:
 				CoordPieceMap m_activePieces;
 				TerrainMap m_terrain;
@@ -47,25 +50,25 @@ namespace cyvmath
 
 				virtual ~Match() = default;
 
-				Player& getPlayer(PlayersColor color) const
+				auto getPlayer(PlayersColor color) const -> Player&
 				{ return dynamic_cast<Player&>(*m_players.at(color)); }
 
-				CoordPieceMap& getActivePieces()
+				auto getActivePieces() -> CoordPieceMap&
 				{ return m_activePieces; }
 
-				TerrainMap& getTerrain()
+				auto getTerrain() -> TerrainMap&
 				{ return m_terrain; }
 
-				BearingTable& getBearingTable()
+				auto getBearingTable() -> BearingTable&
 				{ return m_bearingTable; }
 
-				std::set<Coordinate> getHorseMovementCenters();
+				auto getHorseMovementCenters() -> std::set<HexCoordinate>;
 
-				std::shared_ptr<Piece> getPieceAt(Coordinate);
+				auto getPieceAt(HexCoordinate) -> std::shared_ptr<Piece>;
 
-				void forReachableCoords(Coordinate start, const MovementRange&, std::function<void(Coordinate, Piece*)>);
+				void forReachableCoords(HexCoordinate start, const MovementRange&, std::function<void(const HexCoordinate&, Piece*)>);
 
-				virtual void addToBoard(PieceType, PlayersColor, Coordinate);
+				virtual void addToBoard(PieceType, PlayersColor, const HexCoordinate&);
 				virtual void removeFromBoard(std::shared_ptr<Piece>);
 				virtual void endGame(PlayersColor /* winner */) { }
 		};

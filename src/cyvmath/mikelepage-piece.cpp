@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -29,8 +29,7 @@ namespace cyvmath
 {
 	namespace mikelepage
 	{
-		using Hexagon = Hexagon<6>;
-		using HexCoordinate = Hexagon::Coordinate;
+		using namespace std;
 
 		const MovementVec Piece::stepsOrthogonal {
 			{-1,  1}, // top left
@@ -59,19 +58,25 @@ namespace cyvmath
 			{ 0,  1}  // top right
 		};
 
-		std::set<Coordinate> Piece::getReachableTiles(const MovementRange& range) const
+		bool Piece::moveToValid(const HexCoordinate& target) const
+		{
+			shared_ptr<Piece> opPiece = m_match.getPieceAt(target);
+
+			return canReach(target) &&
+				(!opPiece || m_match.getBearingTable().canTake(this, opPiece.get()));
+		}
+
+		auto Piece::getReachableTiles(const MovementRange& range) const -> set<HexCoordinate>
 		{
 			assert(m_coord);
 
-			std::set<Coordinate> ret;
+			set<HexCoordinate> ret;
 
-			m_match.forReachableCoords(*m_coord, range, [&](Coordinate coord, Piece* piece) {
-				if(!piece ||
-					(
+			m_match.forReachableCoords(*m_coord, range, [&](const HexCoordinate& coord, Piece* piece) {
+				if (!piece || (
 						piece->getColor() != m_color &&
 						piece->getType() != PieceType::MOUNTAINS
-					)
-				   )
+					))
 				{
 					auto res = ret.insert(coord);
 					assert(res.second);
@@ -81,22 +86,20 @@ namespace cyvmath
 			return ret;
 		}
 
-		std::set<Coordinate> Piece::getPossibleTargetTiles(const MovementRange& range) const
+		auto Piece::getPossibleTargetTiles(const MovementRange& range) const -> set<HexCoordinate>
 		{
 			assert(m_coord);
 
 			auto& bearingTable = m_match.getBearingTable();
 
-			std::set<Coordinate> ret;
+			set<HexCoordinate> ret;
 
-			m_match.forReachableCoords(*m_coord, range, [&](Coordinate coord, Piece* piece) {
-				if(!piece ||
-					(
+			m_match.forReachableCoords(*m_coord, range, [&](const HexCoordinate& coord, Piece* piece) {
+				if (!piece || (
 						piece->getColor() != m_color &&
 						piece->getType() != PieceType::MOUNTAINS &&
 						bearingTable.canTake(this, piece)
-					)
-				   )
+					))
 				{
 					auto res = ret.insert(coord);
 					assert(res.second);
@@ -106,15 +109,15 @@ namespace cyvmath
 			return ret;
 		}
 
-		std::set<const Piece*> Piece::getReachableOpponentPieces(const MovementRange& range) const
+		set<const Piece*> Piece::getReachableOpponentPieces(const MovementRange& range) const
 		{
 			assert(m_coord);
 
-			std::set<const Piece*> ret;
+			set<const Piece*> ret;
 
 			m_match.forReachableCoords(*m_coord, range, [&](Coordinate, Piece* piece) {
-				if(piece && piece->getColor() != m_color &&
-				piece->getType() != PieceType::MOUNTAINS)
+				if (piece && piece->getColor() != m_color &&
+					piece->getType() != PieceType::MOUNTAINS)
 				{
 					auto res = ret.insert(piece);
 					assert(res.second);
@@ -124,17 +127,12 @@ namespace cyvmath
 			return ret;
 		}
 
-		bool Piece::moveToValid(Coordinate target) const
-		{
-			std::shared_ptr<Piece> opPiece = m_match.getPieceAt(target);
-
-			return canReach(target) &&
-				(!opPiece || m_match.getBearingTable().canTake(this, opPiece.get()));
-		}
+		void Piece::setCoord(Coordinate coord)
+		{ m_coord = make_unique<HexCoordinate>(coord); }
 
 		uint8_t Piece::getBaseTier() const
 		{
-			static const std::map<PieceType, uint8_t> data {
+			static const map<PieceType, uint8_t> data {
 				{PieceType::RABBLE,      1},
 				{PieceType::KING,        1},
 				{PieceType::CROSSBOWS,   2},
@@ -147,7 +145,7 @@ namespace cyvmath
 			};
 
 			auto it = data.find(m_type);
-			if(it == data.end())
+			if (it == data.end())
 				return 0;
 
 			return it->second;
@@ -159,17 +157,17 @@ namespace cyvmath
 
 			auto baseTier = getBaseTier();
 
-			if(baseTier < 1 || baseTier >= 4)
+			if (baseTier < 1 || baseTier >= 4)
 				return baseTier;
 
 			auto fortress = m_match.getPlayer(m_color).getFortress();
 
-			if(!fortress.isRuined && fortress.getCoord() == *m_coord)
+			if (!fortress.isRuined && fortress.getCoord() == *m_coord)
 				return ++baseTier;
 
 			auto terrainIt = m_match.getTerrain().find(*m_coord);
-			if(terrainIt != m_match.getTerrain().end() &&
-			   terrainIt->second->getType() == getHomeTerrain())
+			if (terrainIt != m_match.getTerrain().end() &&
+				terrainIt->second->getType() == getHomeTerrain())
 			{
 				return ++baseTier;
 			}
@@ -179,7 +177,7 @@ namespace cyvmath
 
 		TerrainType Piece::getHomeTerrain() const
 		{
-			static const std::map<PieceType, TerrainType> data {
+			static const map<PieceType, TerrainType> data {
 				{PieceType::CROSSBOWS,   TerrainType::HILL},
 				{PieceType::SPEARS,      TerrainType::FOREST},
 				{PieceType::LIGHT_HORSE, TerrainType::GRASSLAND},
@@ -189,7 +187,7 @@ namespace cyvmath
 			};
 
 			auto it = data.find(m_type);
-			if(it == data.end())
+			if (it == data.end())
 				return TerrainType::UNDEFINED;
 
 			return it->second;
@@ -197,14 +195,14 @@ namespace cyvmath
 
 		TerrainType Piece::getSetupTerrain() const
 		{
-			static const std::map<PieceType, TerrainType> data {
+			static const map<PieceType, TerrainType> data {
 				{PieceType::CROSSBOWS,   TerrainType::HILL},
 				{PieceType::SPEARS,      TerrainType::FOREST},
 				{PieceType::LIGHT_HORSE, TerrainType::GRASSLAND}
 			};
 
 			auto it = data.find(m_type);
-			if(it == data.end())
+			if (it == data.end())
 				return TerrainType::UNDEFINED;
 
 			return it->second;
@@ -212,7 +210,7 @@ namespace cyvmath
 
 		const MovementScope& Piece::getMovementScope() const
 		{
-			static const std::map<PieceType, MovementScope> data {
+			static const map<PieceType, MovementScope> data {
 					{PieceType::MOUNTAINS,    MovementScope(MovementType::NONE,       0)},
 					{PieceType::RABBLE,      MovementScope(MovementType::ORTHOGONAL, 1)},
 					{PieceType::CROSSBOWS,   MovementScope(MovementType::ORTHOGONAL, 3)},
@@ -230,15 +228,15 @@ namespace cyvmath
 			return data.at(m_type);
 		}
 
-		bool Piece::canReach(Coordinate target) const
+		bool Piece::canReach(const Coordinate& target) const
 		{
 			assert(m_coord);
-			auto& coord = dynamic_cast<HexCoordinate&>(*m_coord);
+			auto coord = HexCoordinate(*m_coord);
 
 			auto scope = getMovementScope();
-			std::valarray<int8_t> step(2);
+			valarray<int8_t> step(2);
 
-			switch(scope.first)
+			switch (scope.first)
 			{
 				case MovementType::ORTHOGONAL:
 					switch(coord.getDirectionOrthogonal(target))
@@ -266,31 +264,29 @@ namespace cyvmath
 					break;
 				// TODO: add extra case for RANGE and maybe HEXAGONAL
 				default:
-					for(const Coordinate it : getReachableTiles())
-						if(it == target)
+					for (const auto& it : getReachableTiles())
+						if (it == target)
 							return true;
 
 					return false;
 					break;
 			}
 
-			assert(m_coord);
-
 			bool ret = false;
 
-			if(step[0] != 0 || step[1] != 0) // not the default values
+			if (step[0] != 0 || step[1] != 0) // not the default values
 			{
 				auto distance = scope.second;
-				if(!distance)
+				if (!distance)
 				{
-					if(scope.first == MovementType::ORTHOGONAL)
-						distance = (Hexagon::edgeLength - 1) * 2;
-					else if(scope.first == MovementType::DIAGONAL)
-						distance = Hexagon::edgeLength - 1;
+					if (scope.first == MovementType::ORTHOGONAL)
+						distance = (Hexagon<6>::edgeLength - 1) * 2;
+					else if (scope.first == MovementType::DIAGONAL)
+						distance = Hexagon<6>::edgeLength - 1;
 				}
 
-				m_match.forReachableCoords(*m_coord, {{step}, distance}, [&](Coordinate c, Piece*) {
-					if(c == target)
+				m_match.forReachableCoords(*m_coord, {{step}, distance}, [&](const HexCoordinate& c, Piece*) {
+					if (c == target)
 					{
 						assert(!ret);
 						ret = true;
@@ -303,59 +299,59 @@ namespace cyvmath
 
 		TileStateMap Piece::getHexagonalLineTiles() const
 		{
-			typedef std::vector<std::pair<std::valarray<int8_t>, TileState>> TileStateVec;
+			typedef vector<pair<valarray<int8_t>, TileState>> TileStateVec;
 
 			auto scope = getMovementScope();
 			auto distance = scope.second;
 
 			assert(scope.first == MovementType::HEXAGONAL);
 
-			if(!distance)
-				distance = (Hexagon::edgeLength - 1) * 6;
+			if (!distance)
+				distance = (Hexagon<6>::edgeLength - 1) * 6;
 
 			const CoordPieceMap& activePieces = m_match.getActivePieces();
 
 			TileStateMap ret;
 
-			for(HexCoordinate centerCoord : m_match.getHorseMovementCenters())
+			for (HexCoordinate centerCoord : m_match.getHorseMovementCenters())
 			{
 				TileStateVec tmpTileVec;
 
 				int8_t centerDistance = centerCoord.getDistance(*m_coord);
 
-				if(!centerDistance) // standing on the movement center
+				if (!centerDistance) // standing on the movement center
 					continue;
 
 				// begin in top left of the hexagonal line
-				std::valarray<int8_t> tmpPos {
+				valarray<int8_t> tmpPos {
 					// explicit cast to avoid compiler warning
 					int8_t(centerCoord.x() - centerDistance),
 					int8_t(centerCoord.y() + centerDistance)
 				};
 
-				for(const auto& step : stepsHexagonalLine)
+				for (const auto& step : stepsHexagonalLine)
 				{
 					assert(step.size() == 2);
 
-					for(auto i = 0; i < centerDistance; i++)
+					for (auto i = 0; i < centerDistance; i++)
 					{
 						tmpPos += step;
 						auto tmpCoord = HexCoordinate::create(tmpPos);
 
 						auto tileState = TileState::EMPTY;
 
-						if(!tmpCoord)
+						if (!tmpCoord)
 							tileState = TileState::INACCESSIBLE;
 						else
 						{
-							if(*tmpCoord == *m_coord)
+							if (*tmpCoord == *m_coord)
 								tileState = TileState::START;
 							else
 							{
 								auto it = activePieces.find(*tmpCoord);
-								if(it != activePieces.end())
+								if (it != activePieces.end())
 								{
-									if(it->second->getType() == PieceType::MOUNTAINS ||
+									if (it->second->getType() == PieceType::MOUNTAINS ||
 									   it->second->getColor() == m_color)
 										tileState = TileState::INACCESSIBLE;
 									else
@@ -369,37 +365,37 @@ namespace cyvmath
 				}
 
 				TileStateVec::iterator startTileIt;
-				for(startTileIt = tmpTileVec.begin(); startTileIt != tmpTileVec.end(); ++startTileIt)
-					if(startTileIt->second == TileState::START) break;
+				for (startTileIt = tmpTileVec.begin(); startTileIt != tmpTileVec.end(); ++startTileIt)
+					if (startTileIt->second == TileState::START) break;
 
 				assert(startTileIt != tmpTileVec.end());
 
-				for(auto i = 0; i < 2; i++)
+				for (auto i = 0; i < 2; i++)
 				{
 					TileState tmpTileState;
 					auto tileIt = startTileIt;
 
-					for(auto d = 0; d < distance; d++)
+					for (auto d = 0; d < distance; d++)
 					{
-						if(i)
+						if (i)
 						{
 							++tileIt;
-							if(tileIt == tmpTileVec.end())
+							if (tileIt == tmpTileVec.end())
 								tileIt = tmpTileVec.begin();
 						}
 						else
 						{
 							--tileIt;
-							if(tileIt == (tmpTileVec.begin() - 1))
+							if (tileIt == (tmpTileVec.begin() - 1))
 								tileIt = (tmpTileVec.end() - 1);
 						}
 
 						tmpTileState = tileIt->second;
 
-						if(tmpTileState == TileState::EMPTY || tmpTileState == TileState::OP_OCCUPIED)
+						if (tmpTileState == TileState::EMPTY || tmpTileState == TileState::OP_OCCUPIED)
 							ret.emplace(HexCoordinate(tileIt->first), tileIt->second);
 
-						if(tmpTileState != TileState::EMPTY)
+						if (tmpTileState != TileState::EMPTY)
 							break;
 					}
 				}
@@ -408,11 +404,11 @@ namespace cyvmath
 			return ret;
 		}
 
-		std::set<Coordinate> Piece::getReachableTiles() const
+		auto Piece::getReachableTiles() const -> set<HexCoordinate>
 		{
 			assert(m_coord);
 
-			std::set<Coordinate> ret;
+			set<HexCoordinate> ret;
 
 			auto scope = getMovementScope();
 			auto distance = scope.second;
@@ -420,19 +416,19 @@ namespace cyvmath
 			switch(scope.first)
 			{
 				case MovementType::ORTHOGONAL:
-					if(!distance)
-						distance = (Hexagon::edgeLength - 1) * 2;
+					if (!distance)
+						distance = (Hexagon<6>::edgeLength - 1) * 2;
 
 					ret = getReachableTiles({stepsOrthogonal, distance});
 					break;
 				case MovementType::DIAGONAL:
-					if(!distance)
-						distance = Hexagon::edgeLength - 1;
+					if (!distance)
+						distance = Hexagon<6>::edgeLength - 1;
 
 					ret = getReachableTiles({stepsDiagonal, distance});
 					break;
 				case MovementType::HEXAGONAL:
-					for(const auto& tile : getHexagonalLineTiles())
+					for (const auto& tile : getHexagonalLineTiles())
 					{
 						assert(tile.second != TileState::UNDEFINED);
 						assert(tile.second != TileState::START);
@@ -445,26 +441,26 @@ namespace cyvmath
 				{
 					// completely unnecessary, and not perfect
 					// ... but would probably work! :)
-					if(!distance)
-						distance = Hexagon::tileCount / 2;
+					if (!distance)
+						distance = Hexagon<6>::tileCount / 2;
 
-					std::set<Coordinate> lastTiles {*m_coord};
-					std::set<Coordinate> tiles;
+					set<Coordinate> lastTiles {*m_coord};
+					set<Coordinate> tiles;
 
 					// start with i = 1 because the first step is already done with
-					for(int i = 0; i < distance; ++i)
+					for (int i = 0; i < distance; ++i)
 					{
-						for(auto tile : lastTiles)
+						for (auto tile : lastTiles)
 						{
 							// adjacent tiles of tile
 							m_match.forReachableCoords(tile, {stepsOrthogonal, 1}, [&](Coordinate coord, Piece* piece) {
 								auto it = tiles.find(coord);
-								if(it == tiles.end()) // if the tile wasn't already checked
+								if (it == tiles.end()) // if the tile wasn't already checked
 								{
-									if(!piece || piece->getType() == PieceType::MOUNTAINS)
+									if (!piece || piece->getType() == PieceType::MOUNTAINS)
 										tiles.insert(coord);
 
-									if(!piece || (piece->getColor() == !m_color && piece->getType() != PieceType::MOUNTAINS))
+									if (!piece || (piece->getColor() == !m_color && piece->getType() != PieceType::MOUNTAINS))
 										ret.insert(coord);
 								}
 							});
@@ -483,11 +479,11 @@ namespace cyvmath
 			return ret;
 		}
 
-		std::set<Coordinate> Piece::getPossibleTargetTiles() const
+		auto Piece::getPossibleTargetTiles() const -> set<HexCoordinate>
 		{
 			assert(m_coord);
 
-			std::set<Coordinate> ret;
+			set<HexCoordinate> ret;
 
 			auto scope = getMovementScope();
 			auto distance = scope.second;
@@ -495,30 +491,30 @@ namespace cyvmath
 			switch(scope.first)
 			{
 				case MovementType::ORTHOGONAL:
-					if(!distance)
-						distance = (Hexagon::edgeLength - 1) * 2;
+					if (!distance)
+						distance = (Hexagon<6>::edgeLength - 1) * 2;
 
 					ret = getPossibleTargetTiles({stepsOrthogonal, distance});
 					break;
 				case MovementType::DIAGONAL:
-					if(!distance)
-						distance = Hexagon::edgeLength - 1;
+					if (!distance)
+						distance = Hexagon<6>::edgeLength - 1;
 
 					ret = getPossibleTargetTiles({stepsDiagonal, distance});
 					break;
 				case MovementType::HEXAGONAL:
-					for(const auto& tile : getHexagonalLineTiles())
+					for (const auto& tile : getHexagonalLineTiles())
 					{
-						if(tile.second == TileState::EMPTY)
+						if (tile.second == TileState::EMPTY)
 							ret.insert(tile.first);
 						else
 						{
 							assert(tile.second == TileState::OP_OCCUPIED);
 
-							std::shared_ptr<Piece> opPiece = m_match.getPieceAt(tile.first);
+							shared_ptr<Piece> opPiece = m_match.getPieceAt(tile.first);
 							assert(opPiece);
 
-							if(m_match.getBearingTable().canTake(this, opPiece.get()))
+							if (m_match.getBearingTable().canTake(this, opPiece.get()))
 								ret.insert(tile.first);
 						}
 					}
@@ -534,14 +530,14 @@ namespace cyvmath
 			return ret;
 		}
 
-		std::set<const Piece*> Piece::getReachableOpponentPieces() const
+		auto Piece::getReachableOpponentPieces() const -> set<const Piece*>
 		{
 			// this function is intended for flanking, but dragons
 			// as well as mountains obviously don't have part in that
 			assert(m_type != PieceType::DRAGON);
 			assert(m_type != PieceType::MOUNTAINS);
 
-			std::set<const Piece*> ret;
+			set<const Piece*> ret;
 
 			auto scope = getMovementScope();
 			auto distance = scope.second;
@@ -549,21 +545,21 @@ namespace cyvmath
 			switch(scope.first)
 			{
 				case MovementType::ORTHOGONAL:
-					if(!distance)
-						distance = (Hexagon::edgeLength - 1) * 2;
+					if (!distance)
+						distance = (Hexagon<6>::edgeLength - 1) * 2;
 
 					ret = getReachableOpponentPieces({stepsOrthogonal, distance});
 					break;
 				case MovementType::DIAGONAL:
-					if(!distance)
-						distance = Hexagon::edgeLength - 1;
+					if (!distance)
+						distance = Hexagon<6>::edgeLength - 1;
 
 					ret = getReachableOpponentPieces({stepsDiagonal, distance});
 					break;
 				case MovementType::HEXAGONAL:
-					for(const auto& tile : getHexagonalLineTiles())
+					for (const auto& tile : getHexagonalLineTiles())
 					{
-						if(tile.second == TileState::OP_OCCUPIED)
+						if (tile.second == TileState::OP_OCCUPIED)
 						{
 							const CoordPieceMap& activePieces = m_match.getActivePieces();
 
@@ -584,17 +580,17 @@ namespace cyvmath
 			return ret;
 		}
 
-		bool Piece::moveTo(Coordinate target, bool setup)
+		bool Piece::moveTo(const HexCoordinate& target, bool setup)
 		{
-			if(!(setup || moveToValid(target)))
+			if (!(setup || moveToValid(target)))
 				return false;
 
 			auto& activePieces = m_match.getActivePieces();
 			auto& player = m_match.getPlayer(m_color);
 
-			std::shared_ptr<Piece> selfSharedPtr;
+			shared_ptr<Piece> selfSharedPtr;
 
-			if(m_coord)
+			if (m_coord)
 			{
 				auto pieceIt = activePieces.find(*m_coord);
 				assert(pieceIt != activePieces.end());
@@ -602,15 +598,15 @@ namespace cyvmath
 				selfSharedPtr = pieceIt->second;
 				activePieces.erase(pieceIt);
 
-				if(setup)
+				if (setup)
 				{
-					if(m_type == PieceType::KING)
+					if (m_type == PieceType::KING)
 						player.getFortress().setCoord(target);
 					else
 					{
 						TerrainType tType = getSetupTerrain();
 
-						if(tType != TerrainType::UNDEFINED)
+						if (tType != TerrainType::UNDEFINED)
 						{
 							auto terrainIt = m_match.getTerrain().find(*m_coord);
 							assert(terrainIt != m_match.getTerrain().end());
@@ -625,10 +621,10 @@ namespace cyvmath
 				// piece is not on the board
 
 				auto& inactivePieces = player.getInactivePieces();
-				auto pieceIt = std::find_if(
+				auto pieceIt = find_if(
 					inactivePieces.begin(),
 					inactivePieces.end(),
-					[this](std::pair<const PieceType, std::shared_ptr<Piece>>& it) { return it.second.get() == this; }
+					[this](pair<const PieceType, shared_ptr<Piece>>& it) { return it.second.get() == this; }
 				);
 
 				assert(pieceIt != inactivePieces.end());
@@ -642,7 +638,7 @@ namespace cyvmath
 			m_coord = make_unique<Coordinate>(target);
 
 			auto it = activePieces.find(target);
-			if(it != activePieces.end())
+			if (it != activePieces.end())
 			{
 				assert(it->second->getColor() == !m_color);
 				m_match.removeFromBoard(it->second);
@@ -651,10 +647,10 @@ namespace cyvmath
 			auto res = activePieces.emplace(target, selfSharedPtr);
 			assert(res.second);
 
-			if(!setup)
+			if (!setup)
 			{
 				auto& opFortress = m_match.getPlayer(!m_color).getFortress();
-				if(!opFortress.isRuined && target == opFortress.getCoord())
+				if (!opFortress.isRuined && target == opFortress.getCoord())
 					opFortress.ruined();
 			}
 
@@ -665,13 +661,13 @@ namespace cyvmath
 		{
 			assert(m_coord);
 
-			std::shared_ptr<Piece> selfSharedPtr = m_match.getPieceAt(*m_coord);
+			shared_ptr<Piece> selfSharedPtr = m_match.getPieceAt(*m_coord);
 
 			m_match.removeFromBoard(selfSharedPtr);
 			m_match.addToBoard(type, m_color, *m_coord);
 			m_match.getBearingTable().update();
 
-			if(type == PieceType::KING)
+			if (type == PieceType::KING)
 			{
 				auto& player = m_match.getPlayer(m_color);
 

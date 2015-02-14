@@ -21,7 +21,6 @@
 #include <memory>
 #include <utility>
 #include <enum_str.hpp>
-#include <make_unique.hpp>
 #include "coordinate.hpp"
 #include "piece_type.hpp"
 #include "players_color.hpp"
@@ -62,7 +61,7 @@ namespace cyvmath
 			PieceType getType() const
 			{ return m_type; }
 
-			virtual std::unique_ptr<Coordinate> getCoord() const = 0;
+			std::unique_ptr<Coordinate> getCoord() const;
 
 			virtual const MovementScope& getMovementScope() const = 0;
 	};

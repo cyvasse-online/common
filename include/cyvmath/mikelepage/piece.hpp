@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -24,16 +24,13 @@
 #include <set>
 #include <valarray>
 #include <vector>
-#include <make_unique.hpp>
-#include <cyvmath/coordinate.hpp>
+#include <cyvmath/hexagon.hpp>
 #include "terrain_type.hpp"
 
 namespace cyvmath
 {
 	namespace mikelepage
 	{
-		using cyvmath::MovementScope;
-
 		class Match;
 
 		enum class TileState
@@ -52,6 +49,8 @@ namespace cyvmath
 		class Piece : public cyvmath::Piece
 		{
 			public:
+				using HexCoordinate = Hexagon<6>::Coordinate;
+
 				static const MovementVec stepsOrthogonal;
 				static const MovementVec stepsDiagonal;
 				static const MovementVec stepsHexagonalLine;
@@ -59,26 +58,21 @@ namespace cyvmath
 			protected:
 				Match& m_match;
 
-				bool moveToValid(Coordinate) const;
+				bool moveToValid(const HexCoordinate&) const;
 
-				std::set<Coordinate> getReachableTiles(const MovementRange&) const;
-				std::set<Coordinate> getPossibleTargetTiles(const MovementRange&) const;
-				std::set<const Piece*> getReachableOpponentPieces(const MovementRange&) const;
+				auto getReachableTiles(const MovementRange&) const -> std::set<HexCoordinate>;
+				auto getPossibleTargetTiles(const MovementRange&) const -> std::set<HexCoordinate>;
+				auto getReachableOpponentPieces(const MovementRange&) const -> std::set<const Piece*>;
 
 			public:
-				Piece(PlayersColor color, PieceType type, Coordinate coord, Match& match)
+				Piece(PlayersColor color, PieceType type, const Coordinate& coord, Match& match)
 					: cyvmath::Piece(color, type, make_unique<Coordinate>(coord))
 					, m_match(match)
 				{ }
 
 				virtual ~Piece() = default;
 
-				std::unique_ptr<Coordinate> getCoord() const
-				{ return make_unique<Coordinate>(dynamic_cast<Coordinate&>(*m_coord)); }
-
-				// ugly hack for piece promotion
-				void setCoord(Coordinate coord)
-				{ m_coord = make_unique<Coordinate>(coord); }
+				void setCoord(Coordinate);
 
 				uint8_t getBaseTier() const;
 				uint8_t getEffectiveDefenseTier() const;
@@ -86,14 +80,14 @@ namespace cyvmath
 				TerrainType getSetupTerrain() const;
 				virtual const MovementScope& getMovementScope() const final override;
 
-				bool canReach(Coordinate) const;
+				bool canReach(const Coordinate&) const;
 
 				TileStateMap getHexagonalLineTiles() const;
-				std::set<Coordinate> getReachableTiles() const;
-				std::set<Coordinate> getPossibleTargetTiles() const;
-				std::set<const Piece*> getReachableOpponentPieces() const;
+				auto getReachableTiles() const -> std::set<HexCoordinate>;
+				auto getPossibleTargetTiles() const -> std::set<HexCoordinate>;
+				auto getReachableOpponentPieces() const -> std::set<const Piece*>;
 
-				virtual bool moveTo(Coordinate, bool setup);
+				virtual bool moveTo(const HexCoordinate&, bool setup);
 				virtual void promoteTo(PieceType);
 		};
 
