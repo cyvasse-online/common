@@ -21,9 +21,6 @@
 #include <cyvws/msg.hpp>
 #include <cyvws/game_msg.hpp>
 
-using namespace std;
-using namespace cyvmath;
-
 namespace cyvws
 {
 	namespace json
@@ -53,7 +50,7 @@ namespace cyvws
 			return piecePosition(piece.getType(), *piece.getCoord());
 		}
 
-		Json::Value pieceMovement(PieceType pieceType, Coordinate oldPos, Coordinate newPos)
+		Json::Value movement(PieceType pieceType, Coordinate oldPos, Coordinate newPos)
 		{
 			Json::Value data;
 			data[PIECE_TYPE] = PieceTypeToStr(pieceType);
@@ -63,12 +60,35 @@ namespace cyvws
 			return data;
 		}
 
-		PieceMovement pieceMovement(const Json::Value& val)
+		PieceMovement movement(const Json::Value& val)
 		{
 			return {
 				StrToPieceType(val[PIECE_TYPE].asString()),
 				Coordinate(val[OLD_POS].asString()),
 				Coordinate(val[NEW_POS].asString())
+			};
+		}
+
+		Json::Value moveCapture(PieceType atkPT, Coordinate oldPos, Coordinate newPos, PieceType defPT, Coordinate defPiecePos)
+		{
+			Json::Value data;
+			data[ATK_PIECE][PIECE_TYPE] = PieceTypeToStr(atkPT);
+			data[ATK_PIECE][OLD_POS]    = oldPos.toString();
+			data[ATK_PIECE][NEW_POS]    = newPos.toString();
+			data[DEF_PIECE][PIECE_TYPE] = PieceTypeToStr(defPT);
+			data[DEF_PIECE][POS]        = defPiecePos.toString();
+
+			return data;
+		}
+
+		MoveCapture moveCapture(const Json::Value& val)
+		{
+			return {
+				StrToPieceType(val[ATK_PIECE][PIECE_TYPE].asString()),
+				Coordinate(val[ATK_PIECE][OLD_POS].asString()),
+				Coordinate(val[ATK_PIECE][NEW_POS].asString()),
+				StrToPieceType(val[DEF_PIECE][PIECE_TYPE].asString()),
+				Coordinate(val[DEF_PIECE][POS].asString())
 			};
 		}
 
@@ -136,7 +156,10 @@ namespace cyvws
 		{ return gameMsg(GameMsgAction::SET_IS_READY, val); }
 
 		Json::Value gameMsgMove(PieceType pieceType, Coordinate oldPos, Coordinate newPos)
-		{ return gameMsg(GameMsgAction::MOVE, pieceMovement(pieceType, oldPos, newPos)); }
+		{ return gameMsg(GameMsgAction::MOVE, movement(pieceType, oldPos, newPos)); }
+
+		Json::Value gameMsgMoveCapture(PieceType atkPT, Coordinate oldPos, Coordinate newPos, PieceType defPT, Coordinate defPiecePos)
+		{ return gameMsg(GameMsgAction::MOVE_CAPTURE, moveCapture(atkPT, oldPos, newPos, defPT, defPiecePos)); }
 
 		Json::Value gameMsgPromote(PieceType origType, PieceType newType)
 		{ return gameMsg(GameMsgAction::PROMOTE, promotion(origType, newType)); }

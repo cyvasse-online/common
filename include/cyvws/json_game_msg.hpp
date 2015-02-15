@@ -39,6 +39,16 @@ namespace cyvws
 		cyvmath::Coordinate newPos;
 	};
 
+	struct MoveCapture
+	{
+		cyvmath::PieceType atkPT;
+		cyvmath::Coordinate oldPos;
+		cyvmath::Coordinate newPos;
+
+		cyvmath::PieceType defPT;
+		cyvmath::Coordinate defPiecePos;
+	};
+
 	struct Promotion
 	{
 		cyvmath::PieceType origType;
@@ -49,32 +59,39 @@ namespace cyvws
 
 	namespace json
 	{
-		Json::Value piecePosition(cyvmath::PieceType pieceType, cyvmath::Coordinate pos);
+		using namespace std;
+		using namespace cyvmath;
+
+		Json::Value piecePosition(PieceType pieceType, Coordinate pos);
 		PiecePosition piecePosition(const Json::Value&);
-		Json::Value piecePosition(const cyvmath::Piece&); // convenience overload
+		Json::Value piecePosition(const Piece&); // convenience overload
 
-		Json::Value pieceMovement(cyvmath::PieceType pieceType, cyvmath::Coordinate oldPos, cyvmath::Coordinate newPos);
-		PieceMovement pieceMovement(const Json::Value&);
+		Json::Value movement(PieceType pieceType, Coordinate oldPos, Coordinate newPos);
+		PieceMovement movement(const Json::Value&);
 
-		Json::Value piieceMap(const PieceMap&);
+		Json::Value moveCapture(PieceType atkPT, Coordinate oldPos, Coordinate newPos, PieceType defPT, Coordinate defPiecePos);
+		MoveCapture moveCapture(const Json::Value&);
+
+		Json::Value pieceMap(const PieceMap&);
 		template <class piece_t> // convenience overload
-		Json::Value pieceMap(const std::map<cyvmath::Coordinate, piece_t>&);
+		Json::Value pieceMap(const map<Coordinate, piece_t>&);
 		PieceMap pieceMap(const Json::Value&);
 
-		Json::Value promotion(cyvmath::PieceType origType, cyvmath::PieceType newType);
+		Json::Value promotion(PieceType origType, PieceType newType);
 		Promotion promotion(const Json::Value&);
 
 		// complete message assembling
 
-		Json::Value gameMsg(const std::string& gameMsgAction, const Json::Value& param);
+		Json::Value gameMsg(const string& gameMsgAction, const Json::Value& param);
 
 		Json::Value gameMsgSetOpeningArray(const PieceMap&);
 		template <class piece_t> // convenience overload
-		Json::Value gameMsgSetOpeningArray(const std::map<cyvmath::Coordinate, piece_t>& pieces);
+		Json::Value gameMsgSetOpeningArray(const map<Coordinate, piece_t>& pieces);
 
 		Json::Value gameMsgSetIsReady(bool val);
-		Json::Value gameMsgMove(cyvmath::PieceType pieceType, cyvmath::Coordinate oldPos, cyvmath::Coordinate newPos);
-		Json::Value gameMsgPromote(cyvmath::PieceType origType, cyvmath::PieceType newType);
+		Json::Value gameMsgMove(PieceType pieceType, Coordinate oldPos, Coordinate newPos);
+		Json::Value gameMsgMoveCapture(PieceType atkPT, Coordinate oldPos, Coordinate newPos, PieceType defPT, Coordinate defPiecePos);
+		Json::Value gameMsgPromote(PieceType origType, PieceType newType);
 	}
 }
 

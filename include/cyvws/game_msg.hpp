@@ -22,6 +22,8 @@
 namespace cyvws
 {
 	const std::string
+		ATK_PIECE  = "atkPiece",
+		DEF_PIECE  = "defPiece",
 		NEW_POS    = "newPos",
 		NEW_TYPE   = "newType",
 		OLD_POS    = "oldPos",
