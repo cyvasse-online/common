@@ -144,7 +144,9 @@ namespace cyvws
 			Json::Value msg;
 			msg[MSG_TYPE] = MsgType::GAME_MSG;
 			msg[MSG_DATA][ACTION] = gameMsgAction;
-			msg[MSG_DATA][PARAM]  = param;
+
+			if(!param.isNull())
+				msg[MSG_DATA][PARAM]  = param;
 
 			return msg;
 		}
@@ -152,8 +154,8 @@ namespace cyvws
 		Json::Value gameMsgSetOpeningArray(const PieceMap& map)
 		{ return gameMsg(GameMsgAction::SET_OPENING_ARRAY, pieceMap(map)); }
 
-		Json::Value gameMsgSetIsReady(bool val)
-		{ return gameMsg(GameMsgAction::SET_IS_READY, val); }
+		Json::Value gameMsgSetIsReady()
+		{ return gameMsg(GameMsgAction::SET_IS_READY, Json::Value()); }
 
 		Json::Value gameMsgMove(PieceType pieceType, Coordinate oldPos, Coordinate newPos)
 		{ return gameMsg(GameMsgAction::MOVE, movement(pieceType, oldPos, newPos)); }

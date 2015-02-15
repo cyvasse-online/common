@@ -88,7 +88,7 @@ namespace cyvws
 		template <class piece_t> // convenience overload
 		Json::Value gameMsgSetOpeningArray(const map<Coordinate, piece_t>& pieces);
 
-		Json::Value gameMsgSetIsReady(bool val);
+		Json::Value gameMsgSetIsReady();
 		Json::Value gameMsgMove(PieceType pieceType, Coordinate oldPos, Coordinate newPos);
 		Json::Value gameMsgMoveCapture(PieceType atkPT, Coordinate oldPos, Coordinate newPos, PieceType defPT, Coordinate defPiecePos);
 		Json::Value gameMsgPromote(PieceType origType, PieceType newType);

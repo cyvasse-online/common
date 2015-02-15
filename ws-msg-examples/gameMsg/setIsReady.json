@@ -3,7 +3,6 @@
 	"msgID": 5,
 	"msgData": {
 		"playerID": "OQI15ZqM",
-		"action": "setIsReady",
-		"param": true
+		"action": "setIsReady"
 	}
 }
