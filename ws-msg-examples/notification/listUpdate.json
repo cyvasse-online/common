@@ -5,18 +5,18 @@
 		"listName": "openRandomGames",
 		"listContent": [
 			{
-				"id": "NHVy",
+				"matchID": "NHVy",
+				"title": "Test user X",
 				"ruleSet": "mikelepage",
-				"freeColor": "black",
-				"extraRules": [ "seaPorts" ],
-				"waitingPlayer": "Test user X"
+				"playAs": "black",
+				"extraRules": [ "seaPorts" ]
 			},
 			{
-				"id": "vnUM",
+				"matchID": "vnUM",
+				"title": "jPlatte",
 				"ruleSet": "ninetile",
-				"freeColor": "white",
-				"extraRules": [ ],
-				"waitingPlayer": "jPlatte"
+				"playAs": "white",
+				"extraRules": [ ]
 			}
 		]
 	}

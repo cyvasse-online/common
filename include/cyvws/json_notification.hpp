@@ -18,7 +18,9 @@
 #define _CYVWS_JSON_NOTIFICATION_HPP_
 
 #include <string>
-#include <json/value.h>
+#include <cyvws/notification.hpp>
+
+namespace Json { class Value; }
 
 namespace cyvws
 {
@@ -27,7 +29,7 @@ namespace cyvws
 		Json::Value notification(const Json::Value& notificationData);
 
 		Json::Value commErr(const std::string& errMsg);
-		//Json::Value listUpdate(...);
+		Json::Value listUpdate(const std::string& listName, const GamesListMap& curList);
 		Json::Value userJoined(const std::string& screenName, bool registered, const std::string& role);
 		Json::Value userLeft(const std::string& screenName);
 	}

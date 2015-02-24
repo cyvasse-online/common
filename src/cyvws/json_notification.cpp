@@ -16,9 +16,12 @@
 
 #include <cyvws/json_notification.hpp>
 
+#include <json/value.h>
 #include <cyvws/common.hpp>
 #include <cyvws/msg.hpp>
 #include <cyvws/notification.hpp>
+
+using namespace std;
 
 namespace cyvws
 {
@@ -33,7 +36,7 @@ namespace cyvws
 			return val;
 		}
 
-		Json::Value commErr(const std::string& errMsg)
+		Json::Value commErr(const string& errMsg)
 		{
 			Json::Value data;
 			data[TYPE]    = NotificationType::COMM_ERROR;
@@ -42,7 +45,29 @@ namespace cyvws
 			return notification(data);
 		}
 
-		Json::Value userJoined(const std::string& screenName, bool registered, const std::string& role)
+		Json::Value listUpdate(const string& listName, const GamesListMap& curList)
+		{
+			Json::Value data;
+			data[TYPE]      = NotificationType::LIST_UPDATE;
+			data[LIST_NAME] = listName;
+
+			auto& listContent = data[LIST_CONTENT];
+			for (auto&& game : curList)
+			{
+				Json::Value gameVal;
+				gameVal[MATCH_ID] = game.first;
+				gameVal[TITLE]    = game.second.title;
+				//gameVal[RULE_SET]
+				gameVal[PLAY_AS]  = PlayersColorToStr(game.second.playAs);
+				//gameVal[EXTRA_RULES]
+
+				listContent.append(gameVal);
+			}
+
+			return notification(data);
+		}
+
+		Json::Value userJoined(const string& screenName, bool registered, const string& role)
 		{
 			Json::Value data;
 			data[TYPE]        = NotificationType::USER_JOINED;
@@ -53,7 +78,7 @@ namespace cyvws
 			return notification(data);
 		}
 
-		Json::Value userLeft(const std::string& screenName)
+		Json::Value userLeft(const string& screenName)
 		{
 			Json::Value data;
 			data[TYPE]        = NotificationType::USER_LEFT;

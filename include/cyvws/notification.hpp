@@ -18,10 +18,16 @@
 #define _CYVWS_NOTIFICATION_HPP_
 
 #include <string>
+#include <cyvmath/players_color.hpp>
 
 namespace cyvws
 {
-	const std::string NOTIFICATION_DATA = "notificationData";
+	const std::string
+		NOTIFICATION_DATA = "notificationData",
+		LIST_NAME         = "listName",
+		LIST_CONTENT      = "listContent",
+		TITLE             = "title",
+		PLAY_AS           = "playAs";
 
 	namespace NotificationType
 	{
@@ -34,12 +40,21 @@ namespace cyvws
 
 	const std::string LISTS = "lists";
 
-	namespace GameList
+	namespace GamesList
 	{
 		const std::string
 			OPEN_RANDOM_GAMES    = "openRandomGames",
 			RUNNING_PUBLIC_GAMES = "runningPublicGames";
 	}
+
+	struct GamesListMappedType
+	{
+		std::string title;
+		cyvmath::PlayersColor playAs;
+	};
+
+	typedef std::map<std::string, GamesListMappedType>
+		GamesListMap;
 }
 
 #endif // _CYVWS_NOTIFICATION_HPP_
