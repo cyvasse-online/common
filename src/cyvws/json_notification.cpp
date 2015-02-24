@@ -51,7 +51,7 @@ namespace cyvws
 			data[TYPE]      = NotificationType::LIST_UPDATE;
 			data[LIST_NAME] = listName;
 
-			auto& listContent = data[LIST_CONTENT];
+			auto& listContent = data[LIST_CONTENT] = Json::Value(Json::arrayValue);
 			for (auto&& game : curList)
 			{
 				Json::Value gameVal;
