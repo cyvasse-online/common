@@ -47,7 +47,7 @@ namespace cyvdb
 			playerArray getPlayers(cyvmath::Match&);
 
 			// modifications
-			void addPlayer(std::unique_ptr<cyvmath::Player>);
+			void addPlayer(std::unique_ptr<cyvmath::Player>, const std::string& matchID);
 	};
 }
 

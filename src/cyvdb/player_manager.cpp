@@ -22,6 +22,7 @@
 #include <cyvdb/config.hpp>
 #include <cyvmath/rule_set_create.hpp>
 
+using namespace std;
 using namespace cyvmath;
 
 namespace cyvdb
@@ -29,8 +30,7 @@ namespace cyvdb
 	bool PlayerManager::playerValid(const cyvmath::Player& player)
 	{
 		return player.getColor() != PlayersColor::UNDEFINED
-			&& player.getID().length() == 8
-			&& player.getMatchID().length() == 4;
+			&& player.getID().length() == 8;
 	}
 
 	int PlayerManager::getPlayersColorID(PlayersColor color)
@@ -72,7 +72,7 @@ namespace cyvdb
 	{ }
 
 
-	/*Player PlayerManager::getPlayer(const std::string& playerID)
+	/*Player PlayerManager::getPlayer(const string& playerID)
 	{
 		try
 		{
@@ -113,10 +113,10 @@ namespace cyvdb
 		return ret;
 	}
 
-	void PlayerManager::addPlayer(std::unique_ptr<cyvmath::Player> player)
+	void PlayerManager::addPlayer(unique_ptr<cyvmath::Player> player, const string& matchID)
 	{
 		if(!playerValid(*player))
-			throw std::invalid_argument("The given Player object is invalid");
+			throw invalid_argument("The given Player object is invalid");
 
 		m_conn.prepareCached(
 				"INSERT INTO players (player_id, match_id, color) "
@@ -124,7 +124,7 @@ namespace cyvdb
 				"addPlayer" // statement cache key
 			)
 			.set("id", player->getID())
-			.set("matchID", player->getMatchID())
+			.set("matchID", matchID)
 			.set("color", getPlayersColorID(player->getColor()))
 			.execute();
 	}
