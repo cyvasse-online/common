@@ -1,18 +1,15 @@
 {
 	"msgType": "serverReply",
-	"msgID": 2,
+	"msgID": 3,
 	"replyData": {
 		"success": true,
+		"role": "player",
 		"color": "black",
 		"playerID": "OcanC0N3",
 		"ruleSet": "mikelepage",
 		"extraRules": [ ],
 		"gameStatus" : {
-			"setup": true,
-			"piecePositions": {
-				"white": [ ],
-				"black": [ ]
-			}
+			"setup": true
 		}
 	}
 }

@@ -4,11 +4,7 @@
 	"requestData": {
 		"action": "joinGame",
 		"param": {
-			"matchID": "URJS",
-			"role": "player",
-			"userInfo": {
-				"screenName": "TestUser X"
-			}
+			"matchID": "URJS"
 		}
 	}
 }

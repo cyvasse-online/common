@@ -1,8 +1,7 @@
 {
 	"msgType": "gameMsg",
-	"msgID": 4,
+	"msgID": 5,
 	"msgData": {
-		"playerID": "OcanC0N3",
 		"action": "setOpeningArray",
 		"param": {
 			"mountains":   [ "D3", "E4", "F5", "G5", "I5", "K4" ],

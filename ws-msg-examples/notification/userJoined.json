@@ -2,7 +2,7 @@
 	"msgType": "notification",
 	"notificationData": {
 		"type": "userJoined",
-		"screenName": "mikelepage",
+		"username": "User #1024",
 		"registered": true,
 		"role": "spectator"
 	}

@@ -1,0 +1,8 @@
+{
+	"msgType": "notification",
+	"notificationData": {
+		"type": "usernameUpdate",
+		"oldUsername": "Black player",
+		"newUsername": "Mike Le Page"
+	}
+}

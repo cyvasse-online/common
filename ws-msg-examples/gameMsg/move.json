@@ -2,7 +2,6 @@
 	"msgType": "gameMsg",
 	"msgID": 6,
 	"msgData": {
-		"playerID": "OcanC0N3",
 		"action": "move",
 		"param": {
 			"pieceType": "king",

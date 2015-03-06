@@ -2,7 +2,7 @@
 	"msgType": "chatMsg",
 	"msgID": 6,
 	"msgData": {
-        "user": "jPlatte",
+		"user": "jPlatte",
 		"content": "Hey!"
 	}
 }

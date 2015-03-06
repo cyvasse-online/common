@@ -1,0 +1,8 @@
+{
+	"msgType": "serverRequest",
+	"msgID": 4,
+	"requestData": {
+		"action": "setUsername",
+		"param": "jPlatte"
+	}
+}

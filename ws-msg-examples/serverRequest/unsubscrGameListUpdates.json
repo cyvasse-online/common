@@ -1,11 +1,11 @@
 {
-    "msgType": "serverRequest",
-    "msgID": 3,
-    "requestData": {
-        "action": "unsubscrGameListUpdates",
-        "param": {
-            "ruleSet": "mikelepage",
-            "lists": [ "openRandomGames", "runningPublicGames" ]
-        }
-    }
+	"msgType": "serverRequest",
+	"msgID": 3,
+	"requestData": {
+		"action": "unsubscrGameListUpdates",
+		"param": {
+			"ruleSet": "mikelepage",
+			"lists": [ "openRandomGames", "runningPublicGames" ]
+		}
+	}
 }

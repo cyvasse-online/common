@@ -1,0 +1,34 @@
+{
+	"msgType": "serverReply",
+	"msgID": 3,
+	"replyData": {
+		"success": true,
+		"role": "spectator",
+		"ruleSet": "mikelepage",
+		"extraRules": [ ],
+		"gameStatus" : {
+			"setup": false,
+			"piecePositions": {
+				"white": {
+					"dragon":      [ "H2" ],
+					"elephant":    [ "H3", "G3" ],
+					"heavy horse": [ "E3" ],
+					"king":        [ "G4" ],
+					"mountains":   [ "K3", "K4", "J5", "J3", "C4", "C5" ],
+					"rabble":      [ "I5", "E5", "D5" ],
+					"spears":      [ "H4" ],
+					"trebuchet":   [ "D3", "I3" ]
+				},
+				"black": {
+					"crossbows":   [ "B8", "C8" ],
+					"dragon":      [ "D10" ],
+					"elephant":    [ "D9", "A8" ],
+					"king":        [ "E8" ],
+					"light horse": [ "G8", "H8" ],
+					"mountains":   [ "A9", "E9", "B7", "H9", "I8", "I7" ],
+					"rabble":      [ "C7", "F7", "G7", "H7" ]
+				}
+			}
+		}
+	}
+}

@@ -2,7 +2,6 @@
 	"msgType": "gameMsg",
 	"msgID": 8,
 	"msgData": {
-		"playerID": "OcanC0N3",
 		"action": "promote",
 		"param": {
 			"origType": "crossbows",

@@ -2,6 +2,6 @@
 	"msgType": "notification",
 	"notificationData": {
 		"type": "userLeft",
-		"screenName": "mikelepage"
+		"username": "User #1024"
 	}
 }

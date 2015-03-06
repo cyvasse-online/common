@@ -2,7 +2,6 @@
 	"msgType": "gameMsg",
 	"msgID": 6,
 	"msgData": {
-		"playerID": "OQI15ZqM",
 		"action": "moveCapture",
 		"param": {
 			"atkPiece": {
