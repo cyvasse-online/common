@@ -280,18 +280,15 @@ namespace cyvmath
 	const std::set<typename Hexagon<l>::Coordinate> Hexagon<l>::allCoordinates = [] {
 		std::set<Coordinate> set;
 
-		if (set.empty())
+		for (auto X = 0; X < (2 * l) - 1; X++)
 		{
-			for (auto X = 0; X < (2 * l) - 1; X++)
-			{
-				auto yBegin = (X < (l - 1)) ? (l - 1 - X) : 0;
-				auto yEnd   = (X < (l - 1)) ? (2 * l - 1) : (2 * l - 1) + (l - 1 - X);
+			auto yBegin = (X < (l - 1)) ? (l - 1 - X) : 0;
+			auto yEnd   = (X < (l - 1)) ? (2 * l - 1) : (2 * l - 1) + (l - 1 - X);
 
-				for (auto Y = yBegin; Y < yEnd; Y++)
-				{
-					auto res = set.emplace(X, Y);
-					assert(res.second);
-				}
+			for (auto Y = yBegin; Y < yEnd; Y++)
+			{
+				auto res = set.emplace(X, Y);
+				assert(res.second);
 			}
 		}
 
