@@ -169,20 +169,13 @@ namespace cyvmath
 					/// Check if the given coordinate is reachable in one diagonal move
 					constexpr bool isDiagonal(Coordinate other) const
 					{
-						// until C++14, this has to be implemented using
-						// macros because C++11 doesn't allow constexpr
-						// functions to include variable declarations
-						#define dX m_x - other.m_x
-						#define dY m_y - other.m_y
-						#define dZ z() - other.z()
+						auto dX = m_x - other.m_x;
+						auto dY = m_y - other.m_y;
+						auto dZ = z() - other.z();
 
 						return dX == dY ||
 						       dY == dZ ||
 						       dZ == dX;
-
-						#undef dX
-						#undef dY
-						#undef dZ
 					}
 
 					DirectionDiagonal getDirectionDiagonal(Coordinate other) const

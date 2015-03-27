@@ -3,12 +3,20 @@ AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE([1.11 foreign])
 AM_SILENT_RULES([yes])
-AC_LANG(C++)
-AX_CXX_COMPILE_STDCXX_11(noext, mandatory)
 
 AC_PROG_CXX
 AC_PROG_RANLIB
 AM_PROG_AR
+
+AC_LANG(C++)
+AX_CHECK_COMPILE_FLAG([-std=c++14], [CXXFLAGS="$CXXFLAGS -std=c++14"],
+	AX_CHECK_COMPILE_FLAG([-std=c++1y], [CXXFLAGS="$CXXFLAGS -std=c++1y"],
+		AC_MSG_ERROR([Compiler doesn't support C++14])
+	)
+)
+AX_CHECK_COMPILE_FLAG([-Wall], [CXXFLAGS="$CXXFLAGS -Wall"])
+AX_CHECK_COMPILE_FLAG([-Wextra], [CXXFLAGS="$CXXFLAGS -Wextra"])
+AX_CHECK_COMPILE_FLAG([-pedantic], [CXXFLAGS="$CXXFLAGS -pedantic"])
 
 ## only build cyvdb when compiling natively...
 ## This is probably not the best way to check whether emconfigure is used
@@ -20,10 +28,6 @@ AS_IF([test -n "$EMMAKEN_JUST_CONFIGURE"], [
 	AC_CHECK_HEADER([tntdb/connection.h], [], AC_MSG_ERROR([tntdb headers not found]))
 ])
 
-# jsoncpp < 0.7.0 doesn't support pkgconfig. If you're using an older version
-# (0.6.0 rc2 is the only other tested version though), you'll have to manually
-# define JSONCPP_CFLAGS (to e.g. "-I/usr/include/jsoncpp" for Ubuntu) and
-# JSONCPP_LIBS (to e.g. "-ljsoncpp")
 PKG_CHECK_MODULES([JSONCPP], [jsoncpp])
 
 PKG_CHECK_MODULES([CPPUNIT], [cppunit], [have_cppunit=yes], [have_cppunit=no])
