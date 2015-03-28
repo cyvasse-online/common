@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -28,7 +28,7 @@
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
-#include <make_unique.hpp>
+#include <optional.hpp>
 
 namespace cyvmath
 {
@@ -243,15 +243,16 @@ namespace cyvmath
 					/// @{
 					/// Create a Coordinate object from an X and an Y
 					/// If the coordinte is invalid, return nullptr
-					static constexpr std::unique_ptr<Coordinate> create(int8_t X, int8_t Y)
+					static constexpr optional<Coordinate> create(int8_t X, int8_t Y)
 					{
-						return isValid(X, Y)
-							? make_unique<Coordinate>(X, Y)
-							: nullptr;
+						if (isValid(X, Y))
+							return Coordinate(X, Y);
+
+						return nullopt;
 					}
 
 					template<class T>
-					static std::unique_ptr<Coordinate> create(typename std::valarray<T> a)
+					static optional<Coordinate> create(typename std::valarray<T> a)
 					{
 						assert(a.size() == 2);
 						return create(a[0], a[1]);

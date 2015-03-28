@@ -17,26 +17,27 @@
 #include <cyvmath/rule_set_create.hpp>
 
 #include <stdexcept>
-#include <make_unique.hpp>
 #include <cyvmath/hexagon.hpp>
 #include <cyvmath/mikelepage/fortress.hpp>
 #include <cyvmath/mikelepage/match.hpp>
 #include <cyvmath/mikelepage/player.hpp>
 
+using namespace std;
+
 namespace cyvmath
 {
-	std::unique_ptr<Match> createMatch(RuleSet ruleSet, const std::string& id, bool random, bool _public)
+	unique_ptr<Match> createMatch(RuleSet ruleSet, const string& id, bool random, bool _public)
 	{
 		switch(ruleSet)
 		{
 			case RuleSet::MIKELEPAGE:
 				return make_unique<mikelepage::Match>(id, random, _public);
 			default:
-				throw std::invalid_argument("invalid rule set");
+				throw invalid_argument("invalid rule set");
 		}
 	}
 
-	std::unique_ptr<Player> createPlayer(Match& match, PlayersColor color, const std::string& id)
+	unique_ptr<Player> createPlayer(Match& match, PlayersColor color, const string& id)
 	{
 		switch(match.getRuleSet())
 		{
@@ -45,7 +46,7 @@ namespace cyvmath
 				return make_unique<mikelepage::Player>(dynamic_cast<mikelepage::Match&>(match), color,
 					make_unique<mikelepage::Fortress>(color, Hexagon<6>::Coordinate(5, 5)), id);
 			default:
-				throw std::runtime_error("Match object not recognized");
+				throw runtime_error("Match object not recognized");
 		}
 	}
 }

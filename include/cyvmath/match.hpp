@@ -21,6 +21,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <utility>
 #include "player.hpp"
 #include "rule_sets.hpp"
 

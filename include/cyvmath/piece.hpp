@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -18,9 +18,9 @@
 #define _CYVMATH_PIECE_HPP_
 
 #include <map>
-#include <memory>
 #include <utility>
 #include <enum_str.hpp>
+#include <optional.hpp>
 #include "coordinate.hpp"
 #include "piece_type.hpp"
 #include "players_color.hpp"
@@ -44,10 +44,10 @@ namespace cyvmath
 			const PlayersColor m_color;
 			const PieceType m_type;
 
-			std::unique_ptr<Coordinate> m_coord;
+			optional<Coordinate> m_coord;
 
 		public:
-			Piece(PlayersColor color, PieceType type, std::unique_ptr<Coordinate> coord)
+			Piece(PlayersColor color, PieceType type, optional<Coordinate> coord)
 				: m_color{color}
 				, m_type{type}
 				, m_coord{std::move(coord)}
@@ -61,7 +61,8 @@ namespace cyvmath
 			PieceType getType() const
 			{ return m_type; }
 
-			std::unique_ptr<Coordinate> getCoord() const;
+			optional<Coordinate> getCoord() const
+			{ return m_coord; }
 
 			virtual const MovementScope& getMovementScope() const = 0;
 	};

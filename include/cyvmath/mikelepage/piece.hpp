@@ -66,13 +66,14 @@ namespace cyvmath
 
 			public:
 				Piece(PlayersColor color, PieceType type, const Coordinate& coord, Match& match)
-					: cyvmath::Piece(color, type, make_unique<Coordinate>(coord))
+					: cyvmath::Piece(color, type, coord)
 					, m_match(match)
 				{ }
 
 				virtual ~Piece() = default;
 
-				void setCoord(Coordinate);
+				void setCoord(Coordinate coord)
+				{ m_coord = coord; }
 
 				uint8_t getBaseTier() const;
 				uint8_t getEffectiveDefenseTier() const;

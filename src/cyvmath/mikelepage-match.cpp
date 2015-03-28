@@ -20,11 +20,13 @@
 #include <cyvmath/hexagon.hpp>
 #include <cyvmath/mikelepage/fortress.hpp>
 
+using namespace std;
+
 namespace cyvmath
 {
 	namespace mikelepage
 	{
-		auto Match::getHorseMovementCenters() -> std::set<HexCoordinate>
+		auto Match::getHorseMovementCenters() -> set<HexCoordinate>
 		{
 			return {
 				getPlayer(PlayersColor::WHITE).getFortress().getCoord(),
@@ -32,9 +34,9 @@ namespace cyvmath
 			};
 		}
 
-		auto Match::getPieceAt(HexCoordinate coord) -> std::shared_ptr<Piece>
+		auto Match::getPieceAt(HexCoordinate coord) -> shared_ptr<Piece>
 		{
-			std::shared_ptr<Piece> ret;
+			shared_ptr<Piece> ret;
 
 			auto it = m_activePieces.find(coord);
 			if(it != m_activePieces.end())
@@ -43,15 +45,14 @@ namespace cyvmath
 			return ret;
 		}
 
-		void Match::forReachableCoords(HexCoordinate start, const MovementRange& range,
-		                               std::function<void(const HexCoordinate&, Piece*)> func)
+		void Match::forReachableCoords(HexCoordinate start, const MovementRange& range, function<void(const HexCoordinate&, Piece*)> func)
 		{
 			for(const auto& step : range.first)
 			{
 				assert(step.size() == 2);
 
 				auto tmpPos = start.toValarray<int8_t>();
-				auto tmpCoord = make_unique<Coordinate>(start);
+				optional<HexCoordinate> tmpCoord = start;
 
 				for(auto i = 0; i < range.second; i++)
 				{
@@ -65,7 +66,7 @@ namespace cyvmath
 					if(!tmpCoord)
 						break;
 
-					std::shared_ptr<Piece> tmpPiece = getPieceAt(*tmpCoord);
+					shared_ptr<Piece> tmpPiece = getPieceAt(*tmpCoord);
 
 					func(*tmpCoord, tmpPiece.get());
 
@@ -87,14 +88,14 @@ namespace cyvmath
 			auto it = inactivePieces.find(type);
 			assert(it != inactivePieces.end());
 
-			std::shared_ptr<Piece> piece = it->second;
+			shared_ptr<Piece> piece = it->second;
 			inactivePieces.erase(it);
 
 			piece->setCoord(coord);
 			m_activePieces.emplace(coord, piece);
 		}
 
-		void Match::removeFromBoard(std::shared_ptr<Piece> piece)
+		void Match::removeFromBoard(shared_ptr<Piece> piece)
 		{
 			assert(piece->getCoord());
 

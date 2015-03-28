@@ -12,7 +12,6 @@ noinst_LIBRARIES = \
 
 libcyvmath_a_SOURCES = \
 	src/cyvmath/coordinate.cpp \
-	src/cyvmath/piece.cpp \
 	src/cyvmath/players_color.cpp \
 	src/cyvmath/rule_set_create.cpp \
 	src/cyvmath/rule_sets.cpp \

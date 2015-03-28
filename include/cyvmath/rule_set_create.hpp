@@ -26,8 +26,7 @@ namespace cyvmath
 	class Match;
 	class Player;
 
-	std::unique_ptr<Match> createMatch(RuleSet ruleSet, const std::string& id = {},
-	                                   bool random = false, bool _public = false);
+	std::unique_ptr<Match> createMatch(RuleSet ruleSet, const std::string& id = {}, bool random = false, bool _public = false);
 	std::unique_ptr<Player> createPlayer(Match&, PlayersColor, const std::string& id = {});
 }
 

@@ -127,9 +127,6 @@ namespace cyvmath
 			return ret;
 		}
 
-		void Piece::setCoord(Coordinate coord)
-		{ m_coord = make_unique<HexCoordinate>(coord); }
-
 		uint8_t Piece::getBaseTier() const
 		{
 			static const map<PieceType, uint8_t> data {
@@ -635,7 +632,7 @@ namespace cyvmath
 
 			assert(selfSharedPtr.get() == this);
 
-			m_coord = make_unique<Coordinate>(target);
+			m_coord = target;
 
 			auto it = activePieces.find(target);
 			if (it != activePieces.end())
