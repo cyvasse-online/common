@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <array>
+#include <stdexcept>
 #include <utility>
 #include <valarray>
 #include <vector>
@@ -670,6 +671,41 @@ namespace cyvmath
 
 				assert(player.kingTaken());
 				player.kingTaken(false);
+			}
+		}
+
+		static const map<PieceType, uint8_t> openingPieceCounts {
+			{PieceType::MOUNTAINS, 6},
+			{PieceType::RABBLE, 6},
+			{PieceType::KING, 1},
+			{PieceType::CROSSBOWS, 2},
+			{PieceType::SPEARS, 2},
+			{PieceType::LIGHT_HORSE, 2},
+			{PieceType::TREBUCHET, 2},
+			{PieceType::ELEPHANT, 2},
+			{PieceType::HEAVY_HORSE, 2},
+			{PieceType::DRAGON, 1}
+		};
+
+		void evalOpeningArray(const map<PieceType, set<Coordinate>>& pieces)
+		{
+			if (pieces.size() != 10)
+			{
+				throw runtime_error("There have to be exactly 10 piece types in the opening array (got "
+					+ to_string(pieces.size()) + ")");
+			}
+
+			for (const auto& it : pieces)
+			{
+				auto expectedPieceCount = openingPieceCounts.at(it.first);
+
+				if (it.second.size() != expectedPieceCount)
+				{
+					throw runtime_error("There have to be exactly " + to_string(expectedPieceCount) + ' ' +
+						PieceTypeToStr(it.first) + " pieces in the opening array (got " + to_string(it.second.size()) + ")");
+				}
+
+				// TODO: check whether all pieces are on correct side of the board
 			}
 		}
 	}

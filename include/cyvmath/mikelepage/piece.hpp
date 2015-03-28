@@ -95,6 +95,9 @@ namespace cyvmath
 		// TODO
 		typedef std::map<Coordinate, std::shared_ptr<Piece>> CoordPieceMap;
 		typedef std::multimap<PieceType, std::shared_ptr<Piece>> TypePieceMap;
+
+		// type from json::pieceMap
+		void evalOpeningArray(const std::map<PieceType, std::set<Coordinate>>&);
 	}
 }
 
