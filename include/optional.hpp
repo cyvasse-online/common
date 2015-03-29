@@ -1,3 +1,7 @@
+#ifndef __has_include
+	#error No feature testing macro support
+#endif
+
 #if __has_include(<optional>)
 	#include <optional>
 	using std::optional;
