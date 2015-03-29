@@ -14,8 +14,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_HEXAGON_HPP_
-#define _CYVMATH_HEXAGON_HPP_
+#ifndef _CYVASSE_HEXAGON_HPP_
+#define _CYVASSE_HEXAGON_HPP_
 
 #include "coordinate.hpp"
 
@@ -30,7 +30,7 @@
 #include <cstdlib>
 #include <optional.hpp>
 
-namespace cyvmath
+namespace cyvasse
 {
 	enum class DirectionOrthogonal
 	{
@@ -75,7 +75,7 @@ namespace cyvmath
 
 		public:
 			/// A coordinate on the hexboard (see mockup/hexboard-coordinates-internal.svg)
-			class Coordinate : public cyvmath::Coordinate
+			class Coordinate : public cyvasse::Coordinate
 			{
 				private:
 					static constexpr bool isValid(int8_t X, int8_t Y)
@@ -91,7 +91,7 @@ namespace cyvmath
 
 				public:
 					constexpr Coordinate(int8_t X, int8_t Y)
-						: cyvmath::Coordinate(
+						: cyvasse::Coordinate(
 							!isValid(X, Y)
 								? throw std::invalid_argument("Invalid Hexagon<" + std::to_string(l) + ">"
 									"::Coordinate (" + std::to_string(X) + ", " + std::to_string(Y) + ")")
@@ -101,7 +101,7 @@ namespace cyvmath
 
 					/// Create a Coordinate object from a coordinate in the public notation
 					Coordinate(std::string str)
-						: cyvmath::Coordinate(str)
+						: cyvasse::Coordinate(str)
 					{
 						if (!isValid())
 						{
@@ -110,7 +110,7 @@ namespace cyvmath
 						}
 					}
 
-					Coordinate(const cyvmath::Coordinate& other)
+					Coordinate(const cyvasse::Coordinate& other)
 						: Coordinate(other.x(), other.y())
 					{ }
 
@@ -290,4 +290,4 @@ namespace cyvmath
 	}();
 }
 
-#endif // _CYVMATH_HEXAGON_HPP_
+#endif // _CYVASSE_HEXAGON_HPP_

@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -14,26 +14,29 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_MATCH_HPP_
-#define _CYVMATH_MATCH_HPP_
+#ifndef _CYVASSE_MATCH_HPP_
+#define _CYVASSE_MATCH_HPP_
 
 #include <array>
-#include <map>
+#include <functional>
 #include <memory>
-#include <string>
-#include <utility>
-#include "player.hpp"
-#include "rule_sets.hpp"
+#include <set>
 
-namespace cyvmath
+#include "bearing_table.hpp"
+#include "hexagon.hpp"
+#include "piece.hpp"
+#include "player.hpp"
+#include "terrain.hpp"
+
+namespace cyvasse
 {
 	class Match
 	{
 		public:
 			typedef std::array<std::unique_ptr<Player>, 2> playerArray;
+			using HexCoordinate = Hexagon<6>::Coordinate;
 
 		protected:
-			const RuleSet m_ruleSet;
 			const std::string m_id;
 			const bool m_random;
 			const bool m_public;
@@ -43,23 +46,25 @@ namespace cyvmath
 			PlayersColor m_activePlayer;
 			bool m_setup;
 
-			Match(RuleSet ruleSet, const std::string& id, bool random, bool _public, playerArray players)
-				: m_ruleSet{ruleSet}
-				, m_id{id}
+			CoordPieceMap m_activePieces;
+			TerrainMap m_terrain;
+
+			BearingTable m_bearingTable;
+
+		public:
+			Match(const std::string& id = {}, bool random = false, bool _public = false, playerArray players = playerArray())
+				: m_id{id}
 				, m_random{random}
 				, m_public{_public}
 				, m_players(std::move(players))
 				, m_activePlayer{PlayersColor::WHITE}
 				, m_setup{true}
+				, m_bearingTable(m_activePieces)
 			{ }
 
-		public:
 			virtual ~Match() = default;
 
-			RuleSet getRuleSet() const
-			{ return m_ruleSet; }
-
-			const std::string& getID() const
+			auto getID() const -> const std::string&
 			{ return m_id; }
 
 			bool isRandom() const
@@ -68,12 +73,31 @@ namespace cyvmath
 			bool isPublic() const
 			{ return m_public; }
 
-			playerArray& getPlayers()
-			{ return m_players; }
+			auto getPlayer(PlayersColor color) const -> Player&
+			{ return *m_players.at(color); }
 
 			void setPlayers(playerArray players)
 			{ m_players = std::move(players); }
+
+			auto getActivePieces() -> CoordPieceMap&
+			{ return m_activePieces; }
+
+			auto getTerrain() -> TerrainMap&
+			{ return m_terrain; }
+
+			auto getBearingTable() -> BearingTable&
+			{ return m_bearingTable; }
+
+			auto getHorseMovementCenters() -> std::set<HexCoordinate>;
+
+			auto getPieceAt(HexCoordinate) -> std::shared_ptr<Piece>;
+
+			void forReachableCoords(HexCoordinate start, const MovementRange&, std::function<void(const HexCoordinate&, Piece*)>);
+
+			virtual void addToBoard(PieceType, PlayersColor, const HexCoordinate&);
+			virtual void removeFromBoard(std::shared_ptr<Piece>);
+			virtual void endGame(PlayersColor /* winner */) { }
 	};
 }
 
-#endif // _CYVMATH_MATCH_HPP_
+#endif // _CYVASSE_MATCH_HPP_

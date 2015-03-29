@@ -14,28 +14,41 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_RULESETS_HPP_
-#define _CYVMATH_RULESETS_HPP_
+#ifndef _CYVASSE_PIECE_TYPE_HPP_
+#define _CYVASSE_PIECE_TYPE_HPP_
 
-#include <map>
-#include <vector>
 #include <enum_str.hpp>
 
-namespace cyvmath
+namespace cyvasse
 {
-	enum class RuleSet
+	enum class PieceType
 	{
-		UNDEFINED,
-		MIKELEPAGE
+		MOUNTAINS,
+		RABBLE,
+		CROSSBOWS,
+		SPEARS,
+		LIGHT_HORSE,
+		TREBUCHET,
+		ELEPHANT,
+		HEAVY_HORSE,
+		DRAGON,
+		KING
 	};
 
-	ENUM_STR(RuleSet, ({
-		{RuleSet::UNDEFINED,  "undefined"},
-		{RuleSet::MIKELEPAGE, "mikelepage"}
+	// placing it in a seperate file still results in unsresolved
+	// symbols although I made sure the cpp would be compiled
+	ENUM_STR(PieceType, ({
+		{PieceType::MOUNTAINS, "mountains"},
+		{PieceType::RABBLE, "rabble"},
+		{PieceType::CROSSBOWS, "crossbows"},
+		{PieceType::SPEARS, "spears"},
+		{PieceType::LIGHT_HORSE, "light horse"},
+		{PieceType::TREBUCHET, "trebuchet"},
+		{PieceType::ELEPHANT, "elephant"},
+		{PieceType::HEAVY_HORSE, "heavy horse"},
+		{PieceType::DRAGON, "dragon"},
+		{PieceType::KING, "king"}
 	}))
-
-	const std::vector<RuleSet>& allRuleSets();
-	const std::string& RuleSetToPrettyStr(RuleSet);
 }
 
-#endif // _CYVMATH_RULESETS_HPP_
+#endif // _CYVASSE_PIECE_TYPE_HPP_

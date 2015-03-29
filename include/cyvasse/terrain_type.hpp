@@ -14,26 +14,27 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cyvmath/rule_sets.hpp>
+#ifndef _CYVASSE_TERRAIN_TYPE_HPP_
+#define _CYVASSE_TERRAIN_TYPE_HPP_
 
-namespace cyvmath
+#include <enum_str.hpp>
+
+namespace cyvasse
 {
-	const std::vector<RuleSet>& allRuleSets()
+	enum class TerrainType
 	{
-		static const std::vector<RuleSet> data {
-			RuleSet::MIKELEPAGE
-		};
+		UNDEFINED,
+		HILL,
+		FOREST,
+		GRASSLAND
+	};
 
-		return data;
-	}
-
-	const std::string& RuleSetToPrettyStr(RuleSet r)
-	{
-		static const std::map<RuleSet, std::string> data {
-			{RuleSet::UNDEFINED,  "[undefined]"},
-			{RuleSet::MIKELEPAGE, "Mike Le Page's rule set"}
-		};
-
-		return data.at(r);
-	}
+	ENUM_STR(TerrainType, ({
+		{TerrainType::UNDEFINED, "undefined"},
+		{TerrainType::HILL, "hill"},
+		{TerrainType::FOREST, "forest"},
+		{TerrainType::GRASSLAND, "grassland"}
+	}))
 }
+
+#endif // _CYVASSE_TERRAIN_TYPE_HPP_

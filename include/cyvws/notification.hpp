@@ -18,7 +18,7 @@
 #define _CYVWS_NOTIFICATION_HPP_
 
 #include <string>
-#include <cyvmath/players_color.hpp>
+#include <cyvasse/players_color.hpp>
 
 namespace cyvws
 {
@@ -50,7 +50,7 @@ namespace cyvws
 	struct GamesListMappedType
 	{
 		std::string title;
-		cyvmath::PlayersColor playAs;
+		cyvasse::PlayersColor playAs;
 	};
 
 	typedef std::map<std::string, GamesListMappedType>

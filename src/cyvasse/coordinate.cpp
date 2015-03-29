@@ -14,11 +14,11 @@
 * If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <cyvmath/coordinate.hpp>
+#include <cyvasse/coordinate.hpp>
 
 using namespace std;
 
-namespace cyvmath
+namespace cyvasse
 {
 	/* X: When using char's for calculations, their ASCII values are used,
 	      and as the uppercase letters are consecutive in the ASCII table,

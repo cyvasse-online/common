@@ -20,8 +20,7 @@
 #include <memory>
 #include <cassert>
 #include <tntdb/connection.h>
-#include <cyvmath/match.hpp>
-#include <cyvmath/rule_sets.hpp>
+#include <cyvasse/match.hpp>
 
 namespace cyvdb
 {
@@ -30,24 +29,24 @@ namespace cyvdb
 		private:
 			tntdb::Connection m_conn;
 
-			static bool matchValid(const cyvmath::Match& match);
+			static bool matchValid(const cyvasse::Match& match);
 
-			int getRuleSetID(cyvmath::RuleSet);
+			//int getRuleSetID(cyvasse::RuleSet);
 
 		public:
 			explicit MatchManager(tntdb::Connection& conn);
 			MatchManager();
 
 			// queries
-			typedef std::vector<std::unique_ptr<cyvmath::Match>> matchList;
+			typedef std::vector<std::unique_ptr<cyvasse::Match>> matchList;
 
-			matchList getOpenRandomMatches();
-			matchList getRunningPublicMatches();
+			//matchList getOpenRandomMatches();
+			//matchList getRunningPublicMatches();
 
 			// modifications
-			void addMatch(std::unique_ptr<cyvmath::Match>);
+			//void addMatch(std::unique_ptr<cyvasse::Match>);
 
-			void removeMatch(const std::string& id);
+			//void removeMatch(const std::string& id);
 	};
 }
 

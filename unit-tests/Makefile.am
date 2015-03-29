@@ -1,18 +1,18 @@
-check_PROGRAMS = cyvmath-tests
+check_PROGRAMS = cyvasse-tests
 
-cyvmath_tests_SOURCES = \
+cyvasse_tests_SOURCES = \
 	hexagon_test.cpp \
 	hexagon_test.hpp \
 	main.cpp
 
-cyvmath_tests_CPPFLAGS = \
+cyvasse_tests_CPPFLAGS = \
 	-I$(top_srcdir)/include
 
-cyvmath_tests_CXXFLAGS = \
+cyvasse_tests_CXXFLAGS = \
 	$(CPPUNIT_CFLAGS)
 
-cyvmath_tests_LDFLAGS = \
+cyvasse_tests_LDFLAGS = \
 	$(CPPUNIT_LIBS)
 
-cyvmath_tests_LDADD = \
-	$(top_builddir)/libcyvmath.a
+cyvasse_tests_LDADD = \
+	$(top_builddir)/libcyvasse.a

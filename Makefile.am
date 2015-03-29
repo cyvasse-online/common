@@ -7,20 +7,18 @@ SUBDIRS = . $(UNIT_TESTS_DIR)
 AUTOMAKE_OPTIONS = subdir-objects
 
 noinst_LIBRARIES = \
-	libcyvmath.a \
+	libcyvasse.a \
 	libcyvws.a
 
-libcyvmath_a_SOURCES = \
-	src/cyvmath/coordinate.cpp \
-	src/cyvmath/players_color.cpp \
-	src/cyvmath/rule_set_create.cpp \
-	src/cyvmath/rule_sets.cpp \
-	src/cyvmath/mikelepage-bearing_table.cpp \
-	src/cyvmath/mikelepage-match.cpp \
-	src/cyvmath/mikelepage-piece.cpp \
-	src/cyvmath/mikelepage-player.cpp
+libcyvasse_a_SOURCES = \
+	src/cyvasse/bearing_table.cpp \
+	src/cyvasse/coordinate.cpp \
+	src/cyvasse/match.cpp \
+	src/cyvasse/piece.cpp \
+	src/cyvasse/player.cpp \
+	src/cyvasse/players_color.cpp
 
-libcyvmath_a_CPPFLAGS = \
+libcyvasse_a_CPPFLAGS = \
 	-I$(top_srcdir)/include
 
 

@@ -1,4 +1,4 @@
-/* Copyright 2014 - 2015 Jonas Platte
+/* Copyright 2014 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -14,58 +14,44 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_PIECE_HPP_
-#define _CYVMATH_PIECE_HPP_
+#ifndef _CYVASSE_FORTRESS_HPP_
+#define _CYVASSE_FORTRESS_HPP_
 
-#include <map>
-#include <utility>
-#include <enum_str.hpp>
-#include <optional.hpp>
 #include "coordinate.hpp"
-#include "piece_type.hpp"
 #include "players_color.hpp"
 
-namespace cyvmath
+namespace cyvasse
 {
-	enum class MovementType
-	{
-		NONE,
-		ORTHOGONAL,
-		DIAGONAL,
-		HEXAGONAL,
-		RANGE
-	};
-
-	typedef std::pair<MovementType, int8_t> MovementScope;
-
-	class Piece
+	class Fortress
 	{
 		protected:
 			const PlayersColor m_color;
-			const PieceType m_type;
+			Coordinate m_coord;
 
-			optional<Coordinate> m_coord;
+			bool m_ruined = false;
 
 		public:
-			Piece(PlayersColor color, PieceType type, optional<Coordinate> coord)
+			const bool& isRuined = m_ruined;
+
+			Fortress(PlayersColor color, Coordinate coord)
 				: m_color{color}
-				, m_type{type}
-				, m_coord{std::move(coord)}
+				, m_coord{coord}
 			{ }
 
-			virtual ~Piece() = default;
+			virtual ~Fortress() = default;
 
-			PlayersColor getColor() const
+			PlayersColor getColor()
 			{ return m_color; }
 
-			PieceType getType() const
-			{ return m_type; }
-
-			optional<Coordinate> getCoord() const
+			Coordinate getCoord()
 			{ return m_coord; }
 
-			virtual const MovementScope& getMovementScope() const = 0;
+			virtual void setCoord(Coordinate coord)
+			{ m_coord = coord; }
+
+			virtual void ruined()
+			{ m_ruined = true; }
 	};
 }
 
-#endif // _CYVMATH_PIECE_HPP_
+#endif // _CYVASSE_FORTRESS_HPP_

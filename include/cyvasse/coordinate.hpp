@@ -14,8 +14,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_COORDINATE_HPP_
-#define _CYVMATH_COORDINATE_HPP_
+#ifndef _CYVASSE_COORDINATE_HPP_
+#define _CYVASSE_COORDINATE_HPP_
 
 #include <ostream>
 #include <stdexcept>
@@ -23,7 +23,7 @@
 #include <valarray>
 #include <cstdint>
 
-namespace cyvmath
+namespace cyvasse
 {
 	class Coordinate
 	{
@@ -90,4 +90,4 @@ namespace cyvmath
 	std::ostream& operator <<(std::ostream& os, const Coordinate& coord);
 }
 
-#endif // _CYVMATH_COORDINATE_HPP_
+#endif // _CYVASSE_COORDINATE_HPP_

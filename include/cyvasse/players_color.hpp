@@ -14,13 +14,13 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_PLAYERS_COLOR_HPP_
-#define _CYVMATH_PLAYERS_COLOR_HPP_
+#ifndef _CYVASSE_PLAYERS_COLOR_HPP_
+#define _CYVASSE_PLAYERS_COLOR_HPP_
 
 #include <vector>
 #include <enum_str.hpp>
 
-namespace cyvmath
+namespace cyvasse
 {
 	// supposed to act like an enum, but
 	// enums can't have conversion operators
@@ -39,7 +39,6 @@ namespace cyvmath
 				: m_val(other.m_val)
 			{ }
 
-			static const PlayersColor UNDEFINED;
 			static const PlayersColor WHITE;
 			static const PlayersColor BLACK;
 
@@ -78,7 +77,6 @@ namespace cyvmath
 	// moving the definition to the cpp leads
 	// to undefined references for some reason
 	ENUM_STR(PlayersColor, ({
-		{PlayersColor::UNDEFINED, "undefined"},
 		{PlayersColor::WHITE, "white"},
 		{PlayersColor::BLACK, "black"}
 	}))
@@ -87,4 +85,4 @@ namespace cyvmath
 	const std::string& PlayersColorToPrettyStr(PlayersColor);
 }
 
-#endif // _CYVMATH_PLAYERS_COLOR_HPP_
+#endif // _CYVASSE_PLAYERS_COLOR_HPP_

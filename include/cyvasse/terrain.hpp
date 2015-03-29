@@ -14,20 +14,40 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _RULE_SET_CREATE_
-#define _RULE_SET_CREATE_
+#ifndef _CYVASSE_TERRAIN_HPP_
+#define _CYVASSE_TERRAIN_HPP_
 
+#include <array>
+#include <map>
 #include <memory>
-#include "players_color.hpp"
-#include "rule_sets.hpp"
+#include "coordinate.hpp"
+#include "piece_type.hpp"
+#include "terrain_type.hpp"
 
-namespace cyvmath
+namespace cyvasse
 {
-	class Match;
-	class Player;
+	class Terrain
+	{
+		protected:
+			const TerrainType m_type;
+			Coordinate m_coord;
 
-	std::unique_ptr<Match> createMatch(RuleSet ruleSet, const std::string& id = {}, bool random = false, bool _public = false);
-	std::unique_ptr<Player> createPlayer(Match&, PlayersColor, const std::string& id = {});
+		public:
+			Terrain(TerrainType type, Coordinate coord)
+				: m_type(type)
+				, m_coord(coord)
+			{ }
+
+			virtual ~Terrain() = default;
+
+			TerrainType getType()
+			{ return m_type; }
+
+			virtual void setCoord(Coordinate coord)
+			{ m_coord = coord; }
+	};
+
+	typedef std::map<Coordinate, std::shared_ptr<Terrain>> TerrainMap;
 }
 
-#endif // _RULE_SET_CREATE_
+#endif // _CYVASSE_TERRAIN_HPP_

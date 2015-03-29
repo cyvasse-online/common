@@ -17,9 +17,9 @@ Makefile.in
 
 # Compiled files
 
-cyvmath-tests
-libcyvmath.a
+cyvasse-tests
 
+*.a
 *.o
 
 # Other

@@ -20,47 +20,47 @@
 #include <map>
 #include <set>
 #include <json/value.h>
-#include <cyvmath/coordinate.hpp>
-#include <cyvmath/piece_type.hpp>
-#include <cyvmath/piece.hpp>
+#include <cyvasse/coordinate.hpp>
+#include <cyvasse/piece_type.hpp>
+#include <cyvasse/piece.hpp>
 
 namespace cyvws
 {
 	struct PiecePosition
 	{
-		cyvmath::PieceType pieceType;
-		cyvmath::Coordinate pos;
+		cyvasse::PieceType pieceType;
+		cyvasse::Coordinate pos;
 	};
 
 	struct PieceMovement
 	{
-		cyvmath::PieceType pieceType;
-		cyvmath::Coordinate oldPos;
-		cyvmath::Coordinate newPos;
+		cyvasse::PieceType pieceType;
+		cyvasse::Coordinate oldPos;
+		cyvasse::Coordinate newPos;
 	};
 
 	struct MoveCapture
 	{
-		cyvmath::PieceType atkPT;
-		cyvmath::Coordinate oldPos;
-		cyvmath::Coordinate newPos;
+		cyvasse::PieceType atkPT;
+		cyvasse::Coordinate oldPos;
+		cyvasse::Coordinate newPos;
 
-		cyvmath::PieceType defPT;
-		cyvmath::Coordinate defPiecePos;
+		cyvasse::PieceType defPT;
+		cyvasse::Coordinate defPiecePos;
 	};
 
 	struct Promotion
 	{
-		cyvmath::PieceType origType;
-		cyvmath::PieceType newType;
+		cyvasse::PieceType origType;
+		cyvasse::PieceType newType;
 	};
 
-	typedef std::map<cyvmath::PieceType, std::set<cyvmath::Coordinate>> PieceMap;
+	typedef std::map<cyvasse::PieceType, std::set<cyvasse::Coordinate>> PieceMap;
 
 	namespace json
 	{
 		using namespace std;
-		using namespace cyvmath;
+		using namespace cyvasse;
 
 		Json::Value piecePosition(PieceType pieceType, Coordinate pos);
 		PiecePosition piecePosition(const Json::Value&);

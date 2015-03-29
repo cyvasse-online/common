@@ -14,28 +14,23 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cyvmath/players_color.hpp>
+#include <cyvasse/players_color.hpp>
 
 #include <cassert>
 
-namespace cyvmath
+namespace cyvasse
 {
-	const PlayersColor PlayersColor::UNDEFINED = PlayersColor(-1);
 	const PlayersColor PlayersColor::WHITE     = PlayersColor(0);
 	const PlayersColor PlayersColor::BLACK     = PlayersColor(1);
 
 	PlayersColor PlayersColor::operator!() const
 	{
-		assert(m_val != -1);
-
 		// int-to-bool, operator!(bool), bool-to-int
 		return PlayersColor(!m_val);
 	}
 
 	PlayersColor::operator unsigned() const
 	{
-		assert(m_val != -1);
-
 		return m_val;
 	}
 
@@ -52,7 +47,6 @@ namespace cyvmath
 	const std::string& PlayersColorToPrettyStr(PlayersColor c)
 	{
 		static const std::map<PlayersColor, std::string> data {
-			{PlayersColor::UNDEFINED, "[undefined]"},
 			{PlayersColor::WHITE,     "White player"},
 			{PlayersColor::BLACK,     "Black player"}
 		};

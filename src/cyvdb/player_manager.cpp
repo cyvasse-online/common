@@ -20,17 +20,15 @@
 #include <tntdb/error.h>
 #include <tntdb/statement.h>
 #include <cyvdb/config.hpp>
-#include <cyvmath/rule_set_create.hpp>
 
 using namespace std;
-using namespace cyvmath;
+using namespace cyvasse;
 
 namespace cyvdb
 {
-	bool PlayerManager::playerValid(const cyvmath::Player& player)
+	bool PlayerManager::playerValid(const cyvasse::Player& player)
 	{
-		return player.getColor() != PlayersColor::UNDEFINED
-			&& player.getID().length() == 8;
+		return player.getID().length() == 8;
 	}
 
 	int PlayerManager::getPlayersColorID(PlayersColor color)
@@ -93,7 +91,7 @@ namespace cyvdb
 		}
 	}*/
 
-	PlayerManager::playerArray PlayerManager::getPlayers(Match& match)
+	/*PlayerManager::playerArray PlayerManager::getPlayers(Match& match)
 	{
 		playerArray ret;
 
@@ -111,9 +109,9 @@ namespace cyvdb
 		}
 
 		return ret;
-	}
+	}*/
 
-	void PlayerManager::addPlayer(unique_ptr<cyvmath::Player> player, const string& matchID)
+	void PlayerManager::addPlayer(unique_ptr<cyvasse::Player> player, const string& matchID)
 	{
 		if(!playerValid(*player))
 			throw invalid_argument("The given Player object is invalid");

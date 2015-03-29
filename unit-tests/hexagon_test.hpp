@@ -22,9 +22,9 @@
 #include <string>
 #include <vector>
 #include <cppunit/extensions/HelperMacros.h>
-#include <cyvmath/hexagon.hpp>
+#include <cyvasse/hexagon.hpp>
 
-using namespace cyvmath;
+using namespace cyvasse;
 
 class HexagonTest : public CppUnit::TestFixture
 {

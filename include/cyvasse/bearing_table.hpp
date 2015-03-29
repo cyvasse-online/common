@@ -14,41 +14,42 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_MIKELEPAGE_TERRAIN_HPP_
-#define _CYVMATH_MIKELEPAGE_TERRAIN_HPP_
+#ifndef _CYVASSE_BEARING_TABLE_HPP_
+#define _CYVASSE_BEARING_TABLE_HPP_
 
-#include <array>
 #include <map>
-#include <memory>
-#include <cyvmath/coordinate.hpp>
-#include <cyvmath/piece_type.hpp>
-#include "terrain_type.hpp"
+#include <set>
+#include "piece.hpp"
 
-namespace cyvmath
+namespace cyvasse
 {
-	namespace mikelepage
+	class BearingTable
 	{
-		class Terrain
-		{
-			protected:
-				const TerrainType m_type;
-				Coordinate m_coord;
+		private:
+			typedef std::map<const Piece*, std::set<const Piece*>> BearingMap;
 
-			public:
-				Terrain(TerrainType type, Coordinate coord)
-					: m_type(type)
-					, m_coord(coord)
-				{ }
+			CoordPieceMap& m_pieceMap;
 
-				TerrainType getType()
-				{ return m_type; }
+			BearingMap m_canBeReachedBy;
 
-				virtual void setCoord(Coordinate coord)
-				{ m_coord = coord; }
-		};
+			void addCanReach(const Piece*);
+			void addCanBeReachedBy(const Piece*);
 
-		typedef std::map<Coordinate, std::shared_ptr<Terrain>> TerrainMap;
-	}
+		public:
+			BearingTable(CoordPieceMap& pieceMap)
+				: m_pieceMap(pieceMap)
+			{ }
+
+			// non-copyable
+			BearingTable(const BearingTable&) = delete;
+			BearingTable& operator=(const BearingTable&) = delete;
+
+			bool canTake(const Piece& attackingPiece, const Piece& defendingPiece) const;
+
+			void init();
+			void clear();
+			void update();
+	};
 }
 
-#endif // _CYVMATH_MIKELEPAGE_TERRAIN_HPP_
+#endif // _CYVASSE_BEARING_TABLE_HPP_

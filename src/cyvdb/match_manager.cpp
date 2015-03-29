@@ -23,19 +23,17 @@
 #include <tntdb/statement.h>
 #include <cyvdb/config.hpp>
 #include <cyvdb/player_manager.hpp>
-#include <cyvmath/rule_set_create.hpp>
 
-using namespace cyvmath;
+using namespace cyvasse;
 
 namespace cyvdb
 {
 	bool MatchManager::matchValid(const Match& match)
 	{
-		return match.getRuleSet() != RuleSet::UNDEFINED
-			&& match.getID().length() == 4;
+		return match.getID().length() == 4;
 	}
 
-	int MatchManager::getRuleSetID(RuleSet ruleSet)
+	/*int MatchManager::getRuleSetID(RuleSet ruleSet)
 	{
 		auto ruleSetStr = RuleSetToStr(ruleSet);
 
@@ -89,7 +87,7 @@ namespace cyvdb
 			))
 		{
 			auto&& match = createMatch(
-				cyvmath::StrToRuleSet(row.getString(0)),
+				cyvasse::StrToRuleSet(row.getString(0)),
 				row.getString(1), true, row.getBool(2)
 			);
 
@@ -120,7 +118,7 @@ namespace cyvdb
 			))
 			{
 				auto&& match = createMatch(
-					cyvmath::StrToRuleSet(row.getString(0)),
+					cyvasse::StrToRuleSet(row.getString(0)),
 					row.getString(1), row.getBool(2), true
 				);
 
@@ -157,5 +155,5 @@ namespace cyvdb
 		m_conn.prepareCached("DELETE FROM matches WHERE match_id = :id", "removeMatch")
 			.set("id", id)
 			.execute();
-	}
+	}*/
 }

@@ -14,13 +14,19 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _CYVMATH_PLAYER_HPP_
-#define _CYVMATH_PLAYER_HPP_
+#ifndef _CYVASSE_PLAYER_HPP_
+#define _CYVASSE_PLAYER_HPP_
 
+#include <memory>
+
+#include "fortress.hpp"
 #include "players_color.hpp"
+#include "piece.hpp"
 
-namespace cyvmath
+namespace cyvasse
 {
+	class Match;
+
 	class Player
 	{
 		protected:
@@ -28,13 +34,16 @@ namespace cyvmath
 
 			const std::string m_id;
 
-			Player(PlayersColor color, const std::string& id)
-				: m_color(color)
-				, m_id(id)
-			{ }
+			bool m_kingTaken = false;
+
+			Match& m_match;
+
+			TypePieceMap m_inactivePieces;
+
+			std::unique_ptr<Fortress> m_fortress;
 
 		public:
-			virtual ~Player() = default;
+			Player(Match&, PlayersColor, std::unique_ptr<Fortress>, const std::string& id = {});
 
 			PlayersColor getColor() const
 			{ return m_color; }
@@ -42,8 +51,25 @@ namespace cyvmath
 			const std::string& getID() const
 			{ return m_id; }
 
-			virtual bool setupComplete() const = 0;
+			bool kingTaken() const
+			{ return m_kingTaken; }
+
+			void kingTaken(bool value)
+			{ m_kingTaken = value; }
+
+			TypePieceMap& getInactivePieces()
+			{ return m_inactivePieces; }
+
+			Fortress& getFortress()
+			{ return *m_fortress; }
+
+			virtual bool setupComplete() const;
+
+			void onTurnEnd();
+
+			void setFortress(std::unique_ptr<Fortress> fortress)
+			{ m_fortress = std::move(fortress); }
 	};
 }
 
-#endif // _CYVMATH_PLAYER_HPP_
+#endif // _CYVASSE_PLAYER_HPP_

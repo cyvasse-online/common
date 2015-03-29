@@ -21,33 +21,33 @@
 #include <memory>
 #include <cassert>
 #include <tntdb/connection.h>
-#include <cyvmath/match.hpp>
-#include <cyvmath/player.hpp>
+#include <cyvasse/match.hpp>
+#include <cyvasse/player.hpp>
 
 namespace cyvdb
 {
 	class PlayerManager
 	{
 		public:
-			typedef std::array<std::unique_ptr<cyvmath::Player>, 2> playerArray;
+			typedef std::array<std::unique_ptr<cyvasse::Player>, 2> playerArray;
 
 		private:
 			tntdb::Connection m_conn;
 
-			static bool playerValid(const cyvmath::Player&);
+			static bool playerValid(const cyvasse::Player&);
 
-			int getPlayersColorID(cyvmath::PlayersColor color);
+			int getPlayersColorID(cyvasse::PlayersColor color);
 
 		public:
 			explicit PlayerManager(tntdb::Connection& conn);
 			PlayerManager();
 
 			// queries
-			//cyvmath::Player getPlayer(const std::string& playerID);
-			playerArray getPlayers(cyvmath::Match&);
+			//cyvasse::Player getPlayer(const std::string& playerID);
+			//playerArray getPlayers(cyvasse::Match&);
 
 			// modifications
-			void addPlayer(std::unique_ptr<cyvmath::Player>, const std::string& matchID);
+			void addPlayer(std::unique_ptr<cyvasse::Player>, const std::string& matchID);
 	};
 }
 

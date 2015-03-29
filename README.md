@@ -1,4 +1,5 @@
-cyvmath
-=======
+cyvasse-common
+==============
 
-This repository holds a library with the mathematical components of the Cyvasse game, which are used in server and client alike.
+This repository holds libraries with rules, communication protocol and other
+things needed on both server and client of our Cyvasse implementation.
