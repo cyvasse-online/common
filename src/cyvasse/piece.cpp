@@ -108,7 +108,7 @@ namespace cyvasse
 		return ret;
 	}
 
-	set<const Piece*> Piece::getReachableOpponentPieces(const MovementRange& range) const
+	auto Piece::getReachableOpponentPieces(const MovementRange& range) const -> set<const Piece*>
 	{
 		assert(m_coord);
 
@@ -126,7 +126,7 @@ namespace cyvasse
 		return ret;
 	}
 
-	uint8_t Piece::getBaseTier() const
+	auto Piece::getBaseTier() const -> uint8_t
 	{
 		static const map<PieceType, uint8_t> data {
 			{PieceType::RABBLE,      1},
@@ -147,7 +147,7 @@ namespace cyvasse
 		return it->second;
 	}
 
-	uint8_t Piece::getEffectiveDefenseTier() const
+	auto Piece::getEffectiveDefenseTier() const -> uint8_t
 	{
 		assert(m_coord);
 
@@ -171,7 +171,7 @@ namespace cyvasse
 		return baseTier;
 	}
 
-	TerrainType Piece::getHomeTerrain() const
+	auto Piece::getHomeTerrain() const -> optional<TerrainType>
 	{
 		static const map<PieceType, TerrainType> data {
 			{PieceType::CROSSBOWS,   TerrainType::HILL},
@@ -184,12 +184,12 @@ namespace cyvasse
 
 		auto it = data.find(m_type);
 		if (it == data.end())
-			return TerrainType::UNDEFINED;
+			return nullopt;
 
 		return it->second;
 	}
 
-	TerrainType Piece::getSetupTerrain() const
+	auto Piece::getSetupTerrain() const -> optional<TerrainType>
 	{
 		static const map<PieceType, TerrainType> data {
 			{PieceType::CROSSBOWS,   TerrainType::HILL},
@@ -199,12 +199,12 @@ namespace cyvasse
 
 		auto it = data.find(m_type);
 		if (it == data.end())
-			return TerrainType::UNDEFINED;
+			return nullopt;
 
 		return it->second;
 	}
 
-	const MovementScope& Piece::getMovementScope() const
+	auto Piece::getMovementScope() const -> const MovementScope&
 	{
 		static const map<PieceType, MovementScope> data {
 				{PieceType::MOUNTAINS,    MovementScope(MovementType::NONE,       0)},
@@ -291,7 +291,7 @@ namespace cyvasse
 		return ret;
 	}
 
-	TileStateMap Piece::getHexagonalLineTiles() const
+	auto Piece::getHexagonalLineTiles() const -> TileStateMap
 	{
 		typedef vector<pair<valarray<int8_t>, TileState>> TileStateVec;
 
@@ -597,9 +597,7 @@ namespace cyvasse
 					player.getFortress().setCoord(target);
 				else
 				{
-					TerrainType tType = getSetupTerrain();
-
-					if (tType != TerrainType::UNDEFINED)
+					if (getSetupTerrain())
 					{
 						auto terrainIt = m_match.getTerrain().find(*m_coord);
 						assert(terrainIt != m_match.getTerrain().end());

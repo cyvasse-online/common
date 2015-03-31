@@ -79,13 +79,13 @@ namespace cyvasse
 			auto getReachableOpponentPieces(const MovementRange&) const -> std::set<const Piece*>;
 
 		public:
-			PlayersColor getColor() const
+			auto getColor() const -> PlayersColor
 			{ return m_color; }
 
-			PieceType getType() const
+			auto getType() const -> PieceType
 			{ return m_type; }
 
-			optional<Coordinate> getCoord() const
+			auto getCoord() const -> optional<Coordinate>
 			{ return m_coord; }
 
 			Piece(PlayersColor color, PieceType type, const Coordinate& coord, Match& match)
@@ -100,11 +100,11 @@ namespace cyvasse
 			void setCoord(Coordinate coord)
 			{ m_coord = coord; }
 
-			uint8_t getBaseTier() const;
-			uint8_t getEffectiveDefenseTier() const;
-			TerrainType getHomeTerrain() const;
-			TerrainType getSetupTerrain() const;
-			const MovementScope& getMovementScope() const;
+			auto getBaseTier() const -> uint8_t;
+			auto getEffectiveDefenseTier() const -> uint8_t;
+			auto getHomeTerrain() const -> optional<TerrainType>;
+			auto getSetupTerrain() const -> optional<TerrainType>;
+			auto getMovementScope() const -> const MovementScope&;
 
 			bool canReach(const Coordinate&) const;
 

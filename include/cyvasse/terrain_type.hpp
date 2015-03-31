@@ -23,14 +23,12 @@ namespace cyvasse
 {
 	enum class TerrainType
 	{
-		UNDEFINED,
 		HILL,
 		FOREST,
 		GRASSLAND
 	};
 
 	ENUM_STR(TerrainType, ({
-		{TerrainType::UNDEFINED, "undefined"},
 		{TerrainType::HILL, "hill"},
 		{TerrainType::FOREST, "forest"},
 		{TerrainType::GRASSLAND, "grassland"}
