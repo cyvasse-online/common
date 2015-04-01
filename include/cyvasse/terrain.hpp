@@ -20,7 +20,7 @@
 #include <array>
 #include <map>
 #include <memory>
-#include "coordinate.hpp"
+#include "hexagon.hpp"
 #include "piece_type.hpp"
 #include "terrain_type.hpp"
 
@@ -30,10 +30,10 @@ namespace cyvasse
 	{
 		protected:
 			const TerrainType m_type;
-			Coordinate m_coord;
+			HexCoordinate<6> m_coord;
 
 		public:
-			Terrain(TerrainType type, Coordinate coord)
+			Terrain(TerrainType type, HexCoordinate<6> coord)
 				: m_type(type)
 				, m_coord(coord)
 			{ }
@@ -43,7 +43,7 @@ namespace cyvasse
 			TerrainType getType()
 			{ return m_type; }
 
-			virtual void setCoord(Coordinate coord)
+			virtual void setCoord(HexCoordinate<6> coord)
 			{ m_coord = coord; }
 	};
 

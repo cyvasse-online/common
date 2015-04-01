@@ -57,7 +57,7 @@ namespace cyvasse
 		{ 0,  1}  // top right
 	};
 
-	bool Piece::moveToValid(const HexCoordinate& target) const
+	bool Piece::moveToValid(HexCoordinate<6> target) const
 	{
 		shared_ptr<Piece> opPiece = m_match.getPieceAt(target);
 
@@ -65,13 +65,13 @@ namespace cyvasse
 			(!opPiece || m_match.getBearingTable().canTake(*this, *opPiece));
 	}
 
-	auto Piece::getReachableTiles(const MovementRange& range) const -> set<HexCoordinate>
+	auto Piece::getReachableTiles(const MovementRange& range) const -> set<HexCoordinate<6>>
 	{
 		assert(m_coord);
 
-		set<HexCoordinate> ret;
+		set<HexCoordinate<6>> ret;
 
-		m_match.forReachableCoords(*m_coord, range, [&](const HexCoordinate& coord, Piece* piece) {
+		m_match.forReachableCoords(*m_coord, range, [&](HexCoordinate<6> coord, Piece* piece) {
 			if (!piece || (
 					piece->getColor() != m_color &&
 					piece->getType() != PieceType::MOUNTAINS
@@ -85,15 +85,15 @@ namespace cyvasse
 		return ret;
 	}
 
-	auto Piece::getPossibleTargetTiles(const MovementRange& range) const -> set<HexCoordinate>
+	auto Piece::getPossibleTargetTiles(const MovementRange& range) const -> set<HexCoordinate<6>>
 	{
 		assert(m_coord);
 
 		auto& bearingTable = m_match.getBearingTable();
 
-		set<HexCoordinate> ret;
+		set<HexCoordinate<6>> ret;
 
-		m_match.forReachableCoords(*m_coord, range, [&](const HexCoordinate& coord, Piece* piece) {
+		m_match.forReachableCoords(*m_coord, range, [&](HexCoordinate<6> coord, Piece* piece) {
 			if (!piece || (
 					piece->getColor() != m_color &&
 					piece->getType() != PieceType::MOUNTAINS &&
@@ -222,10 +222,10 @@ namespace cyvasse
 		return data.at(m_type);
 	}
 
-	bool Piece::canReach(const Coordinate& target) const
+	bool Piece::canReach(HexCoordinate<6> target) const
 	{
 		assert(m_coord);
-		auto coord = HexCoordinate(*m_coord);
+		auto coord = HexCoordinate<6>(*m_coord);
 
 		auto scope = getMovementScope();
 		valarray<int8_t> step(2);
@@ -279,7 +279,7 @@ namespace cyvasse
 					distance = Hexagon<6>::edgeLength - 1;
 			}
 
-			m_match.forReachableCoords(*m_coord, {{step}, distance}, [&](const HexCoordinate& c, Piece*) {
+			m_match.forReachableCoords(*m_coord, {{step}, distance}, [&](HexCoordinate<6> c, Piece*) {
 				if (c == target)
 				{
 					assert(!ret);
@@ -307,7 +307,7 @@ namespace cyvasse
 
 		TileStateMap ret;
 
-		for (HexCoordinate centerCoord : m_match.getHorseMovementCenters())
+		for (HexCoordinate<6> centerCoord : m_match.getHorseMovementCenters())
 		{
 			TileStateVec tmpTileVec;
 
@@ -330,7 +330,7 @@ namespace cyvasse
 				for (auto i = 0; i < centerDistance; i++)
 				{
 					tmpPos += step;
-					auto tmpCoord = HexCoordinate::create(tmpPos);
+					auto tmpCoord = HexCoordinate<6>::create(tmpPos);
 
 					auto tileState = TileState::EMPTY;
 
@@ -387,7 +387,7 @@ namespace cyvasse
 					tmpTileState = tileIt->second;
 
 					if (tmpTileState == TileState::EMPTY || tmpTileState == TileState::OP_OCCUPIED)
-						ret.emplace(HexCoordinate(tileIt->first), tileIt->second);
+						ret.emplace(HexCoordinate<6>(tileIt->first), tileIt->second);
 
 					if (tmpTileState != TileState::EMPTY)
 						break;
@@ -398,11 +398,11 @@ namespace cyvasse
 		return ret;
 	}
 
-	auto Piece::getReachableTiles() const -> set<HexCoordinate>
+	auto Piece::getReachableTiles() const -> set<HexCoordinate<6>>
 	{
 		assert(m_coord);
 
-		set<HexCoordinate> ret;
+		set<HexCoordinate<6>> ret;
 
 		auto scope = getMovementScope();
 		auto distance = scope.second;
@@ -437,16 +437,16 @@ namespace cyvasse
 				if (!distance)
 					distance = Hexagon<6>::tileCount / 2;
 
-				set<Coordinate> lastTiles {*m_coord};
-				set<Coordinate> tiles;
+				set<HexCoordinate<6>> lastTiles {*m_coord};
+				set<HexCoordinate<6>> tiles;
 
 				// start with i = 1 because the first step is already done with
 				for (int i = 0; i < distance; ++i)
 				{
-					for (auto tile : lastTiles)
+					for (const auto& tile : lastTiles)
 					{
 						// adjacent tiles of tile
-						m_match.forReachableCoords(tile, {stepsOrthogonal, 1}, [&](Coordinate coord, Piece* piece) {
+						m_match.forReachableCoords(tile, {stepsOrthogonal, 1}, [&](HexCoordinate<6> coord, Piece* piece) {
 							auto it = tiles.find(coord);
 							if (it == tiles.end()) // if the tile wasn't already checked
 							{
@@ -472,11 +472,11 @@ namespace cyvasse
 		return ret;
 	}
 
-	auto Piece::getPossibleTargetTiles() const -> set<HexCoordinate>
+	auto Piece::getPossibleTargetTiles() const -> set<HexCoordinate<6>>
 	{
 		assert(m_coord);
 
-		set<HexCoordinate> ret;
+		set<HexCoordinate<6>> ret;
 
 		auto scope = getMovementScope();
 		auto distance = scope.second;
@@ -573,7 +573,7 @@ namespace cyvasse
 		return ret;
 	}
 
-	bool Piece::moveTo(const HexCoordinate& target, bool setup)
+	bool Piece::moveTo(HexCoordinate<6> target, bool setup)
 	{
 		if (!(setup || moveToValid(target)))
 			return false;
@@ -680,7 +680,7 @@ namespace cyvasse
 		{PieceType::DRAGON, 1}
 	};
 
-	void evalOpeningArray(const map<PieceType, set<Coordinate>>& pieces)
+	void evalOpeningArray(const map<PieceType, set<HexCoordinate<6>>>& pieces)
 	{
 		if (pieces.size() != 10)
 		{

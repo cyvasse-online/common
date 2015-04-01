@@ -24,7 +24,7 @@ using namespace std;
 
 namespace cyvasse
 {
-	auto Match::getHorseMovementCenters() -> set<HexCoordinate>
+	auto Match::getHorseMovementCenters() -> set<HexCoordinate<6>>
 	{
 		return {
 			getPlayer(PlayersColor::WHITE).getFortress().getCoord(),
@@ -32,7 +32,7 @@ namespace cyvasse
 		};
 	}
 
-	auto Match::getPieceAt(HexCoordinate coord) -> shared_ptr<Piece>
+	auto Match::getPieceAt(HexCoordinate<6> coord) -> shared_ptr<Piece>
 	{
 		shared_ptr<Piece> ret;
 
@@ -43,21 +43,21 @@ namespace cyvasse
 		return ret;
 	}
 
-	void Match::forReachableCoords(HexCoordinate start, const MovementRange& range, function<void(const HexCoordinate&, Piece*)> func)
+	void Match::forReachableCoords(HexCoordinate<6> start, const MovementRange& range, function<void(HexCoordinate<6>, Piece*)> func)
 	{
 		for(const auto& step : range.first)
 		{
 			assert(step.size() == 2);
 
 			auto tmpPos = start.toValarray<int8_t>();
-			optional<HexCoordinate> tmpCoord = start;
+			optional<HexCoordinate<6>> tmpCoord = start;
 
 			for(auto i = 0; i < range.second; i++)
 			{
 				assert(tmpCoord);
 
 				tmpPos += step;
-				tmpCoord = HexCoordinate::create(tmpPos);
+				tmpCoord = HexCoordinate<6>::create(tmpPos);
 
 				// if one step into this direction results in a
 				// invalid coordinate, all further ones do too
@@ -76,7 +76,7 @@ namespace cyvasse
 		}
 	}
 
-	void Match::addToBoard(PieceType type, PlayersColor color, const HexCoordinate& coord)
+	void Match::addToBoard(PieceType type, PlayersColor color, HexCoordinate<6> coord)
 	{
 		auto& inactivePieces = getPlayer(color).getInactivePieces();
 

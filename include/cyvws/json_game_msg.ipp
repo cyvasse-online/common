@@ -21,7 +21,7 @@ namespace cyvws
 	namespace json
 	{
 		template <class piece_t>
-		Json::Value pieceMap(const std::map<cyvasse::Coordinate, piece_t>& pieces)
+		Json::Value pieceMap(const std::map<cyvasse::HexCoordinate<6>, piece_t>& pieces)
 		{
 			Json::Value data;
 
@@ -35,7 +35,7 @@ namespace cyvws
 		}
 
 		template <class piece_t>
-		Json::Value gameMsgSetOpeningArray(const std::map<cyvasse::Coordinate, piece_t>& pieces)
+		Json::Value gameMsgSetOpeningArray(const std::map<cyvasse::HexCoordinate<6>, piece_t>& pieces)
 		{ return gameMsg(GameMsgAction::SET_OPENING_ARRAY, pieceMap(pieces)); }
 	}
 }

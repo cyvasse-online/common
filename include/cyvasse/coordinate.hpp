@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -36,10 +36,10 @@ namespace cyvasse
 				, m_y(Y > 25 ? throw std::invalid_argument("Coordinate(X, Y): Y (" + std::to_string(Y) + ") out of range") : Y)
 			{ }
 
-			Coordinate(std::string str);
+			Coordinate(const std::string& str);
 
 			template<class T>
-			Coordinate(typename std::valarray<T> a)
+			Coordinate(const typename std::valarray<T>& a)
 			{
 				if(a.size() != 2)
 					throw std::invalid_argument("Invalid std::valarray for Coordinate construction");
@@ -52,12 +52,6 @@ namespace cyvasse
 			}
 
 			virtual ~Coordinate() = default;
-
-			Coordinate(const Coordinate&) = default;
-			Coordinate(Coordinate&&) = default;
-
-			Coordinate& operator=(const Coordinate&) = default;
-			Coordinate& operator=(Coordinate&&) = default;
 
 			int8_t x() const
 			{ return m_x; }
@@ -77,17 +71,17 @@ namespace cyvasse
 				return {static_cast<T>(m_x), static_cast<T>(m_y)};
 			}
 
-			bool operator==(const Coordinate& other) const
+			bool operator==(Coordinate other) const
 			{ return dump() == other.dump(); }
 
-			bool operator!=(const Coordinate& other) const
+			bool operator!=(Coordinate other) const
 			{ return dump() != other.dump(); }
 
-			bool operator<(const Coordinate& other) const
+			bool operator<(Coordinate other) const
 			{ return dump() < other.dump(); }
 	};
 
-	std::ostream& operator <<(std::ostream& os, const Coordinate& coord);
+	std::ostream& operator<<(std::ostream& os, Coordinate coord);
 }
 
 #endif // _CYVASSE_COORDINATE_HPP_

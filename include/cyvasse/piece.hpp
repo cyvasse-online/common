@@ -23,6 +23,7 @@
 #include <utility>
 #include <vector>
 
+#include <optional.hpp>
 #include "hexagon.hpp"
 #include "piece_type.hpp"
 #include "players_color.hpp"
@@ -51,15 +52,13 @@ namespace cyvasse
 		OP_OCCUPIED
 	};
 
-	typedef std::map<Coordinate, TileState> TileStateMap;
+	typedef std::map<HexCoordinate<6>, TileState> TileStateMap;
 	typedef std::vector<std::valarray<int8_t>> MovementVec;
 	typedef std::pair<MovementVec, uint8_t> MovementRange;
 
 	class Piece
 	{
 		public:
-			using HexCoordinate = Hexagon<6>::Coordinate;
-
 			static const MovementVec stepsOrthogonal;
 			static const MovementVec stepsDiagonal;
 			static const MovementVec stepsHexagonalLine;
@@ -68,14 +67,14 @@ namespace cyvasse
 			const PlayersColor m_color;
 			const PieceType m_type;
 
-			optional<Coordinate> m_coord;
+			optional<HexCoordinate<6>> m_coord;
 
 			Match& m_match;
 
-			bool moveToValid(const HexCoordinate&) const;
+			bool moveToValid(HexCoordinate<6>) const;
 
-			auto getReachableTiles(const MovementRange&) const -> std::set<HexCoordinate>;
-			auto getPossibleTargetTiles(const MovementRange&) const -> std::set<HexCoordinate>;
+			auto getReachableTiles(const MovementRange&) const -> std::set<HexCoordinate<6>>;
+			auto getPossibleTargetTiles(const MovementRange&) const -> std::set<HexCoordinate<6>>;
 			auto getReachableOpponentPieces(const MovementRange&) const -> std::set<const Piece*>;
 
 		public:
@@ -85,19 +84,19 @@ namespace cyvasse
 			auto getType() const -> PieceType
 			{ return m_type; }
 
-			auto getCoord() const -> optional<Coordinate>
+			auto getCoord() const -> optional<HexCoordinate<6>>
 			{ return m_coord; }
 
-			Piece(PlayersColor color, PieceType type, const Coordinate& coord, Match& match)
+			Piece(PlayersColor color, PieceType type, optional<HexCoordinate<6>> coord, Match& match)
 				: m_color{color}
 				, m_type{type}
-				, m_coord{std::move(coord)}
+				, m_coord{coord}
 				, m_match(match)
 			{ }
 
 			virtual ~Piece() = default;
 
-			void setCoord(Coordinate coord)
+			void setCoord(HexCoordinate<6> coord)
 			{ m_coord = coord; }
 
 			auto getBaseTier() const -> uint8_t;
@@ -106,23 +105,23 @@ namespace cyvasse
 			auto getSetupTerrain() const -> optional<TerrainType>;
 			auto getMovementScope() const -> const MovementScope&;
 
-			bool canReach(const Coordinate&) const;
+			bool canReach(HexCoordinate<6>) const;
 
 			auto getHexagonalLineTiles() const -> TileStateMap;
-			auto getReachableTiles() const -> std::set<HexCoordinate>;
-			auto getPossibleTargetTiles() const -> std::set<HexCoordinate>;
+			auto getReachableTiles() const -> std::set<HexCoordinate<6>>;
+			auto getPossibleTargetTiles() const -> std::set<HexCoordinate<6>>;
 			auto getReachableOpponentPieces() const -> std::set<const Piece*>;
 
-			virtual bool moveTo(const HexCoordinate&, bool setup);
+			virtual bool moveTo(HexCoordinate<6>, bool setup);
 			void promoteTo(PieceType);
 	};
 
 	// TODO
-	typedef std::map<Coordinate, std::shared_ptr<Piece>> CoordPieceMap;
+	typedef std::map<HexCoordinate<6>, std::shared_ptr<Piece>> CoordPieceMap;
 	typedef std::multimap<PieceType, std::shared_ptr<Piece>> TypePieceMap;
 
 	// type from json::pieceMap
-	void evalOpeningArray(const std::map<PieceType, std::set<Coordinate>>&);
+	void evalOpeningArray(const std::map<PieceType, std::set<HexCoordinate<6>>>&);
 }
 
 #endif // _CYVASSE_PIECE_HPP_

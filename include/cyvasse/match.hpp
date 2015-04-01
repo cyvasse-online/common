@@ -34,7 +34,6 @@ namespace cyvasse
 	{
 		public:
 			typedef std::array<std::unique_ptr<Player>, 2> playerArray;
-			using HexCoordinate = Hexagon<6>::Coordinate;
 
 		protected:
 			const std::string m_id;
@@ -88,13 +87,13 @@ namespace cyvasse
 			auto getBearingTable() -> BearingTable&
 			{ return m_bearingTable; }
 
-			auto getHorseMovementCenters() -> std::set<HexCoordinate>;
+			auto getHorseMovementCenters() -> std::set<HexCoordinate<6>>;
 
-			auto getPieceAt(HexCoordinate) -> std::shared_ptr<Piece>;
+			auto getPieceAt(HexCoordinate<6>) -> std::shared_ptr<Piece>;
 
-			void forReachableCoords(HexCoordinate start, const MovementRange&, std::function<void(const HexCoordinate&, Piece*)>);
+			void forReachableCoords(HexCoordinate<6> start, const MovementRange&, std::function<void(HexCoordinate<6>, Piece*)>);
 
-			virtual void addToBoard(PieceType, PlayersColor, const HexCoordinate&);
+			virtual void addToBoard(PieceType, PlayersColor, HexCoordinate<6>);
 			virtual void removeFromBoard(std::shared_ptr<Piece>);
 			virtual void endGame(PlayersColor /* winner */) { }
 	};

@@ -93,32 +93,33 @@ namespace cyvasse
 					constexpr Coordinate(int8_t X, int8_t Y)
 						: cyvasse::Coordinate(
 							!isValid(X, Y)
-								? throw std::invalid_argument("Invalid Hexagon<" + std::to_string(l) + ">"
-									"::Coordinate (" + std::to_string(X) + ", " + std::to_string(Y) + ")")
+								? throw std::invalid_argument("Invalid HexCoordinate<" + std::to_string(l) + ">"
+									"(" + std::to_string(X) + ", " + std::to_string(Y) + ")")
 								: X, Y
 						)
 					{ }
 
 					/// Create a Coordinate object from a coordinate in the public notation
-					Coordinate(std::string str)
+					Coordinate(const std::string& str)
 						: cyvasse::Coordinate(str)
 					{
 						if (!isValid())
 						{
-							throw std::invalid_argument("Invalid Hexagon<" + std::to_string(l) + ">"
-								"::Coordinate : (" + std::to_string(m_x) + ", " + std::to_string(m_y) + ")");
+							throw std::invalid_argument("Invalid HexCoordinate<" + std::to_string(l) + ">"
+								" : (" + std::to_string(m_x) + ", " + std::to_string(m_y) + ")");
 						}
 					}
 
-					Coordinate(const cyvasse::Coordinate& other)
-						: Coordinate(other.x(), other.y())
-					{ }
+					template<class T>
+					Coordinate(const typename std::valarray<T>& a)
+						: cyvasse::Coordinate(a[0], a[1])
+					{
+						if(a.size() != 2)
+							throw std::invalid_argument("Invalid std::valarray for HexCoordinate construction");
 
-					Coordinate(const Coordinate&) = default;
-					Coordinate(Coordinate&&) = default;
-
-					Coordinate& operator=(const Coordinate&) = default;
-					Coordinate& operator=(Coordinate&&) = default;
+						if(!isValid(a[0], a[1]))
+							throw std::invalid_argument("HexCoordinate (" + std::to_string(a[0]) + ", " + std::to_string(a[1]) + ") is not valid");
+					}
 
 					virtual ~Coordinate() = default;
 
@@ -146,13 +147,13 @@ namespace cyvasse
 
 						if (m_x == other.m_x)
 							return (m_y > other.m_y) ? DirectionOrthogonal::BOTTOM_LEFT
-							                       : DirectionOrthogonal::TOP_RIGHT;
+							                         : DirectionOrthogonal::TOP_RIGHT;
 						if (m_y == other.m_y)
 							return (m_x > other.m_x) ? DirectionOrthogonal::LEFT
-							                       : DirectionOrthogonal::RIGHT;
+							                         : DirectionOrthogonal::RIGHT;
 						if (z() == other.z())
 							return (m_x > other.m_x) ? DirectionOrthogonal::TOP_LEFT
-							                       : DirectionOrthogonal::BOTTOM_RIGHT;
+							                         : DirectionOrthogonal::BOTTOM_RIGHT;
 
 						return DirectionOrthogonal::NONE;
 					}
@@ -288,6 +289,9 @@ namespace cyvasse
 
 		return set;
 	}();
+
+	template <uint8_t l>
+	using HexCoordinate = typename Hexagon<l>::Coordinate;
 }
 
 #endif // _CYVASSE_HEXAGON_HPP_

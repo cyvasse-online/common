@@ -25,7 +25,7 @@ namespace cyvws
 {
 	namespace json
 	{
-		Json::Value piecePosition(PieceType pieceType, Coordinate pos)
+		Json::Value piecePosition(PieceType pieceType, HexCoordinate<6> pos)
 		{
 			Json::Value data;
 			data[PIECE_TYPE] = PieceTypeToStr(pieceType);
@@ -38,7 +38,7 @@ namespace cyvws
 		{
 			return {
 				StrToPieceType(val[PIECE_TYPE].asString()),
-				Coordinate(val[POS].asString())
+				HexCoordinate<6>(val[POS].asString())
 			};
 		}
 
@@ -50,7 +50,7 @@ namespace cyvws
 			return piecePosition(piece.getType(), *piece.getCoord());
 		}
 
-		Json::Value movement(PieceType pieceType, Coordinate oldPos, Coordinate newPos)
+		Json::Value movement(PieceType pieceType, HexCoordinate<6> oldPos, HexCoordinate<6> newPos)
 		{
 			Json::Value data;
 			data[PIECE_TYPE] = PieceTypeToStr(pieceType);
@@ -64,12 +64,13 @@ namespace cyvws
 		{
 			return {
 				StrToPieceType(val[PIECE_TYPE].asString()),
-				Coordinate(val[OLD_POS].asString()),
-				Coordinate(val[NEW_POS].asString())
+				HexCoordinate<6>(val[OLD_POS].asString()),
+				HexCoordinate<6>(val[NEW_POS].asString())
 			};
 		}
 
-		Json::Value moveCapture(PieceType atkPT, Coordinate oldPos, Coordinate newPos, PieceType defPT, Coordinate defPiecePos)
+		Json::Value moveCapture(PieceType atkPT, HexCoordinate<6> oldPos, HexCoordinate<6> newPos,
+		                        PieceType defPT, HexCoordinate<6> defPiecePos)
 		{
 			Json::Value data;
 			data[ATK_PIECE][PIECE_TYPE] = PieceTypeToStr(atkPT);
@@ -85,10 +86,10 @@ namespace cyvws
 		{
 			return {
 				StrToPieceType(val[ATK_PIECE][PIECE_TYPE].asString()),
-				Coordinate(val[ATK_PIECE][OLD_POS].asString()),
-				Coordinate(val[ATK_PIECE][NEW_POS].asString()),
+				HexCoordinate<6>(val[ATK_PIECE][OLD_POS].asString()),
+				HexCoordinate<6>(val[ATK_PIECE][NEW_POS].asString()),
 				StrToPieceType(val[DEF_PIECE][PIECE_TYPE].asString()),
-				Coordinate(val[DEF_PIECE][POS].asString())
+				HexCoordinate<6>(val[DEF_PIECE][POS].asString())
 			};
 		}
 
@@ -113,7 +114,7 @@ namespace cyvws
 
 			for (const auto& str : val.getMemberNames())
 			{
-				auto it = map.emplace(StrToPieceType(str), set<Coordinate>()).first;
+				auto it = map.emplace(StrToPieceType(str), set<HexCoordinate<6>>()).first;
 
 				for (const auto& coord : val[str])
 					it->second.emplace(coord.asString());
@@ -157,10 +158,11 @@ namespace cyvws
 		Json::Value gameMsgSetIsReady()
 		{ return gameMsg(GameMsgAction::SET_IS_READY, Json::Value()); }
 
-		Json::Value gameMsgMove(PieceType pieceType, Coordinate oldPos, Coordinate newPos)
+		Json::Value gameMsgMove(PieceType pieceType, HexCoordinate<6> oldPos, HexCoordinate<6> newPos)
 		{ return gameMsg(GameMsgAction::MOVE, movement(pieceType, oldPos, newPos)); }
 
-		Json::Value gameMsgMoveCapture(PieceType atkPT, Coordinate oldPos, Coordinate newPos, PieceType defPT, Coordinate defPiecePos)
+		Json::Value gameMsgMoveCapture(PieceType atkPT, HexCoordinate<6> oldPos, HexCoordinate<6> newPos,
+		                               PieceType defPT, HexCoordinate<6> defPiecePos)
 		{ return gameMsg(GameMsgAction::MOVE_CAPTURE, moveCapture(atkPT, oldPos, newPos, defPT, defPiecePos)); }
 
 		Json::Value gameMsgPromote(PieceType origType, PieceType newType)

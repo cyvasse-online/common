@@ -20,7 +20,7 @@
 #include <map>
 #include <set>
 #include <json/value.h>
-#include <cyvasse/coordinate.hpp>
+#include <cyvasse/hexagon.hpp>
 #include <cyvasse/piece_type.hpp>
 #include <cyvasse/piece.hpp>
 
@@ -29,24 +29,24 @@ namespace cyvws
 	struct PiecePosition
 	{
 		cyvasse::PieceType pieceType;
-		cyvasse::Coordinate pos;
+		cyvasse::HexCoordinate<6> pos;
 	};
 
 	struct PieceMovement
 	{
 		cyvasse::PieceType pieceType;
-		cyvasse::Coordinate oldPos;
-		cyvasse::Coordinate newPos;
+		cyvasse::HexCoordinate<6> oldPos;
+		cyvasse::HexCoordinate<6> newPos;
 	};
 
 	struct MoveCapture
 	{
 		cyvasse::PieceType atkPT;
-		cyvasse::Coordinate oldPos;
-		cyvasse::Coordinate newPos;
+		cyvasse::HexCoordinate<6> oldPos;
+		cyvasse::HexCoordinate<6> newPos;
 
 		cyvasse::PieceType defPT;
-		cyvasse::Coordinate defPiecePos;
+		cyvasse::HexCoordinate<6> defPiecePos;
 	};
 
 	struct Promotion
@@ -55,7 +55,7 @@ namespace cyvws
 		cyvasse::PieceType newType;
 	};
 
-	typedef std::map<cyvasse::PieceType, std::set<cyvasse::Coordinate>> PieceMap;
+	typedef std::map<cyvasse::PieceType, std::set<cyvasse::HexCoordinate<6>>> PieceMap;
 
 	namespace json
 	{
@@ -86,11 +86,12 @@ namespace cyvws
 
 		Json::Value gameMsgSetOpeningArray(const PieceMap&);
 		template <class piece_t> // convenience overload
-		Json::Value gameMsgSetOpeningArray(const map<Coordinate, piece_t>& pieces);
+		Json::Value gameMsgSetOpeningArray(const map<HexCoordinate<6>, piece_t>& pieces);
 
 		Json::Value gameMsgSetIsReady();
-		Json::Value gameMsgMove(PieceType pieceType, Coordinate oldPos, Coordinate newPos);
-		Json::Value gameMsgMoveCapture(PieceType atkPT, Coordinate oldPos, Coordinate newPos, PieceType defPT, Coordinate defPiecePos);
+		Json::Value gameMsgMove(PieceType pieceType, HexCoordinate<6> oldPos, HexCoordinate<6> newPos);
+		Json::Value gameMsgMoveCapture(PieceType atkPT, HexCoordinate<6> oldPos, HexCoordinate<6> newPos,
+		                               PieceType defPT, HexCoordinate<6> defPiecePos);
 		Json::Value gameMsgPromote(PieceType origType, PieceType newType);
 	}
 }

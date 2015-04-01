@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
 *
 * This file is part of Cyvasse Online.
 *
@@ -26,7 +26,7 @@ namespace cyvasse
 	      We don't accept lowercase letters.
 	   Y: Public coordinate notation starts with 1, we start with 0 => " - 1"
 	*/
-	Coordinate::Coordinate(string str)
+	Coordinate::Coordinate(const string& str)
 		: Coordinate(str.at(0) - 'A', std::stoi(str.substr(1)) - 1)
 	{ }
 
@@ -35,7 +35,7 @@ namespace cyvasse
 		return string(1, m_x + 'A') + to_string(m_y + 1);
 	}
 
-	std::ostream& operator <<(std::ostream& os, const Coordinate& coord)
+	std::ostream& operator<<(std::ostream& os, Coordinate coord)
 	{
 		os << coord.toString();
 		return os;
