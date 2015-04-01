@@ -114,7 +114,7 @@ namespace cyvasse
 
 		set<const Piece*> ret;
 
-		m_match.forReachableCoords(*m_coord, range, [&](Coordinate, Piece* piece) {
+		m_match.forReachableCoords(*m_coord, range, [&](HexCoordinate<6>, Piece* piece) {
 			if (piece && piece->getColor() != m_color &&
 				piece->getType() != PieceType::MOUNTAINS)
 			{

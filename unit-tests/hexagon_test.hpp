@@ -29,7 +29,7 @@ using namespace cyvasse;
 class HexagonTest : public CppUnit::TestFixture
 {
 	private:
-		std::vector<Hexagon<6>::Coordinate> h6Coords;
+		std::vector<HexCoordinate<6>> h6Coords;
 		std::vector<std::string> h6CoordStrings;
 
 	public:

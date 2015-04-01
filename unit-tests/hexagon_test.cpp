@@ -104,8 +104,8 @@ void HexagonTest::testCoordValidity()
 
 	for (const auto& invalidCoord : invalidCoords)
 	{
-		CPPUNIT_ASSERT(!Hexagon<6>::Coordinate::create(invalidCoord.first, invalidCoord.second));
-		CPPUNIT_ASSERT_THROW(Hexagon<6>::Coordinate(invalidCoord.first, invalidCoord.second), invalid_argument);
+		CPPUNIT_ASSERT(!HexCoordinate<6>::create(invalidCoord.first, invalidCoord.second));
+		CPPUNIT_ASSERT_THROW(HexCoordinate<6>(invalidCoord.first, invalidCoord.second), invalid_argument);
 	}
 }
 
@@ -125,7 +125,7 @@ void HexagonTest::testCoordCompleteness()
 	CPPUNIT_ASSERT_EQUAL(size_t(37), Hexagon<4>::allCoordinates.size());
 
 	CPPUNIT_ASSERT_NO_THROW(
-		set<Hexagon<2>::Coordinate> allH2Coords({ {0, 1}, {0, 2}, {1, 0}, {1, 1}, {1, 2}, {2, 0}, {2, 1} });
+		set<HexCoordinate<2>> allH2Coords({ {0, 1}, {0, 2}, {1, 0}, {1, 1}, {1, 2}, {2, 0}, {2, 1} });
 
 		CPPUNIT_ASSERT_EQUAL(allH2Coords.size(), Hexagon<2>::allCoordinates.size());
 
@@ -151,7 +151,7 @@ void HexagonTest::testCoordFromString()
 	CPPUNIT_ASSERT_EQUAL(h6Coords.size(), h6CoordStrings.size());
 
 	for (size_t i = 0; i < h6Coords.size(); i++)
-		CPPUNIT_ASSERT_EQUAL(Hexagon<6>::Coordinate(h6CoordStrings[i]), h6Coords[i]);
+		CPPUNIT_ASSERT_EQUAL(HexCoordinate<6>(h6CoordStrings[i]), h6Coords[i]);
 }
 
 void HexagonTest::testDistanceOrthogonal()

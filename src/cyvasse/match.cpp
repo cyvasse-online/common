@@ -17,7 +17,6 @@
 #include <cyvasse/match.hpp>
 
 #include <stdexcept>
-#include <cyvasse/hexagon.hpp>
 #include <cyvasse/fortress.hpp>
 
 using namespace std;

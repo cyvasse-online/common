@@ -20,7 +20,8 @@
 #include <array>
 #include <map>
 #include <memory>
-#include "hexagon.hpp"
+
+#include "hexcoordinate.hpp"
 #include "piece_type.hpp"
 #include "terrain_type.hpp"
 
@@ -47,7 +48,7 @@ namespace cyvasse
 			{ m_coord = coord; }
 	};
 
-	typedef std::map<Coordinate, std::shared_ptr<Terrain>> TerrainMap;
+	typedef std::map<HexCoordinate<6>, std::shared_ptr<Terrain>> TerrainMap;
 }
 
 #endif // _CYVASSE_TERRAIN_HPP_

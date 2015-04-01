@@ -17,7 +17,7 @@
 #ifndef _CYVASSE_FORTRESS_HPP_
 #define _CYVASSE_FORTRESS_HPP_
 
-#include "hexagon.hpp"
+#include "hexcoordinate.hpp"
 #include "players_color.hpp"
 
 namespace cyvasse

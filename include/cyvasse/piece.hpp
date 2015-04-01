@@ -24,7 +24,7 @@
 #include <vector>
 
 #include <optional.hpp>
-#include "hexagon.hpp"
+#include "hexcoordinate.hpp"
 #include "piece_type.hpp"
 #include "players_color.hpp"
 #include "terrain_type.hpp"

@@ -23,7 +23,7 @@
 #include <set>
 
 #include "bearing_table.hpp"
-#include "hexagon.hpp"
+#include "hexcoordinate.hpp"
 #include "piece.hpp"
 #include "player.hpp"
 #include "terrain.hpp"

@@ -20,7 +20,7 @@
 #include <map>
 #include <set>
 #include <json/value.h>
-#include <cyvasse/hexagon.hpp>
+#include <cyvasse/hexcoordinate.hpp>
 #include <cyvasse/piece_type.hpp>
 #include <cyvasse/piece.hpp>
 
@@ -62,19 +62,20 @@ namespace cyvws
 		using namespace std;
 		using namespace cyvasse;
 
-		Json::Value piecePosition(PieceType pieceType, Coordinate pos);
+		Json::Value piecePosition(PieceType pieceType, HexCoordinate<6> pos);
 		PiecePosition piecePosition(const Json::Value&);
 		Json::Value piecePosition(const Piece&); // convenience overload
 
-		Json::Value movement(PieceType pieceType, Coordinate oldPos, Coordinate newPos);
+		Json::Value movement(PieceType pieceType, HexCoordinate<6> oldPos, HexCoordinate<6> newPos);
 		PieceMovement movement(const Json::Value&);
 
-		Json::Value moveCapture(PieceType atkPT, Coordinate oldPos, Coordinate newPos, PieceType defPT, Coordinate defPiecePos);
+		Json::Value moveCapture(PieceType atkPT, HexCoordinate<6> oldPos, HexCoordinate<6> newPos,
+		                        PieceType defPT, HexCoordinate<6> defPiecePos);
 		MoveCapture moveCapture(const Json::Value&);
 
 		Json::Value pieceMap(const PieceMap&);
 		template <class piece_t> // convenience overload
-		Json::Value pieceMap(const map<Coordinate, piece_t>&);
+		Json::Value pieceMap(const map<HexCoordinate<6>, piece_t>&);
 		PieceMap pieceMap(const Json::Value&);
 
 		Json::Value promotion(PieceType origType, PieceType newType);

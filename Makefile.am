@@ -12,7 +12,6 @@ noinst_LIBRARIES = \
 
 libcyvasse_a_SOURCES = \
 	src/cyvasse/bearing_table.cpp \
-	src/cyvasse/coordinate.cpp \
 	src/cyvasse/match.cpp \
 	src/cyvasse/piece.cpp \
 	src/cyvasse/player.cpp \
