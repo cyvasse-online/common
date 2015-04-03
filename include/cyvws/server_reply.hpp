@@ -21,9 +21,14 @@
 
 namespace cyvws
 {
-	const std::string REPLY_DATA = "replyData";
+	const std::string
+		GAME_STATUS = "gameStatus",
+		REPLY_DATA  = "replyData";
 
-	const std::string SUCCESS    = "success";
+	const std::string
+		PIECE_POSITIONS = "piecePositions",
+		SETUP           = "setup",
+		SUCCESS         = "success";
 
 	namespace ServerReplyErrMsg
 	{

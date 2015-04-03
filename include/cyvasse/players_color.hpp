@@ -18,6 +18,7 @@
 #define _CYVASSE_PLAYERS_COLOR_HPP_
 
 #include <vector>
+#include <cstdint>
 #include <enum_str.hpp>
 
 namespace cyvasse
@@ -28,16 +29,15 @@ namespace cyvasse
 	class PlayersColor
 	{
 		private:
-			int m_val;
+			uint8_t m_val;
 
 			explicit PlayersColor(int val)
 				: m_val(val)
 			{ }
 
 		public:
-			PlayersColor(const PlayersColor& other)
-				: m_val(other.m_val)
-			{ }
+			PlayersColor(const PlayersColor&) = default;
+			PlayersColor& operator=(const PlayersColor&) = default;
 
 			static const PlayersColor WHITE;
 			static const PlayersColor BLACK;
@@ -56,7 +56,8 @@ namespace cyvasse
 			bool operator>(PlayersColor other) const
 			{ return m_val > other.m_val; }
 
-			operator unsigned() const;
+			operator uint8_t() const
+			{ return m_val; }
 
 			// don't allow comparing with bool,
 			// int or unsigned, which would
@@ -81,7 +82,7 @@ namespace cyvasse
 		{PlayersColor::BLACK, "black"}
 	}))
 
-	const std::vector<PlayersColor> allPlayersColors();
+	extern const std::vector<PlayersColor> allPlayersColors;
 	const std::string& PlayersColorToPrettyStr(PlayersColor);
 }
 

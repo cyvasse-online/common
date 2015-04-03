@@ -30,7 +30,7 @@ namespace cyvasse
 		, m_fortress(move(fortress))
 	{ }
 
-	bool Player::setupComplete() const
+	bool Player::canEndSetup() const
 	{
 		auto outsideOwnSide = (m_color == PlayersColor::WHITE)
 			? [](int8_t y) { return y >= (Hexagon<6>::edgeLength - 1); }
@@ -58,7 +58,7 @@ namespace cyvasse
 			m_match.endGame(!m_color);
 
 		auto& op = m_match.getPlayer(!m_color);
-		if(op.kingTaken() && op.getFortress().isRuined)
+		if(op.isKingTaken() && op.getFortress().isRuined)
 			m_match.endGame(m_color);
 
 		m_match.getBearingTable().update();

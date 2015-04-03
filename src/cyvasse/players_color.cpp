@@ -1,4 +1,4 @@
-/* Copyright 2014 Jonas Platte
+/* Copyright 2014 - 2015 Jonas Platte
  *
  * This file is part of Cyvasse Online.
  *
@@ -16,12 +16,10 @@
 
 #include <cyvasse/players_color.hpp>
 
-#include <cassert>
-
 namespace cyvasse
 {
-	const PlayersColor PlayersColor::WHITE     = PlayersColor(0);
-	const PlayersColor PlayersColor::BLACK     = PlayersColor(1);
+	const PlayersColor PlayersColor::WHITE = PlayersColor(0);
+	const PlayersColor PlayersColor::BLACK = PlayersColor(1);
 
 	PlayersColor PlayersColor::operator!() const
 	{
@@ -29,28 +27,18 @@ namespace cyvasse
 		return PlayersColor(!m_val);
 	}
 
-	PlayersColor::operator unsigned() const
-	{
-		return m_val;
-	}
+	const std::vector<PlayersColor> allPlayersColors {
+		PlayersColor::WHITE,
+		PlayersColor::BLACK
+	};
 
-	const std::vector<PlayersColor> allPlayersColors()
-	{
-		static const std::vector<PlayersColor> data {
-			PlayersColor::WHITE,
-			PlayersColor::BLACK
-		};
-
-		return data;
-	}
+	static const std::map<PlayersColor, std::string> prettyStrs {
+		{PlayersColor::WHITE, "White player"},
+		{PlayersColor::BLACK, "Black player"}
+	};
 
 	const std::string& PlayersColorToPrettyStr(PlayersColor c)
 	{
-		static const std::map<PlayersColor, std::string> data {
-			{PlayersColor::WHITE,     "White player"},
-			{PlayersColor::BLACK,     "Black player"}
-		};
-
-		return data.at(c);
+		return prettyStrs.at(c);
 	}
 }

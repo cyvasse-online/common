@@ -31,39 +31,44 @@ namespace cyvasse
 	{
 		protected:
 			const PlayersColor m_color;
-
 			const std::string m_id;
 
+			bool m_setupDone = false;
 			bool m_kingTaken = false;
 
 			Match& m_match;
 
 			TypePieceMap m_inactivePieces;
-
 			std::unique_ptr<Fortress> m_fortress;
 
 		public:
 			Player(Match&, PlayersColor, std::unique_ptr<Fortress>, const std::string& id = {});
 
-			PlayersColor getColor() const
+			auto getColor() const -> PlayersColor
 			{ return m_color; }
 
-			const std::string& getID() const
+			auto getID() const -> const std::string&
 			{ return m_id; }
 
-			bool kingTaken() const
+			bool isSetupDone() const
+			{ return m_setupDone; }
+
+			void setupDone()
+			{ m_setupDone = true; }
+
+			bool isKingTaken() const
 			{ return m_kingTaken; }
 
 			void kingTaken(bool value)
 			{ m_kingTaken = value; }
 
-			TypePieceMap& getInactivePieces()
+			auto getInactivePieces() -> TypePieceMap&
 			{ return m_inactivePieces; }
 
-			Fortress& getFortress()
+			auto getFortress() -> Fortress&
 			{ return *m_fortress; }
 
-			virtual bool setupComplete() const;
+			bool canEndSetup() const;
 
 			void onTurnEnd();
 

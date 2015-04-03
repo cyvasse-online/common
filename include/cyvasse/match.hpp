@@ -42,8 +42,8 @@ namespace cyvasse
 
 			playerArray m_players;
 
-			PlayersColor m_activePlayer;
-			bool m_setup;
+			PlayersColor m_activePlayer = PlayersColor::WHITE;
+			bool m_setup = true;
 
 			CoordPieceMap m_activePieces;
 			TerrainMap m_terrain;
@@ -56,8 +56,6 @@ namespace cyvasse
 				, m_random{random}
 				, m_public{_public}
 				, m_players(std::move(players))
-				, m_activePlayer{PlayersColor::WHITE}
-				, m_setup{true}
 				, m_bearingTable(m_activePieces)
 			{ }
 
@@ -72,11 +70,23 @@ namespace cyvasse
 			bool isPublic() const
 			{ return m_public; }
 
+			bool hasPlayer(PlayersColor color) const
+			{ return (bool)m_players.at(color); }
+
 			auto getPlayer(PlayersColor color) const -> Player&
 			{ return *m_players.at(color); }
 
-			void setPlayers(playerArray players)
-			{ m_players = std::move(players); }
+			void setPlayer(PlayersColor color, std::unique_ptr<Player> player)
+			{ m_players[color] = std::move(player); }
+
+			auto getActivePlayer() const -> PlayersColor
+			{ return m_activePlayer; }
+
+			bool inSetup() const
+			{ return m_setup; }
+
+			void setupDone()
+			{ m_setup = false; }
 
 			auto getActivePieces() -> CoordPieceMap&
 			{ return m_activePieces; }

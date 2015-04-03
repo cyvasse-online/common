@@ -662,7 +662,7 @@ namespace cyvasse
 		{
 			auto& player = m_match.getPlayer(m_color);
 
-			assert(player.kingTaken());
+			assert(player.isKingTaken());
 			player.kingTaken(false);
 		}
 	}

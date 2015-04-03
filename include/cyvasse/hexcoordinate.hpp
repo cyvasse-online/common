@@ -246,7 +246,7 @@ namespace cyvasse
 			/// @{
 			/// Create a HexCoordinate object from an X and an Y
 			/// If the coordinte is invalid, return nullptr
-			static constexpr optional<HexCoordinate> create(int8_t X, int8_t Y)
+			static /* constexpr */ optional<HexCoordinate> create(int8_t X, int8_t Y)
 			{
 				if (isValid(X, Y))
 					return HexCoordinate(X, Y);
