@@ -22,6 +22,8 @@
 #include <memory>
 #include <set>
 
+#include <optional.hpp>
+
 #include "bearing_table.hpp"
 #include "hexcoordinate.hpp"
 #include "piece.hpp"
@@ -99,12 +101,12 @@ namespace cyvasse
 
 			auto getHorseMovementCenters() -> std::set<HexCoordinate<6>>;
 
-			auto getPieceAt(HexCoordinate<6>) -> std::shared_ptr<Piece>;
+			auto getPieceAt(HexCoordinate<6>) -> optional<std::reference_wrapper<Piece>>;
 
-			void forReachableCoords(HexCoordinate<6> start, const MovementRange&, std::function<void(HexCoordinate<6>, Piece*)>);
+			void forReachableCoords(HexCoordinate<6> start, const MovementRange&, std::function<void(HexCoordinate<6>)>);
 
 			virtual void addToBoard(PieceType, PlayersColor, HexCoordinate<6>);
-			virtual void removeFromBoard(std::shared_ptr<Piece>);
+			virtual void removeFromBoard(const Piece&);
 			virtual void endGame(PlayersColor /* winner */) { }
 	};
 }

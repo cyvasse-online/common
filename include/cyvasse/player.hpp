@@ -43,6 +43,7 @@ namespace cyvasse
 
 		public:
 			Player(Match&, PlayersColor, std::unique_ptr<Fortress>, const std::string& id = {});
+			virtual ~Player() = default;
 
 			auto getColor() const -> PlayersColor
 			{ return m_color; }

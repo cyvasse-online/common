@@ -17,23 +17,35 @@
 #ifndef _CYVASSE_BEARING_TABLE_HPP_
 #define _CYVASSE_BEARING_TABLE_HPP_
 
+#include <functional>
 #include <map>
-#include <set>
+#include <vector>
+
 #include "piece.hpp"
+
+template <typename T>
+struct addr_less
+{
+	constexpr bool operator()(const std::reference_wrapper<T> lhs, const std::reference_wrapper<T> rhs) const
+	{
+		return std::addressof(lhs.get()) < std::addressof(rhs.get());
+	}
+};
 
 namespace cyvasse
 {
 	class BearingTable
 	{
 		private:
-			typedef std::map<const Piece*, std::set<const Piece*>> BearingMap;
+			typedef std::map<std::reference_wrapper<const Piece>, std::vector<std::reference_wrapper<const Piece>>, addr_less<const Piece>>
+				BearingMap;
 
 			CoordPieceMap& m_pieceMap;
 
 			BearingMap m_canBeReachedBy;
 
-			void addCanReach(const Piece*);
-			void addCanBeReachedBy(const Piece*);
+			void addCanReach(std::reference_wrapper<const Piece>);
+			void addCanBeReachedBy(std::reference_wrapper<const Piece>);
 
 		public:
 			BearingTable(CoordPieceMap& pieceMap)

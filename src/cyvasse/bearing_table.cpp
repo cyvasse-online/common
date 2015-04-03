@@ -18,6 +18,8 @@
 
 #include <cassert>
 
+using namespace std;
+
 namespace cyvasse
 {
 	bool BearingTable::canTake(const Piece& atkPiece, const Piece& defPiece) const
@@ -34,24 +36,24 @@ namespace cyvasse
 		uint8_t maxAllowedTier = haveKing ? 3 : atkPiece.getBaseTier();
 		uint8_t maxTier = 1;
 
-		auto defPieceIt = m_canBeReachedBy.find(&defPiece);
+		auto defPieceIt = m_canBeReachedBy.find(defPiece);
 		if (defPieceIt == m_canBeReachedBy.end())
 			return false;
 
-		std::map<uint8_t, uint8_t> flankingTiers {
+		map<uint8_t, uint8_t> flankingTiers {
 			{1, 0},
 			{2, 0},
 			{3, 0}
 		};
 
-		for (const Piece* piece : defPieceIt->second)
+		for (auto&& piece : defPieceIt->second)
 		{
-			auto baseTier = piece->getBaseTier();
+			auto baseTier = piece.get().getBaseTier();
 
 			if (baseTier > maxAllowedTier)
 				continue;
 
-			if (piece->getType() == PieceType::KING)
+			if (piece.get().getType() == PieceType::KING)
 			{
 				// king will count as maxTier after the loop
 				haveKing = true;
@@ -79,29 +81,27 @@ namespace cyvasse
 	{
 		for (auto it : m_pieceMap)
 		{
-			auto piece = it.second.get();
+			assert(it.second);
+			auto piece = *it.second;
 
-			if (piece->getType() == PieceType::MOUNTAINS || piece->getType() == PieceType::DRAGON)
+			if (piece.getType() == PieceType::MOUNTAINS || piece.getType() == PieceType::DRAGON)
 				continue;
 
-			auto reachableOpPieces = piece->getReachableOpponentPieces();
+			auto reachableOpPieces = piece.getReachableOpponentPieces();
 
 			if (reachableOpPieces.empty())
 				continue;
 
-			for (const Piece* opPiece : reachableOpPieces)
+			for (auto&& opPiece : reachableOpPieces)
 			{
 				auto opPieceIt = m_canBeReachedBy.find(opPiece);
 				if (opPieceIt == m_canBeReachedBy.end())
 				{
-					auto res = m_canBeReachedBy.emplace(opPiece, std::set<const Piece*>{piece});
+					auto res = m_canBeReachedBy.emplace(opPiece, vector<reference_wrapper<const Piece>>{piece});
 					assert(res.second);
 				}
 				else
-				{
-					auto res = opPieceIt->second.insert(piece);
-					assert(res.second);
-				}
+					opPieceIt->second.push_back(piece);
 			}
 		}
 	}

@@ -17,6 +17,7 @@
 #ifndef _CYVASSE_PIECE_HPP_
 #define _CYVASSE_PIECE_HPP_
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <set>
@@ -75,18 +76,9 @@ namespace cyvasse
 
 			auto getReachableTiles(const MovementRange&) const -> std::set<HexCoordinate<6>>;
 			auto getPossibleTargetTiles(const MovementRange&) const -> std::set<HexCoordinate<6>>;
-			auto getReachableOpponentPieces(const MovementRange&) const -> std::set<const Piece*>;
+			auto getReachableOpponentPieces(const MovementRange&) const -> std::vector<std::reference_wrapper<const Piece>>;
 
 		public:
-			auto getColor() const -> PlayersColor
-			{ return m_color; }
-
-			auto getType() const -> PieceType
-			{ return m_type; }
-
-			auto getCoord() const -> optional<HexCoordinate<6>>
-			{ return m_coord; }
-
 			Piece(PlayersColor color, PieceType type, optional<HexCoordinate<6>> coord, Match& match)
 				: m_color{color}
 				, m_type{type}
@@ -95,6 +87,15 @@ namespace cyvasse
 			{ }
 
 			virtual ~Piece() = default;
+
+			auto getColor() const -> PlayersColor
+			{ return m_color; }
+
+			auto getType() const -> PieceType
+			{ return m_type; }
+
+			auto getCoord() const -> optional<HexCoordinate<6>>
+			{ return m_coord; }
 
 			void setCoord(HexCoordinate<6> coord)
 			{ m_coord = coord; }
@@ -110,7 +111,7 @@ namespace cyvasse
 			auto getHexagonalLineTiles() const -> TileStateMap;
 			auto getReachableTiles() const -> std::set<HexCoordinate<6>>;
 			auto getPossibleTargetTiles() const -> std::set<HexCoordinate<6>>;
-			auto getReachableOpponentPieces() const -> std::set<const Piece*>;
+			auto getReachableOpponentPieces() const -> std::vector<std::reference_wrapper<const Piece>>;
 
 			virtual bool moveTo(HexCoordinate<6>, bool setup);
 			void promoteTo(PieceType);

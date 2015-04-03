@@ -36,7 +36,7 @@ namespace cyvasse
 			? [](int8_t y) { return y >= (Hexagon<6>::edgeLength - 1); }
 			: [](int8_t y) { return y <= (Hexagon<6>::edgeLength - 1); };
 
-		for(auto& it : m_match.getActivePieces())
+		for (auto& it : m_match.getActivePieces())
 		{
 			if(it.second->getColor() == m_color && outsideOwnSide(it.first.y()))
 				return false;
@@ -47,18 +47,18 @@ namespace cyvasse
 
 	void Player::onTurnEnd()
 	{
-		if(m_kingTaken && !m_fortress->isRuined)
+		if (m_kingTaken && !m_fortress->isRuined)
 		{
 			auto piece = m_match.getPieceAt(m_fortress->getCoord());
-			if(piece && piece->getBaseTier() == 3)
-				piece->promoteTo(PieceType::KING);
+			if (piece && piece->get().getBaseTier() == 3)
+				piece->get().promoteTo(PieceType::KING);
 		}
 
-		if(m_kingTaken)
+		if (m_kingTaken)
 			m_match.endGame(!m_color);
 
 		auto& op = m_match.getPlayer(!m_color);
-		if(op.isKingTaken() && op.getFortress().isRuined)
+		if (op.isKingTaken() && op.getFortress().isRuined)
 			m_match.endGame(m_color);
 
 		m_match.getBearingTable().update();

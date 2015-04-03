@@ -31,27 +31,25 @@ namespace cyvasse
 		};
 	}
 
-	auto Match::getPieceAt(HexCoordinate<6> coord) -> shared_ptr<Piece>
+	auto Match::getPieceAt(HexCoordinate<6> coord) -> optional<reference_wrapper<Piece>>
 	{
-		shared_ptr<Piece> ret;
-
 		auto it = m_activePieces.find(coord);
-		if(it != m_activePieces.end())
-			ret = it->second;
+		if (it != m_activePieces.end())
+			return ref(*it->second);
 
-		return ret;
+		return nullopt;
 	}
 
-	void Match::forReachableCoords(HexCoordinate<6> start, const MovementRange& range, function<void(HexCoordinate<6>, Piece*)> func)
+	void Match::forReachableCoords(HexCoordinate<6> start, const MovementRange& range, function<void(HexCoordinate<6>)> func)
 	{
-		for(const auto& step : range.first)
+		for (const auto& step : range.first)
 		{
 			assert(step.size() == 2);
 
 			auto tmpPos = start.toValarray<int8_t>();
 			optional<HexCoordinate<6>> tmpCoord = start;
 
-			for(auto i = 0; i < range.second; i++)
+			for (auto i = 0; i < range.second; i++)
 			{
 				assert(tmpCoord);
 
@@ -60,16 +58,14 @@ namespace cyvasse
 
 				// if one step into this direction results in a
 				// invalid coordinate, all further ones do too
-				if(!tmpCoord)
+				if (!tmpCoord)
 					break;
 
-				shared_ptr<Piece> tmpPiece = getPieceAt(*tmpCoord);
-
-				func(*tmpCoord, tmpPiece.get());
+				func(*tmpCoord);
 
 				// if there is a piece on the tile,
 				// we can't reach any tiles beyond it
-				if(tmpPiece)
+				if (getPieceAt(*tmpCoord))
 					break;
 			}
 		}
@@ -89,19 +85,21 @@ namespace cyvasse
 		m_activePieces.emplace(coord, piece);
 	}
 
-	void Match::removeFromBoard(shared_ptr<Piece> piece)
+	void Match::removeFromBoard(const Piece& piece)
 	{
-		assert(piece->getCoord());
+		const auto pieceType = piece.getType();
+		const auto coord = piece.getCoord().value();
 
-		auto it = m_activePieces.find(*piece->getCoord());
+		auto it = m_activePieces.find(coord);
 		assert(it != m_activePieces.end());
+		auto pieceSharedPtr = it->second;
 		m_activePieces.erase(it);
 
-		auto& player = getPlayer(piece->getColor());
+		auto& player = getPlayer(piece.getColor());
 
-		player.getInactivePieces().emplace(piece->getType(), piece);
+		player.getInactivePieces().emplace(pieceType, pieceSharedPtr);
 
-		if(piece->getType() == PieceType::KING)
+		if (pieceType == PieceType::KING)
 			player.kingTaken(true);
 	}
 }
