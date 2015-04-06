@@ -35,8 +35,8 @@ namespace cyvws
 		REGISTERED  = "registered",
 		ROLE        = "role",
 		RULE_SET    = "ruleSet",
-		SCREEN_NAME = "screenName",
-		TYPE        = "type";
+		TYPE        = "type",
+		USERNAME    = "username";
 }
 
 #endif // _CYVWS_COMMON_HPP_
