@@ -82,7 +82,7 @@ namespace cyvasse
 	void Match::removeFromBoard(const Piece& piece)
 	{
 		const auto pieceType = piece.getType();
-		const auto coord = piece.getCoord().value();
+		const auto coord = *piece.getCoord(); // TODO: use value() instead of operator*
 
 		auto it = m_activePieces.find(coord);
 		assert(it != m_activePieces.end());

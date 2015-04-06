@@ -106,9 +106,11 @@ namespace cyvasse
 
 	auto Piece::getReachableOpponentPieces(const MovementRange& range) const -> vector<reference_wrapper<const Piece>>
 	{
+		assert(m_coord);
+
 		vector<reference_wrapper<const Piece>> ret;
 
-		m_match.forReachableCoords(m_coord.value(), range, [&](HexCoordinate<6> coord) {
+		m_match.forReachableCoords(*m_coord, range, [&](HexCoordinate<6> coord) {
 			auto piece = m_match.getPieceAt(coord);
 			if (piece && piece->get().getColor() != m_color && piece->get().getType() != PieceType::MOUNTAINS)
 				ret.push_back(piece->get());
@@ -140,6 +142,8 @@ namespace cyvasse
 
 	auto Piece::getEffectiveDefenseTier() const -> uint8_t
 	{
+		assert(m_coord);
+
 		auto baseTier = getBaseTier();
 
 		if (baseTier < 1 || baseTier >= 4)
@@ -147,7 +151,7 @@ namespace cyvasse
 
 		auto fortress = m_match.getPlayer(m_color).getFortress();
 
-		if (!fortress.isRuined && fortress.getCoord() == m_coord.value())
+		if (!fortress.isRuined && fortress.getCoord() == *m_coord)
 			return ++baseTier;
 
 		auto terrainIt = m_match.getTerrain().find(*m_coord);
@@ -217,7 +221,10 @@ namespace cyvasse
 		valarray<int8_t> step(2);
 
 		{
-			auto coord = m_coord.value();
+			//auto coord = m_coord.value();
+			assert(m_coord);
+			auto coord = *m_coord;
+
 			switch (scope.first)
 			{
 				case MovementType::ORTHOGONAL:
@@ -424,7 +431,8 @@ namespace cyvasse
 				if (!distance)
 					distance = Hexagon<6>::tileCount / 2;
 
-				set<HexCoordinate<6>> lastTiles {m_coord.value()};
+				assert(m_coord); // value()
+				set<HexCoordinate<6>> lastTiles {*m_coord};
 				set<HexCoordinate<6>> tiles;
 
 				// start with i = 1 because the first step is already done with
@@ -636,9 +644,11 @@ namespace cyvasse
 
 	void Piece::promoteTo(PieceType type)
 	{
-		auto coord = m_coord.value();
+		//auto coord = m_coord.value();
+		assert(m_coord);
+		auto coord = *m_coord;
 
-		m_match.removeFromBoard(m_match.getPieceAt(coord).value());
+		m_match.removeFromBoard(*m_match.getPieceAt(coord)); // TODO: value() instead of operator*
 		m_match.addToBoard(type, m_color, coord);
 		m_match.getBearingTable().update();
 
