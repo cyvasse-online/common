@@ -6,6 +6,14 @@
 		"role": "spectator",
 		"ruleSet": "mikelepage",
 		"extraRules": [ ],
+		"users": {
+			"black": {
+				"username": "Mike Le Page"
+			},
+			"white": {
+				"username": "jPlatte"
+			}
+		},
 		"gameStatus" : {
 			"setup": false,
 			"piecePositions": {

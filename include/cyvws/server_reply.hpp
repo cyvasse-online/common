@@ -26,9 +26,11 @@ namespace cyvws
 		REPLY_DATA  = "replyData";
 
 	const std::string
+		OPPONENT        = "opponent",
 		PIECE_POSITIONS = "piecePositions",
 		SETUP           = "setup",
-		SUCCESS         = "success";
+		SUCCESS         = "success",
+		USERS           = "users";
 
 	namespace ServerReplyErrMsg
 	{

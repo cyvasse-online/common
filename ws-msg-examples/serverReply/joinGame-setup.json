@@ -8,7 +8,10 @@
 		"playerID": "OcanC0N3",
 		"ruleSet": "mikelepage",
 		"extraRules": [ ],
-		"gameStatus" : {
+		"opponent": {
+			"username": "White player"
+		},
+		"gameStatus": {
 			"setup": true
 		}
 	}
