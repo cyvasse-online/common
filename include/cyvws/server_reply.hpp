@@ -34,11 +34,12 @@ namespace cyvws
 	{
 		const std::string
 			CONN_IN_USE         = "connInUse",
+			DIFF_MAJOR_PROT_V   = "differingMajorProtVersion",
 			GAME_EMPTY          = "gameEmpty",
 			GAME_FULL           = "gameFull",
 			GAME_NOT_FOUND      = "gameNotFound",
 			LIST_DOES_NOT_EXIST = "listDoesNotExist",
-			DIFF_MAJOR_PROT_V   = "differingMajorProtVersion";
+			NOT_IN_GAME         = "notInGame";
 	}
 }
 

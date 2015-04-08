@@ -67,13 +67,13 @@ namespace cyvws
 			return notification(data);
 		}
 
-		Json::Value userJoined(const string& username, bool registered, const string& role)
+		Json::Value userJoined(const string& username, bool registered, const string& /* role */)
 		{
 			Json::Value data;
 			data[TYPE]       = NotificationType::USER_JOINED;
 			data[USERNAME]   = username;
 			data[REGISTERED] = registered;
-			data[ROLE]       = role;
+			//data[ROLE]       = role;
 
 			return notification(data);
 		}
@@ -83,6 +83,16 @@ namespace cyvws
 			Json::Value data;
 			data[TYPE]     = NotificationType::USER_LEFT;
 			data[USERNAME] = username;
+
+			return notification(data);
+		}
+
+		Json::Value usernameUpdate(const std::string& oldUsername, const std::string& newUsername)
+		{
+			Json::Value data;
+			data[TYPE]         = NotificationType::USERNAME_UPDATE;
+			data[OLD_USERNAME] = oldUsername;
+			data[NEW_USERNAME] = newUsername;
 
 			return notification(data);
 		}

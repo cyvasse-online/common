@@ -29,6 +29,7 @@ namespace cyvws
 			CREATE_GAME                = "createGame",
 			INIT_COMM                  = "initComm",
 			JOIN_GAME                  = "joinGame",
+			SET_USERNAME               = "setUsername",
 			SUBSCR_GAME_LIST_UPDATES   = "subscrGameListUpdates",
 			UNSUBSCR_GAME_LIST_UPDATES = "unsubscrGameListUpdates";
 	}

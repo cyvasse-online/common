@@ -27,15 +27,18 @@ namespace cyvws
 		LIST_NAME         = "listName",
 		LIST_CONTENT      = "listContent",
 		TITLE             = "title",
-		PLAY_AS           = "playAs";
+		PLAY_AS           = "playAs",
+		OLD_USERNAME      = "oldUsername",
+		NEW_USERNAME      = "newUsername";
 
 	namespace NotificationType
 	{
 		const std::string
-			COMM_ERROR  = "commError",
-			LIST_UPDATE = "listUpdate",
-			USER_JOINED = "userJoined",
-			USER_LEFT   = "userLeft";
+			COMM_ERROR      = "commError",
+			LIST_UPDATE     = "listUpdate",
+			USER_JOINED     = "userJoined",
+			USER_LEFT       = "userLeft",
+			USERNAME_UPDATE = "usernameUpdate";
 	}
 
 	const std::string LISTS = "lists";

@@ -32,6 +32,7 @@ namespace cyvws
 		Json::Value listUpdate(const std::string& listName, const GamesListMap& curList);
 		Json::Value userJoined(const std::string& username, bool registered, const std::string& role);
 		Json::Value userLeft(const std::string& username);
+		Json::Value usernameUpdate(const std::string& oldUsername, const std::string& newUsername);
 	}
 }
 
