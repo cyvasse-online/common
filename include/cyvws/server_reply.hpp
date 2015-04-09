@@ -39,6 +39,7 @@ namespace cyvws
 			DIFF_MAJOR_PROT_V   = "differingMajorProtVersion",
 			GAME_EMPTY          = "gameEmpty",
 			GAME_FULL           = "gameFull",
+			GAME_IN_SETUP       = "gameInSetup", // resuming already set-up games not yet supported
 			GAME_NOT_FOUND      = "gameNotFound",
 			LIST_DOES_NOT_EXIST = "listDoesNotExist",
 			NOT_IN_GAME         = "notInGame";
