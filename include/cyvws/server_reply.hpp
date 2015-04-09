@@ -42,6 +42,7 @@ namespace cyvws
 			GAME_IN_SETUP       = "gameInSetup", // resuming already set-up games not yet supported
 			GAME_NOT_FOUND      = "gameNotFound",
 			LIST_DOES_NOT_EXIST = "listDoesNotExist",
+			MAINTENANCE_MODE    = "maintenanceMode",
 			NOT_IN_GAME         = "notInGame";
 	}
 }
