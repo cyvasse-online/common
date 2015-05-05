@@ -44,17 +44,11 @@ namespace cyvasse
 	{
 		for (const auto& step : range.first)
 		{
-			assert(step.size() == 2);
-
-			auto tmpPos = start.toValarray<int8_t>();
 			optional<HexCoordinate<6>> tmpCoord = start;
 
 			for (auto i = 0; i < range.second; i++)
 			{
-				assert(tmpCoord);
-
-				tmpPos += step;
-				tmpCoord = HexCoordinate<6>::create(tmpPos);
+				tmpCoord = *tmpCoord + step;
 
 				// if one step into this direction results in a
 				// invalid coordinate, all further ones do too

@@ -17,6 +17,7 @@
 #ifndef _CYVASSE_HEXCOORDINATE_HPP_
 #define _CYVASSE_HEXCOORDINATE_HPP_
 
+#include <new> // std::nothrow_t
 #include <ostream>
 #include <stdexcept>
 #include <string>
@@ -64,13 +65,20 @@ namespace cyvasse
 		static_assert(l <= 13, "The maximum size of the hexagon edge length is 13.");
 
 		private:
-			static constexpr bool isValid(int8_t X, int8_t Y)
+			static constexpr bool isValid(int8_t x, int8_t y)
 			{
-				return X >= 0 && X < (l * 2 - 1) &&
-					Y >= 0 && Y < (l * 2 - 1) &&
-					(X + Y) >= (l - 1) &&
-					(X + Y) <= (l - 1) * 3;
+				return x >= 0 && x < (l * 2 - 1) &&
+					y >= 0 && y < (l * 2 - 1) &&
+					(x + y) >= (l - 1) &&
+					(x + y) <= (l - 1) * 3;
 			}
+
+			// unsafe variant of the public constructor, used by create()
+			// so it doesn't validate the coordinate member values twice
+			constexpr HexCoordinate(int8_t x, int8_t y, std::nothrow_t)
+				: m_x(x)
+				, m_y(y)
+			{ }
 
 			int8_t m_x, m_y;
 
@@ -92,9 +100,9 @@ namespace cyvasse
 				: HexCoordinate(str.at(0) - 'A', std::stoi(str.substr(1)) - 1)
 			{ }
 
-			template<class T>
-			HexCoordinate(const typename std::valarray<T>& a)
-				: HexCoordinate(a[0], a[1])
+			template <typename T>
+			constexpr HexCoordinate(const std::valarray<T>& va)
+				: HexCoordinate(va[0], va[1])
 			{ }
 
 			constexpr int8_t x() const
@@ -112,13 +120,6 @@ namespace cyvasse
 			std::string toString() const
 			{ return std::string(1, m_x + 'A') + std::to_string(m_y + 1); }
 
-			template<class T = uint8_t>
-			std::valarray<T> toValarray() const
-			{
-				static_assert(std::is_integral<T>::value, "T has to be an integral type");
-				return {static_cast<T>(m_x), static_cast<T>(m_y)};
-			}
-
 			bool operator==(HexCoordinate other) const
 			{ return dump() == other.dump(); }
 
@@ -127,6 +128,15 @@ namespace cyvasse
 
 			bool operator<(HexCoordinate other) const
 			{ return dump() < other.dump(); }
+
+			template <typename T>
+			optional<HexCoordinate> operator+(std::valarray<T> va)
+			{
+				static_assert(std::is_convertible<T, int8_t>::value, "T has to be convertible to int8_t");
+				assert(va.size() == 2);
+
+				return create(m_x + va[0], m_y + va[1]);
+			}
 
 			/** Get the distance to another coordinate in form of the amount
 				of single moves to adjacent tiles required to move there
@@ -249,16 +259,16 @@ namespace cyvasse
 			static /* constexpr */ optional<HexCoordinate> create(int8_t X, int8_t Y)
 			{
 				if (isValid(X, Y))
-					return HexCoordinate(X, Y);
+					return HexCoordinate(X, Y, std::nothrow);
 
 				return nullopt;
 			}
 
-			template<class T>
-			static optional<HexCoordinate> create(typename std::valarray<T> a)
+			template <typename T>
+			static optional<HexCoordinate> create(typename std::valarray<T> va)
 			{
-				assert(a.size() == 2);
-				return create(a[0], a[1]);
+				assert(va.size() == 2);
+				return create(va[0], va[1]);
 			}
 			/// @}
 	};

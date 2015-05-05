@@ -22,6 +22,7 @@
 #include <memory>
 #include <set>
 #include <utility>
+#include <valarray>
 #include <vector>
 
 #include <optional.hpp>
